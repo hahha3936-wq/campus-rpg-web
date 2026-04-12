@@ -1,0 +1,242 @@
+{
+  "tasks": [
+    {
+      "id": "main_1",
+      "name": "英语四级备考",
+      "category": "main",
+      "category_name": "主线任务",
+      "category_icon": "🎯",
+      "description": "本学期核心目标：通过英语四级考试",
+      "difficulty": "中等",
+      "priority": "high",
+      "status": "in_progress",
+      "progress": 66,
+      "reward": {
+        "experience": 100,
+        "gold": 50,
+        "skill_points": 10
+      },
+      "deadline": "2026-06-15",
+      "subtasks": [
+        {
+          "id": "sub_1_1",
+          "name": "背30个四级单词",
+          "status": "completed",
+          "progress": 100,
+          "experience": 20
+        },
+        {
+          "id": "sub_1_2",
+          "name": "做1套四级真题",
+          "status": "in_progress",
+          "progress": 30,
+          "experience": 30
+        },
+        {
+          "id": "sub_1_3",
+          "name": "听力练习30分钟",
+          "status": "pending",
+          "progress": 0,
+          "experience": 25
+        }
+      ]
+    },
+    {
+      "id": "main_2",
+      "name": "高数第1章预习",
+      "category": "main",
+      "category_name": "主线任务",
+      "category_icon": "🎯",
+      "description": "完成高数第1章预习，打好数学基础",
+      "difficulty": "中等",
+      "priority": "medium",
+      "status": "in_progress",
+      "progress": 36,
+      "reward": {
+        "experience": 80,
+        "gold": 40,
+        "skill_points": 8
+      },
+      "deadline": "2026-04-13",
+      "subtasks": [
+        {
+          "id": "sub_2_1",
+          "name": "阅读教材第1-10页",
+          "status": "completed",
+          "progress": 100,
+          "experience": 15
+        },
+        {
+          "id": "sub_2_2",
+          "name": "完成课后习题1-5",
+          "status": "in_progress",
+          "progress": 40,
+          "experience": 20
+        },
+        {
+          "id": "sub_2_3",
+          "name": "整理知识点笔记",
+          "status": "pending",
+          "progress": 0,
+          "experience": 10
+        }
+      ]
+    },
+    {
+      "id": "side_1",
+      "name": "校园探索",
+      "category": "side",
+      "category_name": "支线任务",
+      "category_icon": "🗺️",
+      "description": "探索校园各个角落，发现隐藏彩蛋",
+      "difficulty": "低",
+      "priority": "medium",
+      "status": "in_progress",
+      "progress": 33,
+      "reward": {
+        "experience": 60,
+        "gold": 30,
+        "item": "校园地图"
+      },
+      "deadline": null,
+      "subtasks": [
+        {
+          "id": "sub_3_1",
+          "name": "找到食堂隐藏窗口",
+          "status": "completed",
+          "progress": 100,
+          "experience": 10
+        },
+        {
+          "id": "sub_3_2",
+          "name": "探索图书馆1楼",
+          "status": "in_progress",
+          "progress": 50,
+          "experience": 15
+        },
+        {
+          "id": "sub_3_3",
+          "name": "教学楼3楼探索",
+          "status": "pending",
+          "progress": 0,
+          "experience": 20
+        }
+      ]
+    },
+    {
+      "id": "daily_1",
+      "name": "背10个英语单词",
+      "category": "daily",
+      "category_name": "日常任务",
+      "category_icon": "📝",
+      "description": "每日英语单词学习，积累词汇量",
+      "difficulty": "低",
+      "priority": "medium",
+      "status": "in_progress",
+      "progress": 50,
+      "reward": {
+        "experience": 20,
+        "gold": 5
+      },
+      "deadline": "2026-04-08 23:59",
+      "is_daily": true,
+      "subtasks": [
+        {
+          "id": "sub_4_1",
+          "name": "单词第1组（5个）",
+          "status": "completed",
+          "progress": 100,
+          "experience": 10
+        },
+        {
+          "id": "sub_4_2",
+          "name": "单词第2组（5个）",
+          "status": "in_progress",
+          "progress": 50,
+          "experience": 10
+        }
+      ]
+    },
+    {
+      "id": "daily_2",
+      "name": "去食堂吃饭",
+      "category": "daily",
+      "category_name": "日常任务",
+      "category_icon": "🍱",
+      "description": "按时吃饭，保持身体健康和能量",
+      "difficulty": "极低",
+      "priority": "high",
+      "status": "pending",
+      "progress": 0,
+      "reward": {
+        "experience": 10,
+        "gold": 5,
+        "energy": 20
+      },
+      "deadline": "2026-04-08 19:00",
+      "is_daily": true,
+      "subtasks": [
+        {
+          "id": "sub_5_1",
+          "name": "选择喜欢的菜品",
+          "status": "pending",
+          "progress": 0,
+          "experience": 5
+        },
+        {
+          "id": "sub_5_2",
+          "name": "享受美食时间",
+          "status": "pending",
+          "progress": 0,
+          "experience": 5
+        }
+      ]
+    },
+    {
+      "id": "hidden_1",
+      "name": "教学楼公告栏的秘密",
+      "category": "hidden",
+      "category_name": "隐藏彩蛋任务",
+      "category_icon": "🔍",
+      "description": "教学楼3楼公告栏隐藏着神秘信息",
+      "difficulty": "中等",
+      "priority": "high",
+      "status": "locked",
+      "progress": 0,
+      "reward": {
+        "experience": 150,
+        "gold": 100,
+        "item": "神秘卷轴",
+        "achievement": "探索者"
+      },
+      "trigger_condition": "今日12:00-14:00到达教学楼3楼",
+      "time_window": {
+        "start": "12:00",
+        "end": "14:00"
+      },
+      "is_limited": true
+    },
+    {
+      "id": "hidden_2",
+      "name": "期末冲刺周",
+      "category": "hidden",
+      "category_name": "限时副本任务",
+      "category_icon": "⏰",
+      "description": "期末周的专属挑战，高强度学习副本",
+      "difficulty": "高",
+      "priority": "high",
+      "status": "locked",
+      "progress": 0,
+      "reward": {
+        "experience": 500,
+        "gold": 200,
+        "title": "期末战神"
+      },
+      "trigger_condition": "期末前2周自动开启",
+      "is_limited": true,
+      "locked_until": "2026-06-01"
+    }
+  ],
+  "daily_reset_time": "00:00",
+  "last_updated": "2026-04-08"
+}

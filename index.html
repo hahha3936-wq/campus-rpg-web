@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园RPG - 游戏化学习系统</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="将大学生活游戏化，管理学习任务、成就与角色成长">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/chat-widget.css">
+    <link rel="stylesheet" href="css/exploration.css">
+    <link rel="stylesheet" href="css/profile-modal.css">
+</head>
+<body>
+    <!-- 背景粒子效果 -->
+    <div id="particles-bg"></div>
+    
+    <!-- 顶部导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <span class="brand-icon">🎮</span>
+                <span class="brand-text">校园RPG</span>
+            </a>
+            <!-- 导航栏 AR 按钮 -->
+            <a class="nav-ar-btn me-3" id="nav-ar-btn" href="javascript:void(0);" title="AR校园探索">
+                <span class="nav-ar-icon"></span>
+                <span class="nav-ar-text">AR探索</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="user-stats-mini me-3">
+                    <span class="stat-mini" title="金币">
+                        <span class="stat-icon">💰</span>
+                        <span id="gold-display">50</span>
+                    </span>
+                    <span class="stat-mini" title="等级">
+                        <span class="stat-icon">⭐</span>
+                        <span>Lv.<span id="level-display">1</span></span>
+                    </span>
+                </div>
+                <!-- 未登录状态 -->
+                <div id="nav-login-section" style="display:none;">
+                    <a href="login.html" class="btn btn-sm btn-outline-light me-2">登录</a>
+                </div>
+                <!-- 已登录状态 -->
+                <div id="nav-user-section" class="d-flex align-items-center" style="display:none;">
+                    <div class="nav-user-dropdown me-2" id="navUserDropdown">
+                        <button class="nav-user-btn" onclick="toggleUserMenu()" aria-label="用户菜单">
+                            <span class="nav-user-avatar" id="navUserAvatar">🧙</span>
+                            <span class="nav-user-name" id="navUserName">冒险者</span>
+                            <span class="nav-user-arrow">▾</span>
+                        </button>
+                        <div class="nav-user-menu" id="navUserMenu">
+                            <div class="nav-user-menu-header">
+                                <span id="navMenuUserName">冒险者</span>
+                                <small id="navMenuUserLevel">Lv.1</small>
+                            </div>
+                            <a href="#" class="nav-user-menu-item" onclick="openProfileModal(); return false;">
+                                👤 个人资料
+                            </a>
+                            <a href="#" class="nav-user-menu-item" onclick="Auth.logout(); return false;">
+                                🚪 退出登录
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-ai-guide me-2" onclick="ChatWidget.open()">
+                    🎮 问阿游
+                </button>
+                <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                    ⚙️
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 角色状态栏 -->
+        <section class="role-status-bar">
+            <div class="container">
+                <div class="role-card">
+                    <div class="role-avatar">
+                        <div class="avatar-frame">
+                            <span class="avatar-icon">👤</span>
+                        </div>
+                        <div class="level-badge">Lv.1</div>
+                    </div>
+                    <div class="role-info">
+                        <h4 class="role-name" id="role-name">同学</h4>
+                        <p class="role-school" id="role-school">合肥财经大学·物联网应用技术</p>
+                        <div class="experience-bar-container">
+                            <div class="exp-label">
+                                <span>经验值</span>
+                                <span id="exp-text">0/100</span>
+                            </div>
+                            <div class="progress-bar-custom exp-bar">
+                                <div class="progress-fill exp-fill" id="exp-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 主功能按钮区 -->
+        <section class="main-actions">
+            <div class="container">
+                <div class="action-grid">
+                    <!-- 我的角色 -->
+                    <button class="action-btn action-btn-primary" data-action="role">
+                        <div class="action-icon">📊</div>
+                        <div class="action-label">我的角色</div>
+                        <div class="action-desc">查看角色面板</div>
+                    </button>
+                    
+                    <!-- 我的任务 -->
+                    <button class="action-btn action-btn-success" data-action="tasks">
+                        <div class="action-icon">🎯</div>
+                        <div class="action-label">我的任务</div>
+                        <div class="action-desc">任务列表</div>
+                    </button>
+                    
+                    <!-- 成就中心 -->
+                    <button class="action-btn action-btn-warning" data-action="achievements">
+                        <div class="action-icon">🏆</div>
+                        <div class="action-label">成就中心</div>
+                        <div class="action-desc">查看成就</div>
+                    </button>
+                    
+                    <!-- 背包 -->
+                    <button class="action-btn action-btn-info" data-action="inventory">
+                        <div class="action-icon">🎒</div>
+                        <div class="action-label">背包</div>
+                        <div class="action-desc">道具物品</div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 游戏模式入口 -->
+        <section class="game-mode-banner">
+            <a href="game.html" class="banner-link">
+                <div class="banner-content">
+                    <span class="banner-icon">🌾</span>
+                    <div class="banner-text">
+                        <div class="banner-title">校园农场</div>
+                        <div class="banner-desc">像素风 RPG · 学习即种田 · 探索校园世界</div>
+                    </div>
+                    <span class="banner-arrow">→</span>
+                </div>
+            </a>
+        </section>
+
+        <!-- 快速操作区 -->
+        <section class="quick-actions">
+            <div class="container">
+                <div class="quick-grid">
+                    <!-- 快速行动 -->
+                    <button class="quick-btn quick-btn-main" data-action="quick-action">
+                        <span class="quick-icon">⚡</span>
+                        <span class="quick-text">快速行动</span>
+                    </button>
+
+                    <!-- 每日签到 -->
+                    <button class="quick-btn quick-btn-signin" id="signin-btn" data-action="signin">
+                        <span class="quick-icon" id="signin-icon">📅</span>
+                        <span class="quick-text" id="signin-text">每日签到</span>
+                    </button>
+
+                    <!-- 随机事件 -->
+                    <button class="quick-btn quick-btn-event" data-action="random-event">
+                        <span class="quick-icon">🎲</span>
+                        <span class="quick-text">随机事件</span>
+                    </button>
+                    
+                    <!-- 今日总结 -->
+                    <button class="quick-btn quick-btn-summary" data-action="daily-summary">
+                        <span class="quick-icon">📈</span>
+                        <span class="quick-text">今日总结</span>
+                    </button>
+
+                    <!-- 番茄钟 -->
+                    <button class="quick-btn quick-btn-pomodoro" data-action="pomodoro" id="pomodoro-btn">
+                        <span class="quick-icon">🍅</span>
+                        <span class="quick-text">番茄钟</span>
+                    </button>
+
+                    <!-- 商店 -->
+                    <button class="quick-btn quick-btn-shop" data-action="shop">
+                        <span class="quick-icon">🏪</span>
+                        <span class="quick-text">商店</span>
+                    </button>
+
+                    <!-- 校园探索 -->
+                    <button class="quick-btn quick-btn-explore" data-action="exploration" id="exploration-btn">
+                        <span class="quick-icon">🗺️</span>
+                        <span class="quick-text">校园探索</span>
+                    </button>
+
+                    <!-- AI 任务推荐 -->
+                    <button class="quick-btn quick-btn-ai" data-action="ai-recommend" id="ai-recommend-btn">
+                        <span class="quick-icon">🪄</span>
+                        <span class="quick-text">AI推荐</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 能量和状态区 -->
+        <section class="status-section">
+            <div class="container">
+                <div class="status-grid">
+                    <!-- 能量值 -->
+                    <div class="status-card energy-card">
+                        <div class="status-header">
+                            <span class="status-icon">⚡</span>
+                            <span class="status-title">能量值</span>
+                        </div>
+                        <div class="status-value" id="energy-value">100</div>
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill energy-fill" id="energy-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 专注力 -->
+                    <div class="status-card focus-card">
+                        <div class="status-header">
+                            <span class="status-icon">🎯</span>
+                            <span class="status-title">专注力</span>
+                        </div>
+                        <div class="status-value" id="focus-value">100</div>
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill focus-fill" id="focus-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 心情值 -->
+                    <div class="status-card mood-card">
+                        <div class="status-header">
+                            <span class="status-icon">😊</span>
+                            <span class="status-title">心情值</span>
+                        </div>
+                        <div class="status-value" id="mood-value">100</div>
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill mood-fill" id="mood-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 压力值 -->
+                    <div class="status-card stress-card">
+                        <div class="status-header">
+                            <span class="status-icon">😰</span>
+                            <span class="status-title">压力值</span>
+                        </div>
+                        <div class="status-value" id="stress-value">20</div>
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill stress-fill" id="stress-fill" style="width: 20%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 今日任务推荐 -->
+        <section class="daily-recommend">
+            <div class="container">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="title-icon">🔥</span>
+                        今日推荐任务
+                    </h3>
+                    <button class="btn btn-sm btn-outline-primary" onclick="refreshDailyTasks()">刷新</button>
+                </div>
+                <div class="daily-task-list" id="daily-task-list">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- NPC互动区 -->
+        <section class="npc-section">
+            <div class="container">
+                <div class="npc-container">
+                    <div class="npc-character" id="npc-naruto" data-npc="naruto">
+                        <div class="npc-avatar">
+                            <span class="npc-icon">🍥</span>
+                        </div>
+                        <div class="npc-name">漩涡鸣人老师</div>
+                        <div class="npc-affection">
+                            <span class="affection-label">好感度</span>
+                            <div class="affection-bar">
+                                <div class="affection-fill" style="width: 20%"></div>
+                            </div>
+                            <span class="affection-value">20/100</span>
+                        </div>
+                        <div class="npc-dialogue">
+                            <div class="dialogue-bubble" id="naruto-dialogue">
+                                今天的任务加油哦！🔥
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="npc-character" id="npc-sasuke" data-npc="sasuke">
+                        <div class="npc-avatar">
+                            <span class="npc-icon">⚡</span>
+                        </div>
+                        <div class="npc-name">宇智波佐助助教</div>
+                        <div class="npc-affection">
+                            <span class="affection-label">好感度</span>
+                            <div class="affection-bar">
+                                <div class="affection-fill" style="width: 10%"></div>
+                            </div>
+                            <span class="affection-value">10/100</span>
+                        </div>
+                        <div class="npc-dialogue">
+                            <div class="dialogue-bubble" id="sasuke-dialogue">
+                                别浪费时间了...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 角色面板模态框 -->
+    <div class="modal fade" id="roleModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">📊 我的角色</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="role-modal-body">
+                    <!-- 动态生成角色详情 -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 任务面板模态框 -->
+    <div class="modal fade" id="taskModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">🎯 任务中心</h5>
+                    <div class="task-tabs">
+                        <button class="task-tab active" data-category="all">全部</button>
+                        <button class="task-tab" data-category="main">主线</button>
+                        <button class="task-tab" data-category="side">支线</button>
+                        <button class="task-tab" data-category="daily">日常</button>
+                        <button class="task-tab" data-category="hidden">隐藏</button>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="task-modal-body">
+                    <!-- 动态生成任务列表 -->
+                </div>
+                <div class="modal-footer">
+                    <div class="task-stats">
+                        <span class="stat-badge">总任务: <span id="total-tasks">7</span></span>
+                        <span class="stat-badge completed">已完成: <span id="completed-tasks">0</span></span>
+                        <span class="stat-badge in-progress">进行中: <span id="inprogress-tasks">4</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成就面板模态框 -->
+    <div class="modal fade" id="achievementModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">🏆 成就中心</h5>
+                    <div class="achievement-tabs">
+                        <button class="achievement-tab active" data-category="all">全部</button>
+                        <button class="achievement-tab" data-category="学业成就">学业</button>
+                        <button class="achievement-tab" data-category="探索成就">探索</button>
+                        <button class="achievement-tab" data-category="社交成就">社交</button>
+                        <button class="achievement-tab" data-category="隐藏成就">隐藏</button>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="achievement-modal-body">
+                    <!-- 动态生成成就列表 -->
+                </div>
+                <div class="modal-footer">
+                    <div class="achievement-stats">
+                        <span class="stat-badge unlocked">已解锁: <span id="unlocked-achievements">5</span></span>
+                        <span class="stat-badge total">总成就: <span id="total-achievements">26</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 背包模态框 -->
+    <div class="modal fade" id="inventoryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">🎒 背包</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="inventory-modal-body">
+                    <!-- 动态生成背包内容 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 随机事件模态框 -->
+    <div class="modal fade" id="eventModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content event-modal-content">
+                <div class="modal-body" id="event-modal-body">
+                    <!-- 动态生成事件内容 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 奖励弹窗 -->
+    <div class="modal fade" id="rewardModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content reward-modal-content">
+                <div class="reward-header">
+                    <span class="reward-icon">🎉</span>
+                    <h4>获得奖励!</h4>
+                </div>
+                <div class="reward-body" id="reward-body">
+                    <!-- 动态生成奖励内容 -->
+                </div>
+                <div class="reward-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">领取</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 每日总结模态框 -->
+    <div class="modal fade" id="summaryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content summary-modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">📈 今日总结</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="summary-modal-body">
+                    <!-- 动态生成总结内容 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设置模态框 -->
+    <!-- 番茄钟弹窗 -->
+    <div class="modal fade" id="pomodoroModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, #f5576c, #f093fb); color: #fff;">
+                    <h5 class="modal-title">🍅 番茄钟</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="pomodoro-modal-body">
+                    <!-- 动态内容 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 每日签到弹窗 -->
+    <div class="modal fade" id="signinModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="signin-modal-content">
+                <div class="modal-header signin-header" id="signin-modal-header">
+                    <h5 class="modal-title" id="signin-modal-title">📅 每日签到</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="signin-modal-body">
+                    <!-- 动态内容 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 校园探索地图模态框 -->
+    <div class="modal fade" id="explorationModal" tabindex="-1" style="z-index: 12000;">
+        <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+            <div class="modal-content exploration-modal-content">
+                <div class="exploration-modal-header">
+                    <div class="exploration-header-left">
+                        <h5 class="modal-title">🗺️ 校园探索</h5>
+                        <div class="exploration-stats-mini" id="exploration-stats-mini">
+                            <span class="stat-chip">已探索: <span id="explored-count">0</span>/<span id="total-count">0</span></span>
+                            <span class="stat-chip">探索度: <span id="explored-pct">0</span>%</span>
+                        </div>
+                    </div>
+                    <div class="exploration-header-right">
+                        <button class="btn btn-sm btn-outline-light" onclick="ExplorationMap._requestAIGuidance('current')">💬 询问阿游</button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <div class="exploration-modal-body">
+                    <div class="exploration-layout">
+                        <!-- 地图容器 -->
+                        <div class="exploration-map-wrapper">
+                            <div id="exploration-map-container"></div>
+                        </div>
+
+                        <!-- 地点详情面板 -->
+                        <div class="location-panel" id="location-panel">
+                            <button class="location-panel-close" id="location-panel-close">&times;</button>
+                            <div class="location-panel-header">
+                                <h5 id="location-panel-title">选择一个地点</h5>
+                            </div>
+                            <div class="location-panel-body" id="location-panel-body">
+                                <div class="location-panel-hint">
+                                    <span class="hint-icon">🗺️</span>
+                                    <p>点击地图上的标记<br>探索校园各地点</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部地点列表 -->
+                    <div class="exploration-location-list">
+                        <div class="location-list-title">📍 校园地点</div>
+                        <div class="location-list-grid" id="location-list-grid">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="settingsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">⚙️ 设置</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="settings-modal-body">
+                    <!-- 个人资料 & 目标计划 Tab 动态渲染，由 PlanManager 接管 -->
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span>🎵 音效</span>
+                            <input type="checkbox" id="sound-toggle" checked>
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span>🌙 夜间模式</span>
+                            <input type="checkbox" id="darkmode-toggle">
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span>✨ 动画效果</span>
+                            <input type="checkbox" id="animation-toggle" checked>
+                        </label>
+                    </div>
+                    <div class="settings-divider"></div>
+                    <!-- 个人设置入口 -->
+                    <button class="btn btn-outline-primary w-100 mb-2" id="open-profile-editor-btn" onclick="PlanManager.openProfileEditor()">
+                        👤 个人资料与目标计划
+                    </button>
+                    <div class="settings-divider"></div>
+                    <button class="btn btn-outline-danger w-100" onclick="resetData()">
+                        🔄 重置数据
+                    </button>
+                </div>
+                <div class="modal-footer" id="settings-modal-footer" style="display:none;">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="PlanManager.saveAndClose()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <nav class="bottom-nav">
+        <a class="nav-btn" href="index.html">
+            <span class="nav-icon" aria-hidden="true">🏠</span>
+            <span class="nav-text">主页</span>
+        </a>
+        <a class="nav-btn" href="tasks.html">
+            <span class="nav-icon" aria-hidden="true">📋</span>
+            <span class="nav-text">任务</span>
+        </a>
+        <a class="nav-btn" href="achievements.html">
+            <span class="nav-icon" aria-hidden="true">🏆</span>
+            <span class="nav-text">成就</span>
+        </a>
+        <a class="nav-btn" href="profile.html">
+            <span class="nav-icon" aria-hidden="true">👤</span>
+            <span class="nav-text">我的</span>
+        </a>
+        <a class="nav-btn nav-btn-game" href="game.html">
+            <span class="nav-icon" aria-hidden="true">🌾</span>
+            <span class="nav-text">农场</span>
+        </a>
+    </nav>
+
+    <!-- 通知容器 -->
+    <div class="notification-container" id="notification-container"></div>
+
+    <!-- Toast容器 -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="live-toast" class="toast" role="alert">
+            <div class="toast-header">
+                <span id="toast-icon">🎉</span>
+                <strong class="me-auto" id="toast-title">通知</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toast-body">
+                操作成功!
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gcoord@0.2.3/dist/gcoord.global.prod.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="js/api-base.js" defer></script>
+    <script src="js/core/event-bus.js" defer></script>
+    <script src="js/core/state-manager.js" defer></script>
+    <script src="js/features/pomodoro-manager.js" defer></script>
+    <script src="js/features/sound-manager.js" defer></script>
+    <script src="js/features/exploration-dialogue.js" defer></script>
+    <script src="js/features/npc-manager.js" defer></script>
+    <script src="js/api.js" defer></script>
+    <script src="js/animations.js" defer></script>
+    <script src="js/components.js" defer></script>
+    <script src="js/chat-widget.js" defer></script>
+    <script src="js/features/exploration-map.js" defer></script>
+    <script src="js/features/navigation.js" defer></script>
+    <script src="js/features/onboarding.js" defer></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/features/plan-manager.js" defer></script>
+    <script src="js/features/recommend-modal.js" defer></script>
+    <script src="js/init.js" defer></script>
+    <script src="js/game/ar/ar-main.js" defer></script>
+    <script src="js/app.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initNavUserSection();
+            // 导航栏 AR 按钮点击事件
+            var navArBtn = document.getElementById('nav-ar-btn');
+            if (navArBtn) {
+                navArBtn.addEventListener('click', function() {
+                    if (window.ARUI && window.ARUI.toggleAR) {
+                        window.ARUI.toggleAR();
+                    }
+                });
+            }
+        });
+
+        async function initNavUserSection() {
+            const loginSection = document.getElementById('nav-login-section');
+            const userSection = document.getElementById('nav-user-section');
+            if (!loginSection || !userSection) return;
+            if (Auth.isLoggedIn()) {
+                const valid = await Auth.tryRestoreSession();
+                if (valid) {
+                    const user = Auth.getUser();
+                    updateNavUserUI(user);
+                    loginSection.style.display = 'none';
+                    userSection.style.display = 'flex';
+                } else {
+                    loginSection.style.display = 'block';
+                    userSection.style.display = 'none';
+                }
+            } else {
+                loginSection.style.display = 'block';
+                userSection.style.display = 'none';
+            }
+        }
+
+        function updateNavUserUI(user) {
+            const name = document.getElementById('navUserName');
+            const menuName = document.getElementById('navMenuUserName');
+            const menuLevel = document.getElementById('navMenuUserLevel');
+            const userName = user?.nickname || user?.username || '冒险者';
+            if (name) name.textContent = userName;
+            if (menuName) menuName.textContent = userName;
+            if (menuLevel && AppState?.user?.role?.level) {
+                menuLevel.textContent = `Lv.${AppState.user.role.level}`;
+            }
+        }
+
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('navUserDropdown');
+            if (dropdown) dropdown.classList.toggle('open');
+        }
+
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('navUserDropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('open');
+            }
+        });
+
+        function openProfileModal() {
+            const dropdown = document.getElementById('navUserDropdown');
+            if (dropdown) dropdown.classList.remove('open');
+        }
+    </script>
+</body>
+</html>

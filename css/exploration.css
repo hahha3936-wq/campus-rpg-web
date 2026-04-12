@@ -1,0 +1,961 @@
+/* ============================================
+   校园探索 - 地图与面板样式
+   ============================================ */
+
+/* ---- 模态框层级保险 ---- */
+/* 探索模态框必须高于聊天浮层（11000+）和 Bootstrap 多层 backdrop（~1060+）。 */
+#explorationModal {
+    z-index: 12000;
+}
+
+/* 确保 .modal-dialog.modal-fullscreen 同样抬升 */
+#explorationModal .modal-dialog.modal-fullscreen {
+    z-index: 12001 !important;
+}
+
+/* Bootstrap backdrop 默认在 body 下方，强制将其降到探索模态之下 */
+body.exploration-modal-open .modal-backdrop {
+    z-index: 11999 !important;
+}
+
+/* ---- 快速操作探索按钮 ---- */
+.quick-btn-explore {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-btn-explore:hover {
+    background: linear-gradient(135deg, #5a6fd6, #6a4190);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.quick-btn-explore::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: exploreShine 3s ease-in-out infinite;
+}
+
+@keyframes exploreShine {
+    0%, 100% { transform: translateX(-30%) translateY(-30%); }
+    50% { transform: translateX(30%) translateY(30%); }
+}
+
+/* ---- AI 任务推荐按钮 ---- */
+.quick-btn-ai {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: #fff;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-btn-ai:hover {
+    background: linear-gradient(135deg, #e879f9, #f43f5e);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+}
+
+/* ---- 探索模态框 ---- */
+.exploration-modal-content {
+    background: #0f0f1a;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 16px;
+    overflow: hidden;
+    height: 90vh;
+    max-height: 90vh;
+}
+
+.exploration-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+    color: #fff;
+}
+
+.exploration-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.exploration-header-left .modal-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.exploration-stats-mini {
+    display: flex;
+    gap: 8px;
+}
+
+.stat-chip {
+    background: rgba(102, 126, 234, 0.2);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: #a5b4fc;
+}
+
+.exploration-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.exploration-modal-body {
+    display: flex;
+    flex-direction: column;
+    height: calc(90vh - 56px - 120px);
+}
+
+/* ---- 探索布局 ---- */
+.exploration-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.exploration-map-wrapper {
+    flex: 1;
+    position: relative;
+    min-height: 300px;
+}
+
+#exploration-map-container {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    background: #1a1a2e;
+    border-radius: 8px 0 0 0;
+}
+
+/* ---- Leaflet 自定义样式 ---- */
+.exploration-marker-wrapper {
+    background: none !important;
+    border: none !important;
+}
+
+.exploration-marker {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.exploration-marker.discovered {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: 2px solid rgba(255,255,255,0.3);
+}
+
+.exploration-marker.undiscovered {
+    background: rgba(100, 116, 139, 0.6);
+    border: 2px solid rgba(100, 116, 139, 0.5);
+    filter: grayscale(0.3);
+}
+
+.exploration-marker:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+}
+
+.exploration-marker.discovered:hover {
+    background: linear-gradient(135deg, #5a6fd6, #6a4190);
+}
+
+.marker-lock {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 16px;
+    height: 16px;
+    background: rgba(100, 116, 139, 0.8);
+    border-radius: 50%;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+/* Leaflet 弹出框样式 */
+.leaflet-popup-content-wrapper {
+    background: #1a1a2e;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    color: #e2e8f0;
+}
+
+.leaflet-popup-tip {
+    background: #1a1a2e;
+}
+
+/* ---- 地点详情面板 ---- */
+.location-panel {
+    width: 320px;
+    background: #1a1a2e;
+    border-left: 1px solid rgba(102, 126, 234, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.location-panel.active {
+    transform: translateX(0);
+}
+
+.location-panel-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #94a3b8;
+    font-size: 20px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.location-panel-close:hover {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+.location-panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.location-panel-header h5 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.location-panel-header h5 span {
+    font-size: 22px;
+}
+
+.location-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+}
+
+.location-panel-hint {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+}
+
+.location-panel-hint .hint-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.location-panel-hint p {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+/* 面板内容 */
+.poi-guide-id {
+    display: inline-block;
+    background: rgba(102, 126, 234, 0.2);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    color: #a5b4fc;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+.poi-official-name {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 6px;
+    font-family: 'Noto Sans SC', sans-serif;
+}
+.location-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+.feature-tag {
+    background: rgba(102, 126, 234, 0.08);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    color: #94a3b8;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.new-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.location-type-badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    background: rgba(102, 126, 234, 0.15);
+    color: #a5b4fc;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.location-type-badge.type-study { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+.location-type-badge.type-food { background: rgba(249, 115, 22, 0.15); color: #fdba74; }
+.location-type-badge.type-living { background: rgba(168, 85, 247, 0.15); color: #d8b4fe; }
+.location-type-badge.type-sports { background: rgba(34, 197, 94, 0.15); color: #86efac; }
+.location-type-badge.type-leisure { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; }
+.location-type-badge.type-social { background: rgba(236, 72, 153, 0.15); color: #f9a8d4; }
+.location-type-badge.type-academic { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; }
+.location-type-badge.type-shop { background: rgba(245, 158, 11, 0.15); color: #fcd34d; }
+
+.location-description {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.7;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    border-left: 3px solid rgba(102, 126, 234, 0.4);
+}
+
+/* 隐藏事件 */
+.location-hidden-event {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.location-hidden-event .hidden-event-icon {
+    font-size: 36px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.location-hidden-event .hidden-event-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: #c4b5fd;
+}
+
+/* Buff 展示 */
+.location-buff {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1));
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.location-buff .buff-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6ee7b7;
+    margin-bottom: 4px;
+}
+
+.location-buff .buff-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 2px;
+}
+
+.location-buff .buff-desc {
+    font-size: 12px;
+    color: #86efac;
+}
+
+/* 统计数据 */
+.location-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.location-stat {
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+
+.location-stat .stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #a5b4fc;
+}
+
+.location-stat .stat-label {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* NPC 展示 */
+.location-npcs {
+    margin-bottom: 16px;
+}
+
+.location-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.location-npc-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.location-npc-chip {
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: #d8b4fe;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.location-npc-chip:hover {
+    background: rgba(168, 85, 247, 0.3);
+    transform: translateY(-1px);
+}
+
+/* 任务列表 */
+.location-tasks {
+    margin-bottom: 16px;
+}
+
+.location-task-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.location-task-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.location-task-item .task-name {
+    flex: 1;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+
+.location-task-item .task-progress {
+    font-size: 11px;
+    color: #64748b;
+}
+
+/* 操作按钮 */
+.location-actions {
+    margin-top: 16px;
+}
+
+.btn-explore-action {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-explore-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-explore-secondary {
+    width: 100%;
+    padding: 12px;
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    color: #a5b4fc;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-explore-secondary:hover {
+    background: rgba(102, 126, 234, 0.2);
+    color: #c4b5fd;
+}
+
+.night-hint {
+    text-align: center;
+    font-size: 11px;
+    color: #a5b4fc;
+    margin-top: 8px;
+    padding: 6px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 6px;
+}
+
+/* ---- 底部地点列表 ---- */
+.exploration-location-list {
+    background: #0f0f1a;
+    border-top: 1px solid rgba(102, 126, 234, 0.15);
+    padding: 12px 16px;
+    max-height: 130px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.location-list-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.location-list-grid {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.location-list-item {
+    flex-shrink: 0;
+    width: 100px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.location-list-item:hover {
+    background: rgba(102, 126, 234, 0.15);
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateY(-2px);
+}
+
+.location-list-item.discovered {
+    border-color: rgba(102, 126, 234, 0.4);
+    background: rgba(102, 126, 234, 0.08);
+}
+
+.location-list-item .item-icon {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.location-list-item .item-name {
+    font-size: 11px;
+    color: #cbd5e1;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.location-list-item.locked {
+    opacity: 0.5;
+    filter: grayscale(0.5);
+}
+
+.location-list-item.locked .item-icon::after {
+    content: '🔒';
+    font-size: 12px;
+}
+
+/* ---- 响应式 ---- */
+@media (max-width: 768px) {
+    .exploration-layout {
+        flex-direction: column;
+    }
+
+    .location-panel {
+        width: 100%;
+        height: 40%;
+        border-left: none;
+        border-top: 1px solid rgba(102, 126, 234, 0.2);
+    }
+
+    #exploration-map-container {
+        height: 60%;
+        border-radius: 0;
+    }
+
+    .exploration-modal-body {
+        height: auto;
+    }
+}
+
+/* ============================================
+   浅色模式适配
+   ============================================ */
+body:not(.dark-mode) .exploration-modal-content {
+    background: #ffffff;
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+body:not(.dark-mode) .exploration-modal-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+body:not(.dark-mode) #exploration-map-container {
+    background: #f1f5f9;
+}
+
+body:not(.dark-mode) .location-panel {
+    background: #ffffff;
+    border-left-color: rgba(102, 126, 234, 0.15);
+}
+
+body:not(.dark-mode) .location-panel-close {
+    background: rgba(0, 0, 0, 0.05);
+    color: #64748b;
+}
+
+body:not(.dark-mode) .location-panel-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #334155;
+}
+
+body:not(.dark-mode) .location-panel-header {
+    border-bottom-color: rgba(102, 126, 234, 0.1);
+}
+
+body:not(.dark-mode) .location-panel-header h5 {
+    color: #1e293b;
+}
+
+body:not(.dark-mode) .location-panel-hint {
+    color: #94a3b8;
+}
+
+body:not(.dark-mode) .exploration-location-list {
+    background: #ffffff;
+    border-top-color: rgba(102, 126, 234, 0.1);
+}
+
+body:not(.dark-mode) .location-list-item {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+body:not(.dark-mode) .location-list-item:hover {
+    background: rgba(102, 126, 234, 0.08);
+}
+
+body:not(.dark-mode) .location-list-item .item-name {
+    color: #475569;
+}
+
+body:not(.dark-mode) .location-description {
+    background: rgba(0, 0, 0, 0.02);
+    color: #475569;
+    border-left-color: rgba(102, 126, 234, 0.3);
+}
+
+body:not(.dark-mode) .location-description {
+    color: #475569;
+}
+
+body:not(.dark-mode) .location-stat {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body:not(.dark-mode) .location-stat .stat-value {
+    color: #667eea;
+}
+
+body:not(.dark-mode) .location-task-item {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body:not(.dark-mode) .location-task-item:hover {
+    background: rgba(102, 126, 234, 0.06);
+}
+
+body:not(.dark-mode) .location-task-item .task-name {
+    color: #475569;
+}
+
+body:not(.dark-mode) .leaflet-popup-content-wrapper {
+    background: #ffffff;
+    color: #1e293b;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn-navigate {
+    width: 100%;
+    padding: 10px;
+    background: rgba(72, 187, 120, 0.12);
+    border: 1px solid rgba(72, 187, 120, 0.35);
+    border-radius: 10px;
+    color: #6ee7b7;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.2s, transform 0.15s;
+    text-align: center;
+}
+
+.btn-navigate:hover {
+    background: rgba(72, 187, 120, 0.22);
+    transform: translateY(-1px);
+}
+
+.btn-navigate:active {
+    transform: translateY(0);
+}
+
+body:not(.dark-mode) .btn-navigate {
+    background: rgba(72, 187, 120, 0.08);
+    color: #059669;
+    border-color: rgba(72, 187, 120, 0.3);
+}
+
+body:not(.dark-mode) .btn-navigate:hover {
+    background: rgba(72, 187, 120, 0.15);
+}
+
+/* ============================================
+   高德地图导航 - 路线信息样式
+   ============================================ */
+
+#nav-route-info {
+    margin-bottom: 10px;
+}
+
+.route-info-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(30, 144, 255, 0.12);
+    border: 1px solid rgba(30, 144, 255, 0.3);
+    border-radius: 8px;
+    font-size: 13px;
+    color: #93c5fd;
+    flex-wrap: wrap;
+}
+
+.route-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.route-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.route-sep {
+    color: rgba(147, 197, 253, 0.4);
+    flex-shrink: 0;
+}
+
+.route-open-btn {
+    color: #60a5fa;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12px;
+    flex-shrink: 0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.route-open-btn:hover {
+    background: rgba(96, 165, 250, 0.15);
+    color: #93c5fd;
+}
+
+.route-loading {
+    color: #93c5fd;
+    font-size: 13px;
+    padding: 6px 0;
+    display: inline-block;
+}
+
+.route-error {
+    color: #fca5a5;
+    font-size: 12px;
+}
+
+/* 浅色模式适配 */
+body:not(.dark-mode) .route-info-box {
+    background: rgba(30, 144, 255, 0.06);
+    border-color: rgba(30, 144, 255, 0.25);
+    color: #1e40af;
+}
+
+body:not(.dark-mode) .route-sep {
+    color: rgba(30, 144, 255, 0.35);
+}
+
+body:not(.dark-mode) .route-open-btn {
+    color: #2563eb;
+}
+
+body:not(.dark-mode) .route-open-btn:hover {
+    background: rgba(37, 99, 235, 0.1);
+    color: #1d4ed8;
+}
+
+body:not(.dark-mode) .route-loading,
+body:not(.dark-mode) .route-text {
+    color: #1e40af;
+}
+
+/* ============================================
+   补充浅色模式 - 缺失组件适配
+   ============================================ */
+body:not(.dark-mode) .stat-chip {
+    background: rgba(102, 126, 234, 0.08);
+    color: #667eea;
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+body:not(.dark-mode) .poi-guide-id {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+body:not(.dark-mode) .poi-official-name {
+    color: #94a3b8;
+}
+
+body:not(.dark-mode) .feature-tag {
+    background: rgba(102, 126, 234, 0.06);
+    color: #64748b;
+}
+
+body:not(.dark-mode) .location-type-badge {
+    background: rgba(102, 126, 234, 0.08);
+    color: #667eea;
+}
+
+body:not(.dark-mode) .new-badge {
+    background: linear-gradient(135deg, #f472b6, #ec4899);
+}
+
+body:not(.dark-mode) .location-hidden-event {
+    background: rgba(102, 126, 234, 0.06);
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+body:not(.dark-mode) .location-hidden-event .hidden-event-text {
+    color: #667eea;
+}
+
+body:not(.dark-mode) .location-buff {
+    background: rgba(16, 185, 129, 0.06);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+body:not(.dark-mode) .location-buff .buff-label {
+    color: #059669;
+}
+
+body:not(.dark-mode) .location-buff .buff-name {
+    color: #1e293b;
+}
+
+body:not(.dark-mode) .location-buff .buff-desc {
+    color: #059669;
+}
+
+body:not(.dark-mode) .night-hint {
+    background: rgba(102, 126, 234, 0.05);
+    color: #667eea;
+}
+
+body:not(.dark-mode) .location-npc-chip {
+    background: rgba(168, 85, 247, 0.06);
+    border-color: rgba(168, 85, 247, 0.2);
+    color: #7c3aed;
+}
+
+body:not(.dark-mode) .location-section-title {
+    color: #64748b;
+}

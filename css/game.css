@@ -1,0 +1,348 @@
+/* ============================================
+   像素风游戏页面 - 校园农场
+   使用 DB32 复古调色板
+   ============================================ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ---- 像素字体 ---- */
+body {
+    font-family: 'Press Start 2P', 'Noto Sans SC', monospace;
+    background: #1a1a2e;
+    color: #F4F4F4;
+    overflow: hidden;
+    image-rendering: pixelated;
+}
+
+/* ---- 顶部 HUD ---- */
+.game-header {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 48px;
+    background: linear-gradient(180deg, #5D275D 0%, #3a1940 100%);
+    border-bottom: 3px solid #B13E53;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    z-index: 9999;
+}
+
+.game-back-btn {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #EF7D57;
+    color: #FFCD75;
+    padding: 6px 10px;
+    font-size: 8px;
+    text-decoration: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+.game-back-btn:hover {
+    background: #EF7D57;
+    color: #5D275D;
+}
+
+.game-title {
+    font-size: 10px;
+    color: #FFCD75;
+    letter-spacing: 2px;
+}
+
+.game-hud {
+    display: flex; gap: 10px; align-items: center;
+}
+
+.hud-chip {
+    background: rgba(0,0,0,0.3);
+    border: 2px solid #257179;
+    padding: 4px 8px;
+    font-size: 8px;
+    border-radius: 2px;
+    color: #73EFF7;
+}
+
+.hud-btn {
+    cursor: pointer;
+    background: rgba(255,255,255,0.05);
+}
+.hud-btn:hover {
+    background: #257179;
+}
+
+/* ---- 游戏画布容器 ---- */
+.game-container {
+    position: fixed;
+    top: 48px; bottom: 36px;
+    left: 0; right: 0;
+    /* 背景色与地图边缘草地一致，不再露出深蓝色 */
+    background: #257179;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#game-canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    display: block;
+    /* 由 JS 通过 style.width/height + transform: scale() 控制整数倍缩放 */
+}
+
+/* ---- 暂停菜单 ---- */
+.game-menu {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+}
+
+.menu-box {
+    background: #29366F;
+    border: 4px solid #B13E53;
+    border-radius: 4px;
+    padding: 20px;
+    min-width: 240px;
+    box-shadow: 0 0 0 4px #5D275D, 8px 8px 0 rgba(0,0,0,0.5);
+}
+
+.menu-title {
+    text-align: center;
+    color: #FFCD75;
+    font-size: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px dashed #5D275D;
+}
+
+.menu-item {
+    display: block; width: 100%;
+    background: #3B5DC9;
+    border: 2px solid #29366F;
+    color: #F4F4F4;
+    font-family: inherit;
+    font-size: 8px;
+    padding: 10px 14px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 2px;
+    margin-bottom: 6px;
+    transition: all 0.1s;
+}
+.menu-item:hover {
+    background: #41A6F6;
+    border-color: #73EFF7;
+    transform: translateX(4px);
+}
+.menu-item:last-child { margin-bottom: 0; }
+
+/* ---- 面板（背包/任务） ---- */
+.game-panel {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 101;
+}
+
+.panel-box {
+    background: #29366F;
+    border: 4px solid #3B5DC9;
+    border-radius: 4px;
+    padding: 16px;
+    width: min(90vw, 480px);
+    max-height: 80%;
+    overflow-y: auto;
+    box-shadow: 0 0 0 4px #5D275D;
+}
+
+.panel-title {
+    color: #FFCD75;
+    font-size: 9px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px dashed #5D275D;
+    display: flex; justify-content: space-between; align-items: center;
+}
+
+.panel-close {
+    cursor: pointer; color: #B13E53;
+    font-size: 10px;
+}
+.panel-close:hover { color: #F4F4F4; }
+
+/* ---- 像素风农场背包网格 ---- */
+.game-inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+}
+
+.inv-slot {
+    aspect-ratio: 1;
+    background: rgba(0,0,0,0.3);
+    border: 2px solid #257179;
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.1s;
+    position: relative;
+}
+.inv-slot:hover { border-color: #73EFF7; background: rgba(39,113,121,0.3); }
+.inv-slot .qty {
+    position: absolute; bottom: 2px; right: 4px;
+    font-size: 7px; color: #A7F070;
+}
+.inv-slot.empty { opacity: 0.4; }
+
+/* ---- 任务列表 ---- */
+.questlog-list { display: flex; flex-direction: column; gap: 8px; }
+
+.quest-item {
+    background: rgba(0,0,0,0.2);
+    border: 2px solid #257179;
+    border-radius: 2px;
+    padding: 10px;
+    font-size: 8px;
+    line-height: 1.8;
+}
+.quest-item.completed {
+    border-color: #38B764;
+    opacity: 0.6;
+}
+.quest-name { color: #FFCD75; margin-bottom: 4px; }
+.quest-desc { color: #73EFF7; font-size: 7px; }
+.quest-reward { color: #A7F070; font-size: 7px; margin-top: 4px; }
+
+/* ---- 底部信息栏 ---- */
+.game-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 36px;
+    background: linear-gradient(0deg, #1a0a2e 0%, #2d1b4e 100%);
+    border-top: 3px solid #5D275D;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    z-index: 9999;
+}
+
+.game-tip {
+    font-size: 7px;
+    color: #73EFF7;
+    opacity: 0.7;
+}
+
+.game-location {
+    font-size: 8px;
+    color: #FFCD75;
+}
+
+/* ---- 通知动画 ---- */
+.game-notifications {
+    position: fixed;
+    top: 60px; right: 16px;
+    display: flex; flex-direction: column; gap: 6px;
+    z-index: 10001;
+    pointer-events: none;
+}
+
+.game-notif {
+    background: rgba(0,0,0,0.85);
+    border: 2px solid #A7F070;
+    border-radius: 2px;
+    padding: 8px 12px;
+    font-size: 8px;
+    color: #F4F4F4;
+    animation: notifSlide 0.2s ease;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+    max-width: 280px;
+}
+
+@keyframes notifSlide {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ---- POI 导航面板 ---- */
+.poi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+.poi-nav-btn {
+    background: rgba(0,0,0,0.3);
+    border: 2px solid #257179;
+    border-radius: 4px;
+    padding: 10px 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.1s;
+    font-family: inherit;
+    color: #F4F4F4;
+    position: relative;
+}
+.poi-nav-btn:hover {
+    border-color: #73EFF7;
+    background: rgba(39,113,121,0.3);
+    transform: translateY(-2px);
+}
+.poi-nav-btn.poi-locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.poi-nav-btn.poi-locked:hover {
+    transform: none;
+    border-color: #257179;
+}
+.poi-nav-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+.poi-nav-name {
+    display: block;
+    font-size: 7px;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: #F4F4F4;
+    margin-bottom: 2px;
+    line-height: 1.3;
+}
+.poi-nav-zone { display: block; font-size: 6px; color: #73EFF7; }
+.poi-nav-here {
+    display: block; font-size: 6px; color: #A7F070; margin-top: 2px;
+}
+.poi-nav-lock { position: absolute; top: 4px; right: 4px; font-size: 10px; }
+
+/* ---- 室内场景覆盖样式 ---- */
+.indoor-scene {
+    filter: brightness(0.9) saturate(0.8);
+}
+
+/* ---- 交互提示动画 ---- */
+.interact-hint {
+    position: fixed;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.75);
+    color: #FFCD75;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'Noto Sans SC', sans-serif;
+    pointer-events: none;
+    animation: hintPulse 1.5s ease-in-out infinite;
+    border: 1px solid rgba(255,205,117,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    z-index: 100;
+}
+@keyframes hintPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* ---- 移动端 ---- */
+@media (max-width: 576px) {
+    .game-title { font-size: 8px; }
+    .hud-chip { font-size: 7px; padding: 3px 6px; }
+    .menu-box { min-width: 200px; }
+    .menu-item { font-size: 7px; }
+    .game-inventory-grid { grid-template-columns: repeat(4, 1fr); }
+    .game-tip { display: none; }
+}

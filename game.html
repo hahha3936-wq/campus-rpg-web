@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园农场 - 像素风游戏</title>
+    <meta name="theme-color" content="#5D275D">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+    <!-- 像素风顶部栏 -->
+    <div class="game-header">
+        <a href="index.html" class="game-back-btn">← 返回</a>
+        <span class="game-title">🌾 校园农场</span>
+        <div class="game-hud">
+            <span class="hud-chip" id="hud-gold">💰 <span id="game-gold">0</span></span>
+            <span class="hud-chip" id="hud-energy">⚡ <span id="game-energy">100</span></span>
+            <span class="hud-chip" id="hud-exp">⭐ Lv.<span id="game-level">1</span></span>
+            <button class="hud-chip hud-btn" onclick="GameEngine.toggleMenu()">☰</button>
+        </div>
+    </div>
+
+    <!-- 游戏画布 -->
+    <div class="game-container">
+        <canvas id="game-canvas"></canvas>
+        <!-- 暂停菜单 -->
+        <div id="game-menu" class="game-menu" style="display:none">
+            <div class="menu-box">
+                <div class="menu-title">≡ 游戏菜单 ≡</div>
+                <button class="menu-item" onclick="GameEngine.resume()">▶ 继续游戏</button>
+                <button class="menu-item" onclick="GameEngine.openInventory()">🎒 背包</button>
+                <button class="menu-item" onclick="GameEngine.openQuestLog()">📋 任务日志</button>
+                <button class="menu-item" onclick="GameEngine.openPOIPanel()">🗺️ 校园导航</button>
+                <button class="menu-item" onclick="GameEngine.syncData()">🔄 同步数据</button>
+                <button class="menu-item" onclick="location.href='index.html'">🏠 返回主页</button>
+            </div>
+        </div>
+        <!-- 校园导航面板 -->
+        <div id="game-poi-panel" class="game-panel" style="display:none">
+            <div class="panel-box" style="max-width:520px">
+                <div class="panel-title">🗺️ 校园地点 <span class="panel-close" onclick="GameEngine.closeAllPanels()">✕</span></div>
+                <div class="poi-grid" id="poi-grid"></div>
+            </div>
+        </div>
+        <!-- 背包面板 -->
+        <div id="game-inventory" class="game-panel" style="display:none">
+            <div class="panel-box">
+                <div class="panel-title">🎒 背包 <span class="panel-close" onclick="GameEngine.closeAllPanels()">✕</span></div>
+                <div id="inventory-grid" class="game-inventory-grid"></div>
+            </div>
+        </div>
+        <!-- 任务日志 -->
+        <div id="game-questlog" class="game-panel" style="display:none">
+            <div class="panel-box">
+                <div class="panel-title">📋 任务日志 <span class="panel-close" onclick="GameEngine.closeAllPanels()">✕</span></div>
+                <div id="questlog-list" class="questlog-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏底部信息栏 -->
+    <div class="game-footer">
+        <div class="game-tip" id="game-tip">🎮 按 WASD 或方向键移动 · 靠近 NPC 按 E 对话</div>
+        <div class="game-location" id="game-location">📍 宿舍</div>
+    </div>
+
+    <!-- 通知 -->
+    <div class="game-notifications" id="game-notifications"></div>
+
+    <script src="js/api-base.js"></script>
+    <script src="js/init.js"></script>
+    <script src="js/game/ar/ar-main.js" defer></script>
+    <script src="js/core/event-bus.js"></script>
+    <script src="js/core/state-manager.js"></script>
+    <script src="js/features/game-engine.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            GameEngine.init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+{
+  "user": {
+    "name": "TestUser2",
+    "school": "MIT",
+    "grade": "Sophomore",
+    "goals": [
+      "过四级",
+      "不挂科",
+      "学完高数"
+    ],
+    "apps": {
+      "timetable": "WakeUp课程表",
+      "campus": "学习通"
+    },
+    "interest": "Coding",
+    "lazy_level": 2,
+    "party_size": 2,
+    "long_term_goals": [
+      {
+        "id": "lt_test1",
+        "description": "Complete grad thesis",
+        "tags": "research thesis",
+        "progress": 0,
+        "target_date": "2027-06-01",
+        "title": "GraduateThesis",
+        "status": "active"
+      }
+    ],
+    "short_term_plans": [
+      {
+        "id": "st_test1",
+        "estimated_hours": 20,
+        "description": "Master Python",
+        "linked_long_term": "lt_test1",
+        "deadline": "2026-04-30",
+        "status": "in_progress",
+        "title": "Python Advanced",
+        "priority": "high",
+        "tasks": ""
+      }
+    ]
+  },
+  "role": {
+    "level": 1,
+    "experience": 0,
+    "experience_needed": 100,
+    "gold": 50
+  },
+  "stats": {
+    "energy": 100,
+    "focus": 100,
+    "mood": 100,
+    "stress": 20,
+    "total_tasks_completed": 0,
+    "total_achievements_unlocked": 5,
+    "days_active": 1,
+    "current_streak": 1
+  },
+  "npc_relationship": {
+    "naruto": {
+      "affection": 20,
+      "max_affection": 100,
+      "title": "热血导师"
+    },
+    "sasuke": {
+      "affection": 10,
+      "max_affection": 100,
+      "title": "傲娇助教"
+    }
+  },
+  "buffs": [
+    {
+      "name": "动漫联动",
+      "description": "学习效率+15%",
+      "duration": "今日有效",
+      "icon": "🎬"
+    }
+  ],
+  "inventory": [
+    {
+      "name": "经验药水",
+      "description": "使用后获得20点经验",
+      "quantity": 3,
+      "icon": "🧪"
+    },
+    {
+      "name": "能量饮料",
+      "description": "恢复30点能量",
+      "quantity": 2,
+      "icon": "🥤"
+    }
+  ],
+  "exploration": {
+    "discovered_locations": [],
+    "current_location": "dorm",
+    "exploration_streak": 0,
+    "hidden_events_found": []
+  },
+  "last_updated": "2026-04-10 20:28:19",
+  "recommended_tasks": [
+    {
+      "name": "Python高级特性学习",
+      "description": "学习Python的装饰器、生成器和上下文管理器等高级特性，为完成短期计划打下基础。",
+      "category": "main",
+      "difficulty": "medium",
+      "reward": {
+        "experience": 30,
+        "gold": 50,
+        "skill_points": 2
+      },
+      "deadline": "2026-04-17",
+      "tags": [
+        "编程",
+        "Python",
+        "学习"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "观看装饰器教学视频并练习"
+        },
+        {
+          "id": 2,
+          "name": "编写一个自定义上下文管理器"
+        },
+        {
+          "id": 3,
+          "name": "阅读生成器相关文档并总结"
+        }
+      ]
+    },
+    {
+      "name": "毕业论文选题调研",
+      "description": "开始为毕业论文收集和阅读相关文献，初步确定研究方向。",
+      "category": "main",
+      "difficulty": "hard",
+      "reward": {
+        "experience": 40,
+        "gold": 70,
+        "skill_points": 3
+      },
+      "deadline": "2026-04-20",
+      "tags": [
+        "学术",
+        "研究",
+        "规划"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "在学术数据库搜索5篇相关论文"
+        },
+        {
+          "id": 2,
+          "name": "撰写一份简短的选题思路报告"
+        }
+      ]
+    },
+    {
+      "name": "每日代码练习",
+      "description": "每天完成至少一道中等难度的LeetCode题目，保持编程手感。",
+      "category": "daily",
+      "difficulty": "easy",
+      "reward": {
+        "experience": 15,
+        "gold": 20,
+        "skill_points": 1
+      },
+      "deadline": "2026-04-11",
+      "tags": [
+        "练习",
+        "算法",
+        "坚持"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "选择并完成今日LeetCode题目"
+        },
+        {
+          "id": 2,
+          "name": "复盘解题思路，记录到笔记中"
+        }
+      ]
+    },
+    {
+      "name": "探索一个Python开源项目",
+      "description": "在GitHub上找一个感兴趣的Python项目，阅读其核心代码，了解项目结构。",
+      "category": "side",
+      "difficulty": "medium",
+      "reward": {
+        "experience": 25,
+        "gold": 40,
+        "skill_points": 2
+      },
+      "deadline": "2026-04-14",
+      "tags": [
+        "开源",
+        "项目",
+        "探索"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "在GitHub上搜索并选定一个项目"
+        },
+        {
+          "id": 2,
+          "name": "阅读项目的README和主要代码文件"
+        }
+      ]
+    }
+  ],
+  "recommended_at": "2026-04-10 20:28:35"
+}

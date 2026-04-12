@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "name": "合肥财经学院地理边界",
+    "description": "校园外包矩形与地理配准参考点，用于 Leaflet 地图定位与示意图叠图",
+    "note": "坐标基于校园主要道路与建筑分布的示意级估算"
+  },
+  "bbox": {
+    "north": 31.8860,
+    "south": 31.8815,
+    "west": 117.2825,
+    "east": 117.2910,
+    "center_lat": 31.88375,
+    "center_lng": 117.28675
+  },
+  "image_overlay": {
+    "description": "示意图叠图的地理配准参数",
+    "gcs_points": [
+      {
+        "id": "north_gate",
+        "name": "北门",
+        "description": "校园北侧道路与校门交叉口",
+        "lat": 31.8858,
+        "lng": 117.2868,
+        "note": "可用于配准示意图北部"
+      },
+      {
+        "id": "south_gate",
+        "name": "南门",
+        "description": "南门报到入口道路交叉口",
+        "lat": 31.8818,
+        "lng": 117.2868,
+        "note": "南门位于校园最南端，图中报到入口位置"
+      },
+      {
+        "id": "west_athletics",
+        "name": "田径场西侧",
+        "description": "田径场西北角附近道路交叉口",
+        "lat": 31.8822,
+        "lng": 117.2832,
+        "note": "田径场西侧道路与校园边界的交叉口"
+      },
+      {
+        "id": "east_teaching_de",
+        "name": "教学楼DE东侧",
+        "description": "教学楼DE东侧道路与校园边界交叉口",
+        "lat": 31.8850,
+        "lng": 117.2905,
+        "note": "校园最东侧，教学楼DE东侧"
+      }
+    ],
+    "center_lat": 31.8843,
+    "center_lng": 117.2870,
+    "default_zoom": 16,
+    "min_zoom": 14,
+    "max_zoom": 18
+  },
+  "leaflet_config": {
+    "center": [31.8843, 117.2870],
+    "zoom": 16,
+    "maxBounds": [
+      [31.8800, 117.2800],
+      [31.8880, 117.2950]
+    ],
+    "zoomControl": true,
+    "attribution": "校园地图数据"
+  },
+  "zones_bounds": {
+    "teaching": {
+      "name": "教学区",
+      "bounds": {
+        "north": 31.8860,
+        "south": 31.8845,
+        "west": 117.2850,
+        "east": 117.2895
+      }
+    },
+    "living": {
+      "name": "生活区",
+      "bounds": {
+        "north": 31.8860,
+        "south": 31.8818,
+        "west": 117.2825,
+        "east": 117.2855
+      }
+    },
+    "scenic": {
+      "name": "景观区",
+      "bounds": {
+        "north": 31.8840,
+        "south": 31.8825,
+        "west": 117.2845,
+        "east": 117.2880
+      }
+    },
+    "sports": {
+      "name": "运动区",
+      "bounds": {
+        "north": 31.8830,
+        "south": 31.8815,
+        "west": 117.2825,
+        "east": 117.2860
+      }
+    }
+  }
+}

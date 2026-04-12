@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务中心 - 校园RPG</title>
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="校园RPG任务中心">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/chat-widget.css">
+    <link rel="stylesheet" href="css/exploration.css">
+    <link rel="stylesheet" href="css/profile-modal.css">
+    <link rel="stylesheet" href="css/tasks-page.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <span class="brand-icon">🎮</span>
+                <span class="brand-text">校园RPG</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="user-stats-mini me-3">
+                    <span class="stat-mini"><span class="stat-icon">💰</span><span id="gold-display">--</span></span>
+                    <span class="stat-mini"><span class="stat-icon">⭐</span>Lv.<span id="level-display">--</span></span>
+                </div>
+                <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#settingsModal">⚙️</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容 -->
+    <main class="main-content" style="padding-top: 70px; padding-bottom: 80px;">
+        <div class="container">
+            <!-- 页头 -->
+            <div class="page-header">
+                <div class="container">
+                    <h1>🎯 任务中心</h1>
+                    <div class="subtitle">规划你的校园冒险</div>
+                    <div class="page-stats-bar mt-3">
+                        <span class="stat-chip">💰 <span id="total-tasks">--</span> 总任务</span>
+                        <span class="stat-chip">✅ <span id="completed-tasks">--</span> 已完成</span>
+                        <span class="stat-chip">⏳ <span id="inprogress-tasks">--</span> 进行中</span>
+                        <span class="stat-chip">⭐ <span id="total-xp">--</span> 总经验</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分类筛选 -->
+            <div class="category-filter" id="category-filter">
+                <button class="filter-btn active" data-category="all">全部</button>
+                <button class="filter-btn" data-category="main">🗡️ 主线</button>
+                <button class="filter-btn" data-category="side">📜 支线</button>
+                <button class="filter-btn" data-category="daily">📅 日常</button>
+                <button class="filter-btn" data-category="hidden">🌑 隐藏</button>
+            </div>
+
+            <!-- 任务列表 -->
+            <div id="task-list-container">
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <p>正在加载任务...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="settingsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">⚙️ 设置</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="settings-modal-body">
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span>🎵 音效</span>
+                            <input type="checkbox" id="sound-toggle" checked>
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span>🌙 夜间模式</span>
+                            <input type="checkbox" id="darkmode-toggle">
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span>✨ 动画效果</span>
+                            <input type="checkbox" id="animation-toggle" checked>
+                        </label>
+                    </div>
+                    <div class="settings-divider"></div>
+                    <button type="button" class="btn btn-outline-primary w-100 mb-2" onclick="PlanManager.openProfileEditor()">
+                        👤 个人资料与目标计划
+                    </button>
+                    <div class="settings-divider"></div>
+                    <button type="button" class="btn btn-outline-danger w-100" onclick="resetData()">
+                        🔄 重置数据
+                    </button>
+                </div>
+                <div class="modal-footer" id="settings-modal-footer" style="display:none;">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="PlanManager.saveAndClose()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <nav class="bottom-nav">
+        <a class="nav-btn" href="index.html">
+            <span class="nav-icon" aria-hidden="true">🏠</span><span class="nav-text">主页</span>
+        </a>
+        <a class="nav-btn active" href="tasks.html">
+            <span class="nav-icon" aria-hidden="true">📋</span><span class="nav-text">任务</span>
+        </a>
+        <a class="nav-btn" href="achievements.html">
+            <span class="nav-icon" aria-hidden="true">🏆</span><span class="nav-text">成就</span>
+        </a>
+        <a class="nav-btn" href="profile.html">
+            <span class="nav-icon" aria-hidden="true">👤</span><span class="nav-text">我的</span>
+        </a>
+        <a class="nav-btn nav-btn-game" href="game.html">
+            <span class="nav-icon" aria-hidden="true">🌾</span><span class="nav-text">农场</span>
+        </a>
+    </nav>
+
+    <div class="notification-container" id="notification-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api-base.js"></script>
+    <script src="js/init.js"></script>
+    <script src="js/game/ar/ar-main.js" defer></script>
+    <script src="js/core/event-bus.js"></script>
+    <script src="js/core/state-manager.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/features/plan-manager.js"></script>
+    <script src="js/features/recommend-modal.js"></script>
+    <script>
+    (async function() {
+        'use strict';
+
+        const PRIORITY_MAP = { high: 'task-priority-high', medium: 'task-priority-medium', low: 'task-priority-low' };
+        const CATEGORY_LABEL = { main: '🗡️ 主线', side: '📜 支线', daily: '📅 日常', hidden: '🌑 隐藏' };
+
+        let allTasks = [];
+        let currentFilter = 'all';
+        let defaultTasksSettingsBodyHtml = '';
+
+        function getPriorityClass(p) {
+            return PRIORITY_MAP[p] || 'task-priority-medium';
+        }
+
+        function resetData() {
+            if (confirm('确定要重置所有数据吗？此操作不可撤销！')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+        window.resetData = resetData;
+
+        const settingsBodyEl = document.getElementById('settings-modal-body');
+        if (settingsBodyEl) defaultTasksSettingsBodyHtml = settingsBodyEl.innerHTML;
+        const settingsModalTasks = document.getElementById('settingsModal');
+        if (settingsModalTasks) {
+            settingsModalTasks.addEventListener('hidden.bs.modal', () => {
+                const body = document.getElementById('settings-modal-body');
+                if (body && defaultTasksSettingsBodyHtml) body.innerHTML = defaultTasksSettingsBodyHtml;
+            });
+        }
+
+        async function loadData() {
+            try {
+                const [userRes, tasksRes] = await Promise.all([
+                    apiRequest('/api/user'),
+                    fetch(apiUrl('/api/tasks'))
+                ]);
+                if (userRes.ok) {
+                    const user = await userRes.json();
+                    const gold = user.role?.gold;
+                    document.getElementById('gold-display').textContent = gold != null ? gold : '--';
+                    document.getElementById('level-display').textContent = user.role?.level ?? '--';
+                }
+                if (tasksRes.ok) {
+                    const data = await tasksRes.json();
+                    allTasks = data.tasks || [];
+                }
+            } catch (e) {
+                console.warn('数据加载失败:', e);
+            }
+            renderTasks();
+            updateStats();
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('task-list-container');
+            const filtered = currentFilter === 'all' ? allTasks : allTasks.filter(t => t.category === currentFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <p>${currentFilter === 'all' ? '暂无任务' : '该分类暂无任务'}</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(task => `
+                <div class="task-card-page ${task.status === 'completed' ? 'completed' : ''}" data-id="${task.id}">
+                    <div class="task-priority-dot ${getPriorityClass(task.priority)}"></div>
+                    <div class="task-info">
+                        <div class="task-title">${task.name}</div>
+                        <div class="task-desc">${task.description || '暂无描述'}</div>
+                    </div>
+                    <div class="task-meta">
+                        ${task.category ? `<span class="badge" style="font-size:0.75rem;background:rgba(102,126,234,0.1);color:var(--primary-color)">${CATEGORY_LABEL[task.category] || task.category}</span>` : ''}
+                        ${task.reward?.experience ? `<span class="task-xp">+${task.reward.experience}⭐</span>` : ''}
+                        <button class="task-check-btn ${task.status === 'completed' ? 'done' : ''}"
+                                onclick="window._toggleTask('${task.id}')"
+                                title="${task.status === 'completed' ? '取消完成' : '标记完成'}">
+                            ${task.status === 'completed' ? '✓' : ''}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const completed = allTasks.filter(t => t.status === 'completed').length;
+            const inProgress = allTasks.filter(t => t.status === 'in_progress' || t.status === 'pending').length;
+            const totalXp = allTasks.reduce((sum, t) => sum + (t.reward?.experience || 0), 0);
+            document.getElementById('total-tasks').textContent = allTasks.length;
+            document.getElementById('completed-tasks').textContent = completed;
+            document.getElementById('inprogress-tasks').textContent = inProgress;
+            document.getElementById('total-xp').textContent = totalXp;
+        }
+
+        window._toggleTask = async function(taskId) {
+            const task = allTasks.find(t => t.id === taskId);
+            if (!task) return;
+            const newStatus = task.status === 'completed' ? 'pending' : 'completed';
+            try {
+                const resp = await fetch(apiUrl(`/api/tasks/${taskId}/status`), {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                if (resp.ok) {
+                    task.status = newStatus;
+                    renderTasks();
+                    updateStats();
+                    showNotification(newStatus === 'completed' ? `✅ 任务「${task.name}」已完成！` : `↩ 取消完成「${task.name}」`, 'success');
+                }
+            } catch (e) {
+                showNotification('操作失败', 'error');
+            }
+        };
+
+        // 分类筛选
+        document.getElementById('category-filter').addEventListener('click', e => {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.category;
+                renderTasks();
+            }
+        });
+
+        loadData();
+    })();
+    </script>
+</body>
+</html>

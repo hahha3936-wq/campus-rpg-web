@@ -1,0 +1,1143 @@
+/* ========================================
+   校园RPG - 组件样式文件
+   ======================================== */
+
+/* 任务标签切换 */
+.task-tabs,
+.achievement-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.task-tab,
+.achievement-tab {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-fast) ease;
+}
+
+.task-tab:hover,
+.achievement-tab:hover {
+    background: var(--bg-glass);
+    color: var(--text-primary);
+}
+
+.task-tab.active,
+.achievement-tab.active {
+    background: var(--gradient-primary);
+    border-color: transparent;
+    color: white;
+}
+
+/* 任务卡片 */
+.task-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+    transition: all var(--transition-fast) ease;
+}
+
+.task-card:hover {
+    border-color: var(--border-glow);
+    transform: translateX(4px);
+}
+
+.task-card.main {
+    border-left: 4px solid var(--danger-color);
+}
+
+.task-card.side {
+    border-left: 4px solid var(--info-color);
+}
+
+.task-card.daily {
+    border-left: 4px solid var(--success-color);
+}
+
+.task-card.hidden {
+    border-left: 4px solid var(--warning-color);
+    background: linear-gradient(135deg, rgba(237, 137, 54, 0.05) 0%, transparent 100%);
+}
+
+.task-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.task-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.task-card-title h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.task-category-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badge-main { background: rgba(245, 101, 101, 0.2); color: var(--danger-color); }
+.badge-side { background: rgba(66, 153, 225, 0.2); color: var(--info-color); }
+.badge-daily { background: rgba(72, 187, 120, 0.2); color: var(--success-color); }
+.badge-hidden { background: rgba(237, 137, 54, 0.2); color: var(--warning-color); }
+
+.task-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-lg);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-in_progress { background: rgba(66, 153, 225, 0.2); color: var(--info-color); }
+.status-pending { background: rgba(255, 255, 255, 0.1); color: var(--text-secondary); }
+.status-completed { background: rgba(72, 187, 120, 0.2); color: var(--success-color); }
+.status-locked { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); }
+
+.task-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.task-progress-section {
+    margin-bottom: 1rem;
+}
+
+.task-progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.task-progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.task-progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width var(--transition-normal) ease;
+}
+
+.task-progress-fill.main { background: var(--gradient-danger); }
+.task-progress-fill.side { background: var(--gradient-info); }
+.task-progress-fill.daily { background: var(--gradient-success); }
+.task-progress-fill.hidden { background: var(--gradient-warning); }
+
+.task-subtasks {
+    margin-bottom: 1rem;
+}
+
+.subtask-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.subtask-item:last-child {
+    border-bottom: none;
+}
+
+.subtask-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast) ease;
+}
+
+.subtask-checkbox:hover {
+    border-color: var(--primary-color);
+}
+
+.subtask-checkbox.completed {
+    background: var(--gradient-success);
+    border-color: transparent;
+}
+
+.subtask-checkbox.completed::after {
+    content: '✓';
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.subtask-text {
+    flex: 1;
+    font-size: 0.875rem;
+}
+
+.subtask-text.completed {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.subtask-reward {
+    font-size: 0.75rem;
+    color: var(--success-color);
+}
+
+.task-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.task-rewards {
+    display: flex;
+    gap: 1rem;
+}
+
+.task-reward-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.task-reward-item.exp { color: var(--primary-color); }
+.task-reward-item.gold { color: var(--warning-color); }
+.task-reward-item.skill { color: var(--info-color); }
+
+.task-deadline {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.task-action-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--gradient-primary);
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast) ease;
+}
+
+.task-action-btn:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-glow);
+}
+
+.task-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 成就卡片 */
+.achievement-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    transition: all var(--transition-fast) ease;
+}
+
+.achievement-card:hover {
+    border-color: var(--border-glow);
+    transform: translateY(-2px);
+}
+
+.achievement-card.unlocked {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+}
+
+.achievement-card.in_progress {
+    border-left: 4px solid var(--warning-color);
+}
+
+.achievement-card.locked {
+    opacity: 0.6;
+    filter: grayscale(0.5);
+}
+
+.achievement-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--bg-glass);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.achievement-card.unlocked .achievement-icon {
+    background: var(--gradient-primary);
+}
+
+.achievement-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.achievement-name {
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.achievement-desc {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.achievement-progress {
+    margin-bottom: 0.5rem;
+}
+
+.achievement-progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.achievement-progress-fill {
+    height: 100%;
+    background: var(--gradient-warning);
+    border-radius: 3px;
+    transition: width var(--transition-normal) ease;
+}
+
+.achievement-progress-text {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.achievement-hint {
+    font-size: 0.75rem;
+    color: var(--warning-color);
+    font-style: italic;
+}
+
+.achievement-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* 成就统计 */
+.achievement-stats,
+.task-stats {
+    display: flex;
+    gap: 1rem;
+}
+
+.stat-badge {
+    padding: 0.375rem 0.75rem;
+    background: var(--bg-glass);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+}
+
+.stat-badge.unlocked { color: var(--success-color); }
+.stat-badge.completed { color: var(--success-color); }
+.stat-badge.in-progress { color: var(--warning-color); }
+.stat-badge.total { color: var(--text-secondary); }
+
+/* 背包物品 */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+}
+
+.inventory-item {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast) ease;
+}
+
+.inventory-item:hover {
+    border-color: var(--border-glow);
+    transform: translateY(-2px);
+}
+
+.inventory-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.inventory-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.inventory-quantity {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.inventory-empty {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}
+
+.inventory-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+/* 角色详情面板 */
+.role-detail-panel {
+    padding: 1rem 0;
+}
+
+.role-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.role-stat-item {
+    background: var(--bg-glass);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+}
+
+.role-stat-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.role-stat-icon {
+    font-size: 1.25rem;
+}
+
+.role-stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.role-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.role-stat-bar {
+    margin-top: 0.5rem;
+}
+
+.role-buffs {
+    margin-bottom: 1.5rem;
+}
+
+.role-buffs-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.buff-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--bg-glass);
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.buff-icon {
+    font-size: 1.5rem;
+}
+
+.buff-info {
+    flex: 1;
+}
+
+.buff-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.buff-desc {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* 事件模态框 */
+.event-modal-content {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(102, 126, 234, 0.1) 100%);
+    border: 2px solid var(--primary-color);
+    text-align: center;
+    padding: 2rem;
+}
+
+.event-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: bounce 1s infinite;
+}
+
+.event-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.event-description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.event-rewards {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.event-reward-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg-glass);
+    border-radius: var(--radius-md);
+}
+
+.event-effect {
+    font-size: 0.875rem;
+    color: var(--success-color);
+    margin-bottom: 1rem;
+}
+
+/* 奖励模态框 */
+.reward-modal-content {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(237, 137, 54, 0.1) 100%);
+    border: 2px solid var(--warning-color);
+    text-align: center;
+    padding: 2rem;
+}
+
+.reward-header {
+    margin-bottom: 1.5rem;
+}
+
+.reward-icon {
+    font-size: 4rem;
+    animation: bounce 0.5s ease;
+}
+
+.reward-header h4 {
+    margin-top: 1rem;
+    color: var(--warning-color);
+}
+
+.reward-body {
+    margin-bottom: 1.5rem;
+}
+
+.reward-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.reward-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+}
+
+.reward-item.exp { color: var(--primary-color); }
+.reward-item.gold { color: var(--warning-color); }
+.reward-item.item { color: var(--info-color); }
+
+.reward-footer {
+    text-align: center;
+}
+
+/* 每日总结模态框 */
+.summary-modal-content {
+    padding: 1rem;
+}
+
+.summary-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.summary-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.summary-chart {
+    margin-bottom: 1.5rem;
+    max-height: 200px;
+}
+
+/* 设置面板 */
+.settings-group {
+    margin-bottom: 1rem;
+}
+
+.settings-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--bg-glass);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+}
+
+.settings-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+.settings-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 1.5rem 0;
+}
+
+/* Toast 样式 */
+.toast {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.toast-header {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.toast-header #toast-icon {
+    font-size: 1.25rem;
+    margin-right: 0.5rem;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .task-tabs,
+    .achievement-tabs {
+        flex-wrap: wrap;
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+    
+    .task-card-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .task-footer {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .task-action-btn {
+        width: 100%;
+    }
+    
+    .role-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .inventory-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ========================================
+   签到系统样式
+   ======================================== */
+
+/* 签到按钮 */
+.quick-btn-signin {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.quick-btn-signin.signed {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    opacity: 0.85;
+}
+
+.quick-btn-signin.signed .quick-icon,
+.quick-btn-signin.signed .quick-text {
+    opacity: 0.7;
+}
+
+/* 签到弹窗头部 */
+.signin-header {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: #fff;
+}
+
+.signin-header.success-header {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+}
+
+.signin-header.done-header {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+}
+
+/* 签到弹窗内容 */
+.signin-streak-display {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.signin-streak-number {
+    font-size: 72px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    text-shadow: none;
+}
+
+.signin-streak-label {
+    font-size: 16px;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+.signin-rewards-preview {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 16px 0;
+}
+
+.signin-reward-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.signin-reward-item .reward-icon {
+    font-size: 22px;
+}
+
+.signin-reward-item .reward-value {
+    color: #f5576c;
+}
+
+/* 签到日历（近7天） */
+.signin-calendar {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.signin-day {
+    width: 40px;
+    text-align: center;
+}
+
+.signin-day-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    background: #252540;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.signin-day-dot.signed-dot {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: #fff;
+}
+
+.signin-day-dot.today-dot {
+    border: 2px solid #00d4ff;
+    color: #00d4ff;
+}
+
+.signin-day-dot.signed-dot.today-dot {
+    color: #fff;
+}
+
+.signin-day-label {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+/* 签到成功卡片 */
+.signin-success-rewards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.signin-reward-card {
+    background: #252540;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.signin-reward-card .card-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+
+.signin-reward-card .card-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #00d4ff;
+}
+
+.signin-reward-card .card-label {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.signin-streak-bonus {
+    background: linear-gradient(135deg, rgba(240,147,251,0.15), rgba(245,87,108,0.15));
+    border: 1px solid rgba(240,147,251,0.3);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    margin: 12px 0;
+    font-size: 14px;
+    color: #f5576c;
+}
+
+.signin-streak-bonus .bonus-text {
+    font-weight: 700;
+    color: #f5576c;
+}
+
+/* 签到已完成（今日） */
+.signin-done-display {
+    text-align: center;
+    padding: 24px 0;
+}
+
+.signin-done-icon {
+    font-size: 64px;
+    margin-bottom: 12px;
+}
+
+.signin-done-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #4ade80;
+    margin-bottom: 6px;
+}
+
+.signin-done-sub {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+.signin-done-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    text-align: center;
+}
+
+.signin-done-stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #e0e0f0;
+}
+
+.signin-done-stat-label {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.signin-done-calendar {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+/* ========================================
+   番茄钟样式
+   ======================================== */
+
+.quick-btn-pomodoro {
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+}
+
+.quick-btn-pomodoro.running {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    animation: pomodoroPulse 2s infinite;
+}
+
+@keyframes pomodoroPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+}
+
+.pomodoro-display {
+    text-align: center;
+    padding: 16px 0;
+}
+
+.pomodoro-timer {
+    font-size: 80px;
+    font-weight: 900;
+    font-family: 'Courier New', monospace;
+    color: #f5576c;
+    line-height: 1;
+    margin-bottom: 8px;
+    text-shadow: 0 0 20px rgba(245, 87, 108, 0.3);
+}
+
+.pomodoro-timer.break-timer {
+    color: #4ade80;
+    text-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+}
+
+.pomodoro-mode-label {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+.pomodoro-mode-label.work-mode {
+    color: #f5576c;
+}
+
+.pomodoro-mode-label.break-mode {
+    color: #4ade80;
+}
+
+.pomodoro-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pomodoro-btn {
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.pomodoro-btn-primary {
+    background: linear-gradient(135deg, #f5576c, #f093fb);
+    color: #fff;
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+}
+
+.pomodoro-btn-primary:hover {
+    transform: scale(1.1);
+}
+
+.pomodoro-btn-primary.running {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.pomodoro-btn-secondary {
+    background: #252540;
+    color: #e0e0f0;
+}
+
+.pomodoro-btn-secondary:hover {
+    background: #333355;
+}
+
+.pomodoro-presets {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.pomodoro-preset {
+    background: #252540;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pomodoro-preset.active {
+    background: rgba(245, 87, 108, 0.2);
+    border-color: #f5576c;
+    color: #f5576c;
+}
+
+.pomodoro-preset:hover {
+    background: #2e2e4a;
+}
+
+.pomodoro-progress-ring {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 16px;
+}
+
+.pomodoro-progress-ring circle {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+}
+
+.pomodoro-progress-ring .bg {
+    stroke: #252540;
+}
+
+.pomodoro-progress-ring .progress {
+    stroke: url(#pomodoroGradient);
+    transform: rotate(-90deg);
+    transform-origin: center;
+    transition: stroke-dashoffset 1s linear;
+}
+
+.pomodoro-stats-mini {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+    text-align: center;
+}
+
+.pomodoro-stat-mini {
+    background: #252540;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.pomodoro-stat-mini-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f5576c;
+}
+
+.pomodoro-stat-mini-label {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.pomodoro-complete-banner {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.15), rgba(0, 212, 255, 0.15));
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.pomodoro-complete-banner .complete-icon {
+    font-size: 40px;
+}
+
+.pomodoro-complete-banner .complete-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #4ade80;
+    margin: 8px 0 4px;
+}
+
+.pomodoro-complete-banner .complete-desc {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.pomodoro-complete-rewards {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 12px 0;
+}
+
+.pomodoro-reward-chip {
+    background: #252540;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pomodoro-reward-chip .chip-value {
+    color: #00d4ff;
+    font-weight: 600;
+}
+
+

@@ -1,0 +1,142 @@
+/**
+ * 校园RPG - 任务页面专用样式
+ * 从 tasks.html 内联样式提取
+ */
+
+/* ---- 页头 ---- */
+.page-header {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 3rem 0 2rem;
+    margin-bottom: 2rem;
+    border-radius: 0 0 1.5rem 1.5rem;
+}
+.page-header h1 { font-weight: 900; margin: 0; }
+.page-header .subtitle { opacity: 0.85; font-size: 0.95rem; margin-top: 0.25rem; }
+
+/* ---- 页面统计栏 ---- */
+.page-stats-bar {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+.page-stats-bar .stat-chip {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+}
+
+/* ---- 任务卡片 ---- */
+.task-card-page {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.task-card-page:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+.task-card-page.completed {
+    opacity: 0.6;
+    background: var(--hover-overlay);
+}
+
+/* ---- 优先级圆点 ---- */
+.task-priority-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.task-priority-high { background: #ef4444; }
+.task-priority-medium { background: #f59e0b; }
+.task-priority-low { background: #22c55e; }
+
+/* ---- 任务信息 ---- */
+.task-info { flex: 1; min-width: 0; }
+.task-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.2rem; color: var(--text-primary); }
+.task-desc { font-size: 0.8rem; opacity: 0.7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-secondary); }
+.task-meta { display: flex; gap: 0.75rem; align-items: center; flex-shrink: 0; }
+.task-xp { font-size: 0.8rem; color: var(--warning-color, #f59e0b); font-weight: 600; }
+
+/* ---- 任务勾选按钮 ---- */
+.task-check-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    background: transparent;
+    color: var(--primary-color);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+}
+.task-check-btn:hover { background: var(--primary-color); color: #fff; }
+.task-check-btn.done { background: var(--primary-color); color: #fff; }
+
+/* ---- 空状态 ---- */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    opacity: 0.6;
+    color: var(--text-muted);
+}
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+/* ---- 分类筛选按钮 ---- */
+.category-filter { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.filter-btn {
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text-primary);
+}
+.filter-btn.active {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+/* ============================================ */
+/* 深色模式覆盖                                    */
+/* ============================================ */
+body.dark-mode .page-stats-bar .stat-chip {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+}
+
+body.dark-mode .task-xp {
+    color: #fbbf24;
+}
+
+body.dark-mode .task-card-page.completed {
+    background: rgba(255,255,255,0.05);
+}
+
+body.dark-mode .filter-btn {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.1);
+    color: var(--text-secondary);
+}
+
+body.dark-mode .filter-btn.active {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+/* ---- 响应式 ---- */
+@media (max-width: 576px) {
+    .page-header { padding: 2rem 0 1.5rem; border-radius: 0 0 1rem 1rem; }
+}

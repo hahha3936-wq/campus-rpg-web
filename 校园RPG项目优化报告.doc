@@ -1,0 +1,94 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="校园RPG 项目文档">
+<title>校园RPG项目优化工作报告</title>
+<style>
+body { font-family: "Microsoft YaHei", "SimSun", sans-serif; font-size: 12pt; line-height: 1.6; margin: 2cm; color: #222; }
+h1 { font-size: 22pt; text-align: center; margin-bottom: 24pt; }
+h2 { font-size: 14pt; margin-top: 18pt; border-bottom: 1px solid #ccc; padding-bottom: 6pt; }
+h3 { font-size: 12pt; margin-top: 12pt; }
+p { margin: 6pt 0; text-align: justify; }
+table { border-collapse: collapse; width: 100%; margin: 12pt 0; font-size: 11pt; }
+th, td { border: 1px solid #999; padding: 8pt; text-align: left; vertical-align: top; }
+th { background: #f0f0f0; }
+ul { margin: 6pt 0 6pt 24pt; }
+li { margin: 4pt 0; }
+.meta { text-align: center; color: #555; margin-bottom: 24pt; font-size: 11pt; }
+</style>
+</head>
+<body>
+
+<h1>校园 RPG 游戏项目优化工作报告</h1>
+<p class="meta">项目：campus-rpg-web（校园 RPG Web 应用）<br/>文档类型：工作汇报 / 技术总结</p>
+
+<h2>一、项目概况</h2>
+<p>校园 RPG 是一款将学习任务、成就系统、地图探索与角色成长结合的轻量级 Web 应用。前端采用多页面 HTML、Bootstrap 与原生 JavaScript 模块化组织；后端使用 Flask 提供 RESTful API，用户账号存于 SQLite，游戏进度以 JSON 文件按用户持久化，并通过 JWT 维护登录态。项目适用于课程设计、校园信息化或 gamification 教学场景。</p>
+
+<h2>二、技术架构</h2>
+<table>
+<tr><th>层级</th><th>主要技术</th><th>说明</th></tr>
+<tr><td>前端页面</td><td>Bootstrap 5、自定义 CSS</td><td>主页、任务、成就、我的、农场、NPC、登录等多页面协作</td></tr>
+<tr><td>前端逻辑</td><td>app.js、StateManager、EventBus、api.js</td><td>统一状态、API 封装（含跨开发端口 API 基址解析）</td></tr>
+<tr><td>后端</td><td>Flask、JWT、SQLite</td><td>认证、用户数据、探索、任务、AI 任务推荐等接口</td></tr>
+<tr><td>数据</td><td>JSON 存档、users.db</td><td>默认数据与按用户存档文件，支持回退与迁移</td></tr>
+</table>
+
+<h2>三、近期已完成的优化工作</h2>
+
+<h3>1. 「我的」页面（profile.html）</h3>
+<ul>
+<li>修复未携带 Token 调用用户接口导致的长期「加载中」问题，改为通过 API 模块自动附加 Authorization。</li>
+<li>将界面字段与后端数据结构对齐（user / role / stats / npc_relationship / exploration 等分层字段）。</li>
+<li>在接口不可用或未登录时，回退本地示例数据或默认数据，并给出明确提示。</li>
+<li>整合个人资料、长期目标与短期计划预览、设置弹窗与 AI 推荐入口；底部导航与主页对齐（含农场入口）。</li>
+</ul>
+
+<h3>2. API 与数据健壮性（js/api.js）</h3>
+<ul>
+<li>getUser：校验 HTTP 状态，避免将错误响应当作用户数据解析。</li>
+<li>updateUserProfile：非成功状态返回明确失败，便于上层提示与重试。</li>
+</ul>
+
+<h3>3. 计划管理模块（plan-manager.js）</h3>
+<ul>
+<li>初始化时在接口失败情况下回退本地 JSON 或 StateManager 默认数据。</li>
+<li>设置页内 Tab 使用事件委托与 type=&quot;button&quot;，修复「长期目标 / 短期计划」切换无响应。</li>
+<li>修复空列表时未挂载表单节点导致「添加长期目标 / 短期计划」按钮无反应的问题。</li>
+</ul>
+
+<h3>4. 任务页（tasks.html）</h3>
+<ul>
+<li>补全设置弹窗 DOM，与计划编辑器、通知函数联动；修正导航栏金币数据来源为 role.gold。</li>
+<li>引入计划管理与样式，关闭弹窗后恢复默认设置区内容。</li>
+</ul>
+
+<h3>5. 交互与样式</h3>
+<ul>
+<li>经验条闪光伪元素增加 pointer-events: none，避免遮挡下方可点击区域。</li>
+<li>「我的」页主操作按钮优化层级与触摸行为，文案使用 span 包裹并取消子元素命中，改善移动端点击体验。</li>
+</ul>
+
+<h2>四、项目内建功能概览</h2>
+<p>探索与地图、NPC 好感、番茄钟与音效、农场小游戏、AI 任务推荐、聊天浮窗、成就与任务体系等模块共同构成完整体验，便于在报告中作为「功能范围」说明。</p>
+
+<h2>五、效果与遗留风险</h2>
+<p><b>效果：</b>个人中心与任务页在异常网络或未登录场景下行为更可预期；计划编辑在空数据下可用；多页设置入口一致。</p>
+<p><b>风险与注意：</b>部分探索类接口若仍基于访客默认数据，与已登录用户档案可能不完全一致，需在后续迭代中按用户 ID 全面统一；多页面重复的设置弹窗可考虑抽成公共片段以降低维护成本。</p>
+
+<h2>六、后续优化建议</h2>
+<ul>
+<li>统一「保存资料后」各页顶栏数据的刷新策略（事件总线或集中 store）。</li>
+<li>任务完成等写操作统一走带鉴权的请求封装，减少 401 与状态不一致。</li>
+<li>建立固定回归清单：登录 → 我的页 → 编辑目标 → 保存 → 刷新验证。</li>
+<li>生产环境更换 JWT 密钥并通过环境变量管理敏感配置。</li>
+</ul>
+
+<h2>七、结语</h2>
+<p>本次优化主要围绕「数据一致性、鉴权、空状态与多页协作」展开，提升了校园 RPG 在真实使用条件下的稳定性与可维护性。本报告可用于课程作业说明、小组答辩材料或项目存档。</p>
+
+<p style="margin-top: 36pt; text-align: right; color: #666;">（文档由项目说明整理生成）</p>
+
+</body>
+</html>

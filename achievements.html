@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成就中心 - 校园RPG</title>
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="校园RPG成就中心">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/chat-widget.css">
+    <link rel="stylesheet" href="css/profile-modal.css">
+    <link rel="stylesheet" href="css/achievements-page.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <span class="brand-icon">🎮</span>
+                <span class="brand-text">校园RPG</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="user-stats-mini me-3">
+                    <span class="stat-mini"><span class="stat-icon">💰</span><span id="gold-display">--</span></span>
+                    <span class="stat-mini"><span class="stat-icon">⭐</span>Lv.<span id="level-display">--</span></span>
+                </div>
+                <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#settingsModal">⚙️</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content" style="padding-top: 70px; padding-bottom: 80px;">
+        <div class="container">
+            <div class="page-header">
+                <div class="container">
+                    <h1>🏆 成就中心</h1>
+                    <div class="subtitle">解锁校园荣耀</div>
+                    <div class="page-stats-bar mt-3">
+                        <span class="stat-chip">🏆 <span id="total-achievements">--</span> 总成就</span>
+                        <span class="stat-chip">⭐ <span id="unlocked-achievements">--</span> 已解锁</span>
+                        <span class="stat-chip">🔒 <span id="locked-achievements">--</span> 未解锁</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分类筛选 -->
+            <div class="category-filter" id="category-filter">
+                <button class="filter-btn active" data-category="all">全部</button>
+                <button class="filter-btn" data-category="学业成就">📚 学业</button>
+                <button class="filter-btn" data-category="探索成就">🗺️ 探索</button>
+                <button class="filter-btn" data-category="社交成就">🤝 社交</button>
+                <button class="filter-btn" data-category="隐藏成就">🌑 隐藏</button>
+            </div>
+
+            <!-- 成就列表 -->
+            <div id="achievement-list-container">
+                <div class="empty-state"><p>正在加载成就...</p></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航栏 -->
+    <nav class="bottom-nav">
+        <a class="nav-btn" href="index.html"><span class="nav-icon" aria-hidden="true">🏠</span><span class="nav-text">主页</span></a>
+        <a class="nav-btn" href="tasks.html"><span class="nav-icon" aria-hidden="true">📋</span><span class="nav-text">任务</span></a>
+        <a class="nav-btn active" href="achievements.html"><span class="nav-icon" aria-hidden="true">🏆</span><span class="nav-text">成就</span></a>
+        <a class="nav-btn" href="profile.html"><span class="nav-icon" aria-hidden="true">👤</span><span class="nav-text">我的</span></a>
+        <a class="nav-btn nav-btn-game" href="game.html"><span class="nav-icon" aria-hidden="true">🌾</span><span class="nav-text">农场</span></a>
+    </nav>
+
+    <div class="notification-container" id="notification-container"></div>
+
+    <!-- 设置弹窗 -->
+    <div class="modal fade" id="settingsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">⚙️ 设置</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="settings-modal-body">
+                    <div class="settings-group">
+                        <label class="settings-label"><span>🎵 音效</span><input type="checkbox" id="sound-toggle" checked></label>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label"><span>🌙 夜间模式</span><input type="checkbox" id="darkmode-toggle"></label>
+                    </div>
+                    <hr>
+                    <div style="text-align:center;opacity:0.7;font-size:0.85rem">🎮 校园RPG v1.0.0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api-base.js"></script>
+    <script src="js/init.js"></script>
+    <script src="js/game/ar/ar-main.js" defer></script>
+    <script src="js/core/event-bus.js"></script>
+    <script src="js/core/state-manager.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+    (function() {
+        'use strict';
+        var soundToggle = document.getElementById('sound-toggle');
+        var darkToggle = document.getId('darkmode-toggle');
+        if (soundToggle) soundToggle.addEventListener('change', function() {
+            localStorage.setItem('campusRPG_sound', soundToggle.checked ? '1' : '0');
+        });
+        if (darkToggle) darkToggle.addEventListener('change', function() {
+            document.body.classList.toggle('dark-mode', darkToggle.checked);
+            localStorage.setItem('campusRPG_dark', darkToggle.checked ? '1' : '0');
+        });
+    })();
+    </script>
+    <script>
+    (async function() {
+        'use strict';
+        const CATEGORY_ICONS = { '学业成就': '📚', '探索成就': '🗺️', '社交成就': '🤝', '隐藏成就': '🌑' };
+        const CATEGORY_ORDER = ['学业成就', '探索成就', '社交成就', '隐藏成就'];
+        let allAchievements = {};
+        let currentFilter = 'all';
+
+        async function loadData() {
+            try {
+                const [userRes, achRes] = await Promise.all([
+                    fetch(apiUrl('/api/user')),
+                    fetch(apiUrl('/api/achievements'))
+                ]);
+                if (userRes.ok) {
+                    const user = await userRes.json();
+                    document.getElementById('gold-display').textContent = user.gold ?? '--';
+                    document.getElementById('level-display').textContent = user.role?.level ?? '--';
+                }
+                if (achRes.ok) {
+                    allAchievements = (await achRes.json()).achievements || {};
+                }
+            } catch (e) {
+                console.warn('成就数据加载失败:', e);
+            }
+            renderAchievements();
+            updateStats();
+        }
+
+        function renderAchievements() {
+            const container = document.getElementById('achievement-list-container');
+            const categories = currentFilter === 'all' ? CATEGORY_ORDER : [currentFilter];
+
+            let html = '';
+            for (const cat of categories) {
+                const items = allAchievements[cat] || [];
+                if (items.length === 0) continue;
+                html += `<div class="ach-category-title">${CATEGORY_ICONS[cat] || '📋'} ${cat}</div>`;
+                html += items.map(ach => {
+                    const status = ach.status || 'locked';
+                    const progressHtml = ach.progress !== undefined && ach.total
+                        ? `<div class="ach-progress">进度: ${ach.progress}/${ach.total}</div>` : '';
+                    return `
+                    <div class="ach-card ${status}">
+                        <div class="ach-icon">${ach.icon || '🏅'}</div>
+                        <div class="ach-info">
+                            <div class="ach-name">${ach.name}</div>
+                            <div class="ach-desc">${ach.desc || '暂无描述'}</div>
+                            ${progressHtml}
+                        </div>
+                        <span class="ach-status-badge ${status}">${
+                            status === 'unlocked' ? '✅ 已解锁' :
+                            status === 'in_progress' ? '⏳ 进行中' : '🔒 未解锁'
+                        }</span>
+                    </div>`;
+                }).join('');
+            }
+
+            if (!html) {
+                container.innerHTML = '<div class="empty-state"><p>暂无成就数据</p></div>';
+                return;
+            }
+            container.innerHTML = html;
+        }
+
+        function updateStats() {
+            let total = 0, unlocked = 0;
+            for (const cat of CATEGORY_ORDER) {
+                const items = allAchievements[cat] || [];
+                total += items.length;
+                unlocked += items.filter(a => a.status === 'unlocked').length;
+            }
+            document.getElementById('total-achievements').textContent = total;
+            document.getElementById('unlocked-achievements').textContent = unlocked;
+            document.getElementById('locked-achievements').textContent = total - unlocked;
+        }
+
+        document.getElementById('category-filter').addEventListener('click', e => {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.category;
+                renderAchievements();
+            }
+        });
+
+        loadData();
+    })();
+    </script>
+</body>
+</html>

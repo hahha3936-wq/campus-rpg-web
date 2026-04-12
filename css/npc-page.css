@@ -1,0 +1,238 @@
+/**
+ * 校园RPG - NPC 角色页面专用样式
+ * 从 npc.html 内联样式提取
+ */
+
+/* ---- NPC 主题变量 ---- */
+:root {
+    --npc-naruto-bg: linear-gradient(135deg, #f97316, #ea580c);
+    --npc-sasuke-bg: linear-gradient(135deg, #6366f1, #4f46e5);
+}
+
+/* ---- NPC 选择卡 ---- */
+.npc-selector {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.npc-tab-btn {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 1rem;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+.npc-tab-btn.active { border-color: var(--primary-color); box-shadow: 0 4px 15px rgba(102,126,234,0.2); }
+.npc-tab-icon { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; }
+.npc-tab-name { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
+.npc-tab-title { font-size: 0.75rem; opacity: 0.7; color: var(--text-secondary); }
+
+/* ---- NPC 详情卡片 ---- */
+.npc-detail-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+.npc-header {
+    position: relative;
+    padding: 2rem;
+    color: white;
+    text-align: center;
+}
+.npc-header.naruto { background: var(--npc-naruto-bg); }
+.npc-header.sasuke { background: var(--npc-sasuke-bg); }
+.npc-header-close { position: absolute; top: 1rem; right: 1rem; opacity: 0.7; font-size: 0.85rem; }
+.npc-detail-avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; margin: 0 auto 1rem;
+    border: 3px solid rgba(255,255,255,0.5);
+}
+.npc-detail-name { font-size: 1.5rem; font-weight: 900; }
+.npc-detail-title { font-size: 0.9rem; opacity: 0.85; margin-top: 0.25rem; }
+
+/* ---- 好感度区块 ---- */
+.affection-section {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.affection-title {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    margin-bottom: 0.6rem;
+    color: var(--text-secondary);
+}
+.affection-bar-wrap {
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.affection-track {
+    flex: 1; height: 8px; border-radius: 4px;
+    background: var(--hover-overlay);
+    overflow: hidden;
+}
+.affection-fill {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, #f472b6, #fb7185);
+    transition: width 0.5s ease;
+}
+.affection-value { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+.affection-rank { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+.rank-pip {
+    font-size: 0.72rem; padding: 0.2rem 0.6rem;
+    border-radius: 999px; background: rgba(102,126,234,0.1);
+    color: var(--text-muted);
+}
+.rank-pip.active { background: var(--primary-color); color: #fff; }
+
+/* ---- NPC 简介 ---- */
+.npc-bio { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); }
+.npc-bio-title { font-size: 0.85rem; opacity: 0.6; margin-bottom: 0.5rem; color: var(--text-muted); }
+.npc-bio-text { font-size: 0.9rem; line-height: 1.7; opacity: 0.85; color: var(--text-secondary); }
+
+/* ---- 对话历史 ---- */
+.dialogue-section { padding: 1.25rem 2rem; }
+.dialogue-section-title {
+    font-weight: 700; font-size: 0.95rem; margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+#dialogue-history { display: flex; flex-direction: column; gap: 0.5rem; }
+.dialogue-bubble {
+    max-width: 80%; padding: 0.75rem 1rem;
+    border-radius: 1rem; line-height: 1.5; font-size: 0.9rem;
+}
+.dialogue-bubble.ai {
+    background: var(--gradient-primary); color: #fff;
+    align-self: flex-start; border-bottom-left-radius: 0.25rem;
+}
+
+/* ---- NPC 操作按钮 ---- */
+.npc-actions {
+    padding: 1.25rem 2rem;
+    display: flex; gap: 0.75rem; flex-wrap: wrap;
+}
+.npc-action-btn {
+    flex: 1; min-width: 120px; padding: 0.75rem 1rem;
+    border-radius: 0.75rem; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+    text-align: center; border: none;
+}
+.npc-action-btn.primary {
+    background: var(--gradient-primary); color: #fff;
+}
+.npc-action-btn.primary:hover { background: #5a67d8; transform: translateY(-1px); }
+.npc-action-btn.secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+.npc-action-btn.secondary:hover { background: rgba(102,126,234,0.2); }
+
+/* ---- NPC 专属任务 ---- */
+.npc-quests { padding: 0 2rem 1.5rem; }
+.dialogue-section-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary); }
+.quest-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.75rem; margin-bottom: 0.5rem;
+    background: rgba(102,126,234,0.05);
+    font-size: 0.85rem; color: var(--text-secondary);
+}
+.quest-icon { font-size: 1rem; flex-shrink: 0; }
+.quest-name { flex: 1; }
+.quest-reward { font-size: 0.75rem; font-weight: 600; color: var(--warning-color, #f59e0b); white-space: nowrap; }
+
+/* ============================================ */
+/* 深色模式覆盖                                    */
+/* ============================================ */
+body.dark-mode .npc-tab-btn {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.15);
+}
+
+body.dark-mode .npc-tab-name {
+    color: var(--text-primary);
+}
+
+body.dark-mode .npc-tab-title {
+    color: var(--text-muted);
+}
+
+body.dark-mode .npc-detail-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .affection-section {
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .affection-title {
+    color: var(--text-muted);
+}
+
+body.dark-mode .affection-track {
+    background: rgba(255,255,255,0.1);
+}
+
+body.dark-mode .affection-value {
+    color: var(--text-primary);
+}
+
+body.dark-mode .rank-pip {
+    background: rgba(255,255,255,0.1);
+    color: var(--text-muted);
+}
+
+body.dark-mode .npc-bio {
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .npc-bio-title {
+    color: var(--text-muted);
+}
+
+body.dark-mode .npc-bio-text {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .dialogue-section-title {
+    color: var(--text-primary);
+}
+
+body.dark-mode .dialogue-bubble.ai {
+    background: linear-gradient(135deg, rgba(102,126,234,0.8), rgba(99,102,241,0.8));
+    color: #fff;
+}
+
+body.dark-mode .npc-action-btn.secondary {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.15);
+    color: var(--text-primary);
+}
+
+body.dark-mode .npc-action-btn.secondary:hover {
+    background: rgba(102,126,234,0.2);
+}
+
+body.dark-mode .quest-item {
+    background: rgba(255,255,255,0.03);
+    color: var(--text-secondary);
+}
+
+body.dark-mode .quest-reward {
+    color: var(--warning-color, #f59e0b);
+}
+
+/* ---- 响应式 ---- */
+@media (max-width: 576px) {
+    .npc-selector { flex-direction: column; }
+    .npc-detail-card { border-radius: 1rem; }
+    .npc-detail-avatar { width: 60px; height: 60px; font-size: 2rem; }
+}
