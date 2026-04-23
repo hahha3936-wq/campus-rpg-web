@@ -514,6 +514,48 @@
 }
 
 /* ----------------------------------------
+   难度调整提示样式
+   ---------------------------------------- */
+.difficulty-adjustment-notice {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.difficulty-adjustment-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.difficulty-adjustment-content {
+    flex: 1;
+}
+
+.difficulty-adjustment-title {
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 4px;
+}
+
+.difficulty-adjustment-message {
+    font-size: 13px;
+    color: #a0aec0;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.difficulty-adjustment-level {
+    font-size: 12px;
+    color: #718096;
+    font-weight: 500;
+}
+
+/* ----------------------------------------
    AI 任务推荐弹窗样式
    ---------------------------------------- */
 .recommend-loading {

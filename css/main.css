@@ -34,6 +34,7 @@
     --gradient-warning: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
     --gradient-danger: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
     --gradient-info: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+    --gradient-purple: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
 
     /* 阴影 */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -448,6 +449,18 @@ body {
 }
 
 .action-btn-info .action-icon { color: var(--info-color); }
+
+/* 紫色（社交/剧情）按钮 */
+.action-btn-purple {
+    background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+                var(--gradient-purple) border-box;
+}
+
+.action-btn-purple:hover {
+    box-shadow: 0 0 20px rgba(156, 39, 176, 0.4);
+}
+
+.action-btn-purple .action-icon { color: #ce93d8; }
 
 /* 游戏模式横幅入口 */
 .game-mode-banner {

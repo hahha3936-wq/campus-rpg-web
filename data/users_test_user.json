@@ -1,0 +1,19 @@
+{
+  "username": "test_user",
+  "nickname": "测试用户",
+  "role": {
+    "level": 1
+  },
+  "tasks": {},
+  "npc_unlocked": [
+    "mentor_wang",
+    "mentor_li"
+  ],
+  "npc_relationship": {
+    "mentor_wang": {
+      "affection": 37,
+      "max_affection": 500,
+      "lastActive": "2026-04-19T18:57:57.144210"
+    }
+  }
+}

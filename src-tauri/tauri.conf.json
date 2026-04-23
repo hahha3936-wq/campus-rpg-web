@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "校园RPG",
+  "version": "1.0.0",
+  "identifier": "com.campusrpg.desktop",
+  "build": {
+    "frontendDist": "../dist/",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "",
+    "beforeBuildCommand": ""
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "校园RPG - 游戏化学习系统",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 900,
+        "minHeight": 600,
+        "center": true,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true
+      }
+    ],
+      "security": {
+        "csp": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdn.jsdelivr.net https://cdn.bootcdn.net; style-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net https://cdn.bootcdn.net https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https://*.tianditu.gov.cn https://*.autonavi.com https://wprd0*.is.autonavi.com https://webst0*.is.autonavi.com https://*.openstreetmap.org https://*.gtimg.com https://tile.openstreetmap.org https://map.geoq.cn https://*.arcgisonline.cn https://*.arcgisonline.com https://p2.map.gtimg.com; connect-src 'self' https://*.tianditu.gov.cn https://*.autonavi.com https://*.openstreetmap.org https://*.gtimg.com https://restapi.amap.com https://apikey.co https://api.deepseek.com https://cdn.jsdelivr.net https://cdn.bootcdn.net; frame-src 'self';"
+      }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": [],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    }
+  }
+}

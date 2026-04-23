@@ -1760,7 +1760,7 @@ const GameEngine = (function() {
     function renderInventory() {
         const grid = document.getElementById('inventory-grid');
         if (!grid) return;
-        const items = gameState.inventory || [];
+        const items = (AppState.user && AppState.user.inventory) || [];
         const slots = 15;
         let html = '';
         for (let i = 0; i < slots; i++) {

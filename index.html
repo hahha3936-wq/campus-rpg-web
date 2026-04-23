@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>校园RPG - 游戏化学习系统</title>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function() {});
+            });
+        }
+    </script>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#667eea">
     <meta name="description" content="将大学生活游戏化，管理学习任务、成就与角色成长">
@@ -13,6 +20,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/chat-widget.css">
+    <link rel="stylesheet" href="css/npc-ecosystem.css">
     <link rel="stylesheet" href="css/exploration.css">
     <link rel="stylesheet" href="css/profile-modal.css">
 </head>
@@ -113,28 +121,42 @@
             <div class="container">
                 <div class="action-grid">
                     <!-- 我的角色 -->
-                    <button class="action-btn action-btn-primary" data-action="role">
+                    <button class="action-btn action-btn-primary" data-action="role" onclick="var m=new bootstrap.Modal(document.getElementById('roleModal'));m.show();">
                         <div class="action-icon">📊</div>
                         <div class="action-label">我的角色</div>
                         <div class="action-desc">查看角色面板</div>
                     </button>
-                    
+
                     <!-- 我的任务 -->
-                    <button class="action-btn action-btn-success" data-action="tasks">
+                    <button class="action-btn action-btn-success" data-action="tasks" onclick="var m=new bootstrap.Modal(document.getElementById('taskModal'));m.show();">
                         <div class="action-icon">🎯</div>
                         <div class="action-label">我的任务</div>
                         <div class="action-desc">任务列表</div>
                     </button>
-                    
+
+                    <!-- 主线剧情 -->
+                    <button class="action-btn action-btn-purple" data-action="main-story" onclick="if(window.MainStory)window.MainStory.open();">
+                        <div class="action-icon">⚔</div>
+                        <div class="action-label">主线剧情</div>
+                        <div class="action-desc">校园冒险</div>
+                    </button>
+
                     <!-- 成就中心 -->
-                    <button class="action-btn action-btn-warning" data-action="achievements">
+                    <button class="action-btn action-btn-warning" data-action="achievements" onclick="var m=new bootstrap.Modal(document.getElementById('achievementModal'));m.show();">
                         <div class="action-icon">🏆</div>
                         <div class="action-label">成就中心</div>
                         <div class="action-desc">查看成就</div>
                     </button>
-                    
+
+                    <!-- 社交中心 -->
+                    <button class="action-btn action-btn-purple" data-action="social" onclick="if(window.SocialUI)window.SocialUI.open();">
+                        <div class="action-icon">👥</div>
+                        <div class="action-label">社交中心</div>
+                        <div class="action-desc">好友/公会</div>
+                    </button>
+
                     <!-- 背包 -->
-                    <button class="action-btn action-btn-info" data-action="inventory">
+                    <button class="action-btn action-btn-info" data-action="inventory" onclick="var m=new bootstrap.Modal(document.getElementById('inventoryModal'));m.show();">
                         <div class="action-icon">🎒</div>
                         <div class="action-label">背包</div>
                         <div class="action-desc">道具物品</div>
@@ -162,49 +184,49 @@
             <div class="container">
                 <div class="quick-grid">
                     <!-- 快速行动 -->
-                    <button class="quick-btn quick-btn-main" data-action="quick-action">
+                    <button class="quick-btn quick-btn-main" data-action="quick-action" onclick="try { handleQuickAction({ currentTarget: this }) } catch(e) {}">
                         <span class="quick-icon">⚡</span>
                         <span class="quick-text">快速行动</span>
                     </button>
 
                     <!-- 每日签到 -->
-                    <button class="quick-btn quick-btn-signin" id="signin-btn" data-action="signin">
+                    <button class="quick-btn quick-btn-signin" id="signin-btn" data-action="signin" onclick="try { handleQuickAction({ currentTarget: this }) } catch(e) {}">
                         <span class="quick-icon" id="signin-icon">📅</span>
                         <span class="quick-text" id="signin-text">每日签到</span>
                     </button>
 
                     <!-- 随机事件 -->
-                    <button class="quick-btn quick-btn-event" data-action="random-event">
+                    <button class="quick-btn quick-btn-event" data-action="random-event" onclick="try { handleQuickAction({ currentTarget: this }) } catch(e) {}">
                         <span class="quick-icon">🎲</span>
                         <span class="quick-text">随机事件</span>
                     </button>
-                    
+
                     <!-- 今日总结 -->
-                    <button class="quick-btn quick-btn-summary" data-action="daily-summary">
+                    <button class="quick-btn quick-btn-summary" data-action="daily-summary" onclick="try { handleQuickAction({ currentTarget: this }) } catch(e) {}">
                         <span class="quick-icon">📈</span>
                         <span class="quick-text">今日总结</span>
                     </button>
 
                     <!-- 番茄钟 -->
-                    <button class="quick-btn quick-btn-pomodoro" data-action="pomodoro" id="pomodoro-btn">
+                    <button class="quick-btn quick-btn-pomodoro" data-action="pomodoro" id="pomodoro-btn" onclick="try { handleQuickAction({ currentTarget: this }) } catch(e) {}">
                         <span class="quick-icon">🍅</span>
                         <span class="quick-text">番茄钟</span>
                     </button>
 
                     <!-- 商店 -->
-                    <button class="quick-btn quick-btn-shop" data-action="shop">
+                    <button class="quick-btn quick-btn-shop" data-action="shop" onclick="try { handleQuickAction({ currentTarget: this }) } catch(e) {}">
                         <span class="quick-icon">🏪</span>
                         <span class="quick-text">商店</span>
                     </button>
 
                     <!-- 校园探索 -->
-                    <button class="quick-btn quick-btn-explore" data-action="exploration" id="exploration-btn">
+                    <button class="quick-btn quick-btn-explore" data-action="exploration" id="exploration-btn" onclick="try { handleQuickAction({ currentTarget: this }) } catch(e) {}">
                         <span class="quick-icon">🗺️</span>
                         <span class="quick-text">校园探索</span>
                     </button>
 
                     <!-- AI 任务推荐 -->
-                    <button class="quick-btn quick-btn-ai" data-action="ai-recommend" id="ai-recommend-btn">
+                    <button class="quick-btn quick-btn-ai" data-action="ai-recommend" id="ai-recommend-btn" onclick="try { handleQuickAction({ currentTarget: this }) } catch(e) {}">
                         <span class="quick-icon">🪄</span>
                         <span class="quick-text">AI推荐</span>
                     </button>
@@ -286,6 +308,52 @@
         <!-- NPC互动区 -->
         <section class="npc-section">
             <div class="container">
+                <!-- 校园NPC生态系统入口 -->
+                <div id="npc-ecosystem-entry-index" style="
+                    background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1));
+                    border: 2px solid rgba(102,126,234,0.3);
+                    border-radius: 12px;
+                    padding: 14px 16px;
+                    margin-bottom: 1.5rem;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                " onclick="openNPCCosystemIndex()">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div style="
+                                width:44px;height:44px;border-radius:50%;
+                                background:linear-gradient(135deg,#667eea,#764ba2);
+                                display:flex;align-items:center;justify-content:center;
+                                font-size:22px;
+                                box-shadow:0 0 16px rgba(102,126,234,0.4);
+                            ">🎭</div>
+                            <div>
+                                <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;">
+                                    校园专属NPC生态
+                                </div>
+                                <div id="npc-progress-text-index" style="font-size:11px;color:#667eea;">
+                                    已解锁 0/13 位NPC伙伴
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size:20px;color:#667eea;">→</div>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                            <span style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(102,126,234,0.2);color:#667eea;">🎓导师</span>
+                            <span style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(16,185,129,0.2);color:#10b981;">👨‍🎓学长</span>
+                            <span style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(139,92,246,0.2);color:#8b5cf6;">🏫校园</span>
+                            <span style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(236,72,153,0.2);color:#ec4899;">🎨兴趣</span>
+                            <span style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(251,191,36,0.2);color:#fbbf24;">✨神秘</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 原有动漫NPC（保留功能） -->
+                <div style="font-size:11px;color:#555;margin-bottom:1rem;display:flex;align-items:center;gap:6px;">
+                    <span style="opacity:0.5;">🍥</span>
+                    <span style="opacity:0.6;">动漫世界（保留功能）</span>
+                </div>
                 <div class="npc-container">
                     <div class="npc-character" id="npc-naruto" data-npc="naruto">
                         <div class="npc-avatar">
@@ -356,6 +424,7 @@
                     <div class="task-tabs">
                         <button class="task-tab active" data-category="all">全部</button>
                         <button class="task-tab" data-category="main">主线</button>
+                        <button class="task-tab" data-category="main_story">剧情</button>
                         <button class="task-tab" data-category="side">支线</button>
                         <button class="task-tab" data-category="daily">日常</button>
                         <button class="task-tab" data-category="hidden">隐藏</button>
@@ -507,8 +576,14 @@
                         </div>
                     </div>
                     <div class="exploration-header-right">
+                        <select id="tile-source-select" class="tile-source-select" onchange="ExplorationMap.switchTileSource(this.value)">
+                            <option value="amap">高德地图</option>
+                            <option value="osm">OpenStreetMap</option>
+                            <option value="tianditu">天地图</option>
+                            <option value="geoq">GeoQ</option>
+                        </select>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭探索模态框"></button>
                         <button class="btn btn-sm btn-outline-light" onclick="ExplorationMap._requestAIGuidance('current')">💬 询问阿游</button>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                 </div>
                 <div class="exploration-modal-body">
@@ -516,6 +591,9 @@
                         <!-- 地图容器 -->
                         <div class="exploration-map-wrapper">
                             <div id="exploration-map-container"></div>
+                            <button id="locate-me-btn" class="locate-me-btn" title="回到我的位置" onclick="ExplorationMap._locateMe()">
+                                <span>📍</span>
+                            </button>
                         </div>
 
                         <!-- 地点详情面板 -->
@@ -630,31 +708,75 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/gcoord@0.2.3/dist/gcoord.global.prod.min.js" defer></script>
+    <link rel="stylesheet" href="lib/leaflet/leaflet.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <!-- bootstrap 必须无 defer，在所有依赖它的脚本之前同步加载（cdnjs 国内更稳定） -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/gcoord/gcoord.global.prod.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <script src="js/api-base.js" defer></script>
     <script src="js/core/event-bus.js" defer></script>
     <script src="js/core/state-manager.js" defer></script>
+    <script src="js/core/offline-storage.js" defer></script>
+    <script src="js/features/sync-status-bar.js" defer></script>
+    <script src="js/features/offline-banner.js" defer></script>
+    <script src="js/features/feature-guard.js" defer></script>
     <script src="js/features/pomodoro-manager.js" defer></script>
     <script src="js/features/sound-manager.js" defer></script>
     <script src="js/features/exploration-dialogue.js" defer></script>
     <script src="js/features/npc-manager.js" defer></script>
+    <!-- NPC生态系统 -->
+    <script src="js/features/npc-ecosystem-data.js" defer></script>
+    <script src="js/features/npc-ecosystem.js" defer></script>
+    <script src="js/features/npc-ui.js" defer></script>
+    <script src="js/features/npc-ecosystem-bridge.js" defer></script>
     <script src="js/api.js" defer></script>
     <script src="js/animations.js" defer></script>
     <script src="js/components.js" defer></script>
     <script src="js/chat-widget.js" defer></script>
     <script src="js/features/exploration-map.js" defer></script>
     <script src="js/features/navigation.js" defer></script>
+    <script src="js/features/newbie-guide.js" defer></script>
+    <script src="js/features/main-story.js" defer></script>
+    <script src="js/features/story-dialogue.js" defer></script>
+    <script src="js/features/story-clue.js" defer></script>
+    <script src="js/features/story-puzzle.js" defer></script>
+    <script src="js/features/story-exploration.js" defer></script>
+    <script src="js/features/story-random-event.js" defer></script>
+    <script src="js/features/social.js" defer></script>
     <script src="js/features/onboarding.js" defer></script>
     <script src="js/auth.js" defer></script>
+    <script src="js/core/behavior-track.js" defer></script>
     <script src="js/features/plan-manager.js" defer></script>
     <script src="js/features/recommend-modal.js" defer></script>
     <script src="js/init.js" defer></script>
     <script src="js/game/ar/ar-main.js" defer></script>
-    <script src="js/app.js" defer></script>
+    <script src="js/app.js?v=202604182000" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            // 确保 bootstrap Modal 可用（即使 bootstrap 对象存在，Modal 可能仍未加载）
+            if (typeof bootstrap === 'undefined' || typeof bootstrap.Modal === 'undefined') {
+                console.warn('[index] bootstrap.Modal 未就绪，等待...');
+                await new Promise(resolve => {
+                    var checkTimer = setInterval(function() {
+                        if (typeof bootstrap !== 'undefined' && typeof bootstrap.Modal !== 'undefined') {
+                            clearInterval(checkTimer);
+                            resolve();
+                        }
+                    }, 50);
+                    // 最多等待 5 秒，超时后继续（防止卡死）
+                    setTimeout(function() { clearInterval(checkTimer); resolve(); }, 5000);
+                });
+            }
+            // 登录验证：未登录用户重定向到登录页（避免直接在主页上出现角色设定弹窗）
+            if (!Auth.isLoggedIn()) {
+                // 尝试恢复 session，如果失败则跳转登录页
+                const valid = await Auth.tryRestoreSession();
+                if (!valid) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+            }
             await initNavUserSection();
             // 导航栏 AR 按钮点击事件
             var navArBtn = document.getElementById('nav-ar-btn');
@@ -715,7 +837,62 @@
         function openProfileModal() {
             const dropdown = document.getElementById('navUserDropdown');
             if (dropdown) dropdown.classList.remove('open');
+            if (window.PlanManager?.openProfileEditor) {
+                PlanManager.openProfileEditor();
+            }
         }
+
+        // 设置弹窗关闭后恢复原始 body 内容并重置状态
+        var settingsModalEl = document.getElementById('settingsModal');
+        var settingsBody = document.getElementById('settings-modal-body');
+        var defaultSettingsBodyHtml = settingsBody ? settingsBody.innerHTML : '';
+        if (settingsModalEl) {
+            settingsModalEl.addEventListener('hidden.bs.modal', function () {
+                // 无论是否显示过编辑器，都必须重置状态，防止跨会话残留
+                PlanManager._editorShown = false;
+                var body = document.getElementById('settings-modal-body');
+                if (body && defaultSettingsBodyHtml) body.innerHTML = defaultSettingsBodyHtml;
+                // 同时清理可能残留的 backdrop
+                var bps = document.querySelectorAll('.modal-backdrop');
+                if (bps.length > 0 && document.querySelectorAll('.modal.show').length === 0) {
+                    bps.forEach(function(bp) { bp.parentNode && bp.parentNode.removeChild(bp); });
+                    document.body.classList.remove('modal-open');
+                    document.body.style.paddingRight = '';
+                }
+            });
+        }
+    </script>
+    <script>
+        // NPC生态系统入口（从index.html打开）
+        window.openNPCCosystemIndex = function() {
+            if (window.NPCUI) {
+                NPCUI.open();
+            }
+        };
+
+        // 更新index页NPC进度显示
+        function updateNPCProgressIndex() {
+            const el = document.getElementById('npc-progress-text-index');
+            if (el && window.NPCEcosystemBridge) {
+                const p = NPCEcosystemBridge.getUnlockProgress();
+                el.textContent = `已解锁 ${p.unlocked}/${p.total} 位NPC伙伴`;
+            }
+        }
+
+        // 监听NPC事件，更新进度
+        if (window.EventBus) {
+            EventBus.on('npc:unlocked', function() {
+                setTimeout(updateNPCProgressIndex, 500);
+            });
+            EventBus.on('data:loaded', function() {
+                setTimeout(updateNPCProgressIndex, 2000);
+            });
+        }
+
+        // 页面加载后尝试更新进度
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(updateNPCProgressIndex, 3000);
+        });
     </script>
 </body>
 </html>

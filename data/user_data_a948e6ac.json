@@ -1,0 +1,198 @@
+{
+  "user": {
+    "name": "111",
+    "school": "合肥财经大学",
+    "grade": "大一",
+    "major": "物联网应用技术",
+    "goals": [
+      "过四级",
+      "不挂科",
+      "学完高数"
+    ],
+    "apps": {
+      "timetable": "WakeUp课程表",
+      "campus": "学习通"
+    },
+    "interest": "动漫",
+    "lazy_level": 2,
+    "party_size": 2,
+    "long_term_goals": [],
+    "short_term_plans": [],
+    "current_courses": [],
+    "weak_subjects": [],
+    "target_gpa": 3.5,
+    "daily_routine": "regular",
+    "task_completion_rate": 0,
+    "avg_study_duration": 0,
+    "interests": [],
+    "campus_preferences": [],
+    "current_stage": "新生适应期",
+    "main_story_progress": {
+      "stage": "新生适应期",
+      "completed_chapters": [],
+      "current_task": "story_fresh_1"
+    }
+  },
+  "role": {
+    "level": 1,
+    "experience": 10,
+    "experience_needed": 100,
+    "gold": 55
+  },
+  "stats": {
+    "energy": 100,
+    "focus": 100,
+    "mood": 100,
+    "stress": 20,
+    "total_tasks_completed": 0,
+    "total_achievements_unlocked": 5,
+    "days_active": 1,
+    "current_streak": 1
+  },
+  "npc_relationship": {
+    "naruto": {
+      "affection": 20,
+      "max_affection": 100,
+      "title": "热血导师"
+    },
+    "sasuke": {
+      "affection": 10,
+      "max_affection": 100,
+      "title": "傲娇助教"
+    }
+  },
+  "buffs": [
+    {
+      "name": "动漫联动",
+      "description": "学习效率+15%",
+      "duration": "今日有效",
+      "icon": "🎬"
+    }
+  ],
+  "inventory": [
+    {
+      "name": "经验药水",
+      "description": "使用后获得20点经验",
+      "quantity": 3,
+      "icon": "🧪"
+    },
+    {
+      "name": "能量饮料",
+      "description": "恢复30点能量",
+      "quantity": 2,
+      "icon": "🥤"
+    }
+  ],
+  "exploration": {
+    "discovered_locations": [],
+    "current_location": "dorm",
+    "exploration_streak": 0,
+    "hidden_events_found": []
+  },
+  "last_updated": "2026-04-20 19:22:28",
+  "signin": {
+    "last_signin_date": "2026-04-20",
+    "total_signins": 1,
+    "longest_streak": 1,
+    "records": [
+      "2026-04-20"
+    ],
+    "current_streak": 1
+  },
+  "recommended_tasks": [
+    {
+      "name": "动漫兴趣探索",
+      "description": "观看一部你收藏已久的动漫，并记录下你最喜欢的角色和情节。",
+      "category": "main",
+      "difficulty": "easy",
+      "reward": {
+        "experience": 30,
+        "gold": 20,
+        "skill_points": 5
+      },
+      "deadline": "2026-04-22",
+      "tags": [
+        "动漫",
+        "兴趣培养",
+        "放松"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "选择一部想看的动漫（15分钟）"
+        },
+        {
+          "id": 2,
+          "name": "观看第一集（20分钟）"
+        },
+        {
+          "id": 3,
+          "name": "简单记录观后感（10分钟）"
+        }
+      ]
+    },
+    {
+      "name": "校园环境熟悉",
+      "description": "探索校园的一个新区域，比如图书馆或体育馆，了解其开放时间和功能。",
+      "category": "side",
+      "difficulty": "easy",
+      "reward": {
+        "experience": 25,
+        "gold": 15,
+        "skill_points": 3
+      },
+      "deadline": "2026-04-23",
+      "tags": [
+        "校园生活",
+        "探索",
+        "适应"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "确定要探索的区域（5分钟）"
+        },
+        {
+          "id": 2,
+          "name": "实地走访并拍照记录（25分钟）"
+        },
+        {
+          "id": 3,
+          "name": "整理信息笔记（10分钟）"
+        }
+      ]
+    },
+    {
+      "name": "每日学习启动",
+      "description": "完成一项简单的学习任务，例如预习一门课程的一小节内容。",
+      "category": "daily",
+      "difficulty": "easy",
+      "reward": {
+        "experience": 20,
+        "gold": 10,
+        "skill_points": 2
+      },
+      "deadline": "2026-04-21",
+      "tags": [
+        "学习习惯",
+        "课程预习",
+        "自律"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "选择一门课程（5分钟）"
+        },
+        {
+          "id": 2,
+          "name": "阅读指定小节（15分钟）"
+        },
+        {
+          "id": 3,
+          "name": "写下三个关键点（5分钟）"
+        }
+      ]
+    }
+  ],
+  "recommended_at": "2026-04-20 19:30:59"
+}

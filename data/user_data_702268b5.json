@@ -1,34 +1,55 @@
 {
   "user": {
     "name": "123123",
-    "school": "合肥财经大学·物联网应用技术",
+    "school": "合肥财经职业学院",
     "grade": "大一",
     "goals": [
-      "过四级",
-      "不挂科",
-      "学完高数"
+      "转专业",
+      "奖学金"
     ],
     "apps": {
-      "timetable": "WakeUp课程表",
-      "campus": "学习通"
+      "campus": "学习通",
+      "timetable": "WakeUp课程表"
     },
     "interest": "动漫",
     "lazy_level": 2,
     "party_size": 2,
-    "long_term_goals": [],
-    "short_term_plans": []
+    "long_term_goals": [
+      {
+        "id": "lt_1776424584710_68pocj",
+        "title": "通过英语四级",
+        "description": "",
+        "target_date": "2026-06-18",
+        "status": "active",
+        "progress": 0,
+        "tags": []
+      }
+    ],
+    "short_term_plans": [],
+    "major": "物联网应用技术",
+    "daily_routine": "夜猫型",
+    "interests": [
+      "动漫",
+      "编程"
+    ],
+    "current_stage": "新生适应期",
+    "main_story_progress": {
+      "stage": "新生适应期",
+      "completed_chapters": [],
+      "current_task": "story_fresh_1"
+    }
   },
   "role": {
     "level": 1,
-    "experience": 0,
+    "experience": 10,
     "experience_needed": 100,
-    "gold": 50
+    "gold": 55
   },
   "stats": {
-    "energy": 100,
+    "energy": 0,
     "focus": 100,
-    "mood": 100,
-    "stress": 20,
+    "mood": 5,
+    "stress": 0,
     "total_tasks_completed": 0,
     "total_achievements_unlocked": 5,
     "days_active": 1,
@@ -41,7 +62,7 @@
       "title": "热血导师"
     },
     "sasuke": {
-      "affection": 10,
+      "affection": 14,
       "max_affection": 100,
       "title": "傲娇助教"
     }
@@ -74,5 +95,141 @@
     "exploration_streak": 0,
     "hidden_events_found": []
   },
-  "last_updated": "2026-04-12 12:43:26"
+  "last_updated": "2026-04-23 10:20:27",
+  "recommended_tasks": [
+    {
+      "name": "词汇基础巩固",
+      "description": "背诵并掌握50个四级高频词汇，为英语学习打下基础。",
+      "category": "daily",
+      "difficulty": "medium",
+      "reward": {
+        "experience": 30,
+        "gold": 15,
+        "skill_points": 5
+      },
+      "deadline": "2026-04-18",
+      "tags": [
+        "英语",
+        "词汇",
+        "基础"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "整理高频词汇表"
+        },
+        {
+          "id": 2,
+          "name": "使用APP或卡片记忆"
+        },
+        {
+          "id": 3,
+          "name": "进行简单听写测试"
+        }
+      ]
+    },
+    {
+      "name": "听力入门训练",
+      "description": "完成一篇四级短篇新闻听力练习，并对照原文理解大意。",
+      "category": "main",
+      "difficulty": "medium",
+      "reward": {
+        "experience": 40,
+        "gold": 20,
+        "skill_points": 8
+      },
+      "deadline": "2026-04-20",
+      "tags": [
+        "英语",
+        "听力",
+        "四级"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "寻找合适的听力材料"
+        },
+        {
+          "id": 2,
+          "name": "第一遍盲听并记录关键词"
+        },
+        {
+          "id": 3,
+          "name": "对照原文精听并跟读"
+        }
+      ]
+    },
+    {
+      "name": "兴趣驱动学习",
+      "description": "观看一集喜欢的动漫英文版（或带英文字幕），并记录5个新学到的表达。",
+      "category": "side",
+      "difficulty": "medium",
+      "reward": {
+        "experience": 25,
+        "gold": 25,
+        "skill_points": 10
+      },
+      "deadline": "2026-04-22",
+      "tags": [
+        "动漫",
+        "英语",
+        "兴趣学习"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "选择一集熟悉的动漫"
+        },
+        {
+          "id": 2,
+          "name": "观看并留意英文表达"
+        },
+        {
+          "id": 3,
+          "name": "记录并查询生词和短语"
+        }
+      ]
+    },
+    {
+      "name": "学习环境构建",
+      "description": "整理你的书桌或学习空间，并下载一个英语学习APP（如百词斩、可可英语）。",
+      "category": "daily",
+      "difficulty": "medium",
+      "reward": {
+        "experience": 20,
+        "gold": 10,
+        "skill_points": 3
+      },
+      "deadline": "2026-04-19",
+      "tags": [
+        "习惯",
+        "工具",
+        "准备"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "物理整理桌面"
+        },
+        {
+          "id": 2,
+          "name": "在应用商店搜索并下载APP"
+        },
+        {
+          "id": 3,
+          "name": "简单注册并浏览功能"
+        }
+      ]
+    }
+  ],
+  "recommended_at": "2026-04-17 19:58:17",
+  "signin": {
+    "last_signin_date": "2026-04-17",
+    "total_signins": 1,
+    "longest_streak": 1,
+    "records": [
+      "2026-04-17"
+    ],
+    "current_streak": 1
+  }
 }

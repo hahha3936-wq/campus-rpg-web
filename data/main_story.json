@@ -1,0 +1,113 @@
+{
+  "73f40b81": {
+    "stage": "新生适应期",
+    "current_story_id": "story_fresh_1",
+    "completed_story_ids": [],
+    "chapter_unlocked": [
+      "新生适应期"
+    ],
+    "updated_at": "2026-04-18T23:05:57.609632"
+  },
+  "e7768de9": {
+    "stage": "新生适应期",
+    "current_story_id": "story_fresh_1",
+    "completed_story_ids": [],
+    "chapter_unlocked": [
+      "新生适应期"
+    ],
+    "updated_at": "2026-04-18T23:13:40.058851"
+  },
+  "25a75313": {
+    "stage": "新生适应期",
+    "current_story_id": "story_fresh_1",
+    "completed_story_ids": [],
+    "chapter_unlocked": [
+      "新生适应期"
+    ],
+    "updated_at": "2026-04-19T11:48:44.522484"
+  },
+  "702268b5": {
+    "stage": "新生适应期",
+    "current_story_id": "story_fresh_1",
+    "completed_story_ids": [],
+    "chapter_unlocked": [
+      "新生适应期"
+    ],
+    "updated_at": "2026-04-19T18:43:19.482538"
+  },
+  "a948e6ac": {
+    "stage": "新生适应期",
+    "current_story_id": "story_fresh_1",
+    "completed_story_ids": [],
+    "chapter_unlocked": [
+      "新生适应期"
+    ],
+    "updated_at": "2026-04-20T19:34:46.684451"
+  },
+  "test_story_v1_001": {
+    "stage": "实习准备期",
+    "current_story_id": "story_career_4",
+    "completed_story_ids": [
+      "story_fresh_1",
+      "story_fresh_2",
+      "story_fresh_3",
+      "story_fresh_4",
+      "story_fresh_5",
+      "story_academic_1",
+      "story_academic_2",
+      "story_academic_3",
+      "story_academic_4",
+      "story_academic_5",
+      "story_career_1",
+      "story_career_2",
+      "story_career_3"
+    ],
+    "chapter_unlocked": [
+      "新生适应期",
+      "学业成长期",
+      "实习准备期"
+    ],
+    "clues_collected": [
+      "clue_fresh_003",
+      "clue_fresh_001",
+      "clue_fresh_002",
+      "clue_academic_004",
+      "clue_career_001",
+      "clue_career_003"
+    ],
+    "hidden_tasks_completed": [],
+    "story_choices": {
+      "career_choice_1": "employment",
+      "branch_1": "academic"
+    },
+    "puzzles_solved": [],
+    "stitched_groups": [],
+    "hidden_scenes": [],
+    "puzzle_hints_used": {},
+    "exploration_progress": {
+      "discovered_areas": [],
+      "total_clues_found": 0
+    },
+    "current_branch": "default",
+    "ar_time_capsules": [],
+    "updated_at": "2026-04-23T11:28:20.382760"
+  },
+  "6a26d5cf": {
+    "stage": "新生适应期",
+    "current_story_id": "story_fresh_1",
+    "completed_story_ids": [],
+    "chapter_unlocked": [
+      "新生适应期"
+    ],
+    "updated_at": "2026-04-23T08:51:15.697251"
+  },
+  "440a17fa": {
+    "stage": "新生适应期",
+    "current_story_id": "story_fresh_1",
+    "completed_story_ids": [],
+    "chapter_unlocked": [
+      "新生适应期"
+    ],
+    "updated_at": "2026-04-23T09:35:59.436175"
+  }
+}

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园RPG - 标记图片预处理工具</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background: #1a1a2e;
+            color: #F4F4F4;
+            min-height: 100vh;
+            padding: 20px;
+            image-rendering: pixelated;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        /* 页面标题 */
+        .page-header {
+            background: linear-gradient(180deg, #5D275D 0%, #3a1940 100%);
+            border: 3px solid #B13E53;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-header-icon { font-size: 24px; }
+        .page-header h1 {
+            font-size: 13px;
+            color: #FFCD75;
+            letter-spacing: 1px;
+        }
+        .page-header p {
+            font-size: 8px;
+            color: #C2C3C7;
+            margin-top: 4px;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        /* 像素盒子 */
+        .pixel-box {
+            background: #1D2B53;
+            border: 3px solid #FFF1E8;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .pixel-box-title {
+            font-size: 10px;
+            color: #FFCD75;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed #29ADFF;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 上传区 */
+        .upload-zone {
+            border: 3px dashed #29ADFF;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.1s;
+            background: rgba(41,173,255,0.05);
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            background: rgba(41,173,255,0.15);
+            border-color: #73EFF7;
+        }
+        .upload-zone-icon { font-size: 32px; display: block; margin-bottom: 12px; }
+        .upload-zone-text { font-size: 9px; color: #C2C3C7; line-height: 2; font-family: 'Noto Sans SC', sans-serif; }
+        .upload-zone-hint { font-size: 7px; color: #5F574F; margin-top: 8px; font-family: 'Noto Sans SC', sans-serif; }
+        #fileInput { display: none; }
+
+        /* 预览区 */
+        .preview-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 600px) {
+            .preview-area { grid-template-columns: 1fr; }
+        }
+
+        .preview-panel { text-align: center; }
+        .preview-label {
+            font-size: 8px;
+            color: #73EFF7;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .preview-canvas-wrap {
+            border: 2px solid #5F574F;
+            display: inline-block;
+            background: #000;
+            line-height: 0;
+        }
+        canvas { display: block; max-width: 100%; image-rendering: pixelated; }
+
+        /* 控制面板 */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 600px) {
+            .controls-grid { grid-template-columns: 1fr; }
+        }
+
+        .control-group { margin-bottom: 14px; }
+        .control-label {
+            font-size: 8px;
+            color: #FFCD75;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .control-label span { color: #73EFF7; font-size: 8px; }
+
+        input[type="number"] {
+            background: #0d1b3e;
+            border: 2px solid #5F574F;
+            color: #FFF1E8;
+            padding: 6px 8px;
+            font-family: monospace;
+            font-size: 11px;
+            width: 100%;
+            outline: none;
+        }
+        input[type="number"]:focus { border-color: #29ADFF; }
+        input[type="range"] {
+            width: 100%;
+            accent-color: #29ADFF;
+            cursor: pointer;
+            height: 6px;
+        }
+
+        /* 按钮 */
+        .btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
+        .btn {
+            padding: 8px 16px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 9px;
+            cursor: pointer;
+            border-width: 2px;
+            border-style: solid;
+            image-rendering: pixelated;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+            transition: all 0.1s;
+        }
+        .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.5); }
+        .btn-primary { background: #008751; color: #FFF1E8; border-color: #00E436; }
+        .btn-primary:hover { background: #00E436; }
+        .btn-secondary { background: transparent; color: #C2C3C7; border-color: #5F574F; }
+        .btn-secondary:hover { border-color: #FFF1E8; color: #FFF1E8; }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+
+        /* 检查清单 */
+        .checklist {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        @media (max-width: 500px) {
+            .checklist { grid-template-columns: 1fr; }
+        }
+        .checklist-item {
+            font-size: 7px;
+            color: #C2C3C7;
+            font-family: 'Noto Sans SC', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .checklist-item::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #29ADFF;
+            flex-shrink: 0;
+        }
+        .checklist-item.done { color: #A7F070; }
+        .checklist-item.done::before { background: #00E436; border-color: #00E436; }
+
+        /* 提示区 */
+        .tip-box {
+            background: rgba(41,173,255,0.1);
+            border-left: 3px solid #29ADFF;
+            padding: 10px 12px;
+            font-size: 7px;
+            color: #73EFF7;
+            line-height: 2;
+            margin-top: 12px;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        /* 页脚 */
+        .page-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 7px;
+            color: #5F574F;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- 标题 -->
+        <div class="page-header">
+            <span class="page-header-icon">&#128247;</span>
+            <div>
+                <h1>标记图片预处理工具</h1>
+                <p>将校园标记图片优化为符合AR.js NFT识别要求的标准格式</p>
+            </div>
+        </div>
+
+        <!-- 上传区 -->
+        <div class="pixel-box">
+            <div class="pixel-box-title">&#128247; 上传标记图片</div>
+            <div class="upload-zone" id="uploadZone">
+                <span class="upload-zone-icon">&#128444;</span>
+                <div class="upload-zone-text">
+                    点击此处或拖拽图片到此处上传<br>
+                    支持 PNG、JPG、JPEG 格式
+                </div>
+                <div class="upload-zone-hint">建议上传分辨率 640x640 以上、纹理清晰的图片</div>
+            </div>
+            <input type="file" id="fileInput" accept="image/png,image/jpeg,image/jpg">
+        </div>
+
+        <!-- 预览区 -->
+        <div class="pixel-box" id="previewSection" style="display:none;">
+            <div class="pixel-box-title">&#128065; 预览对比</div>
+            <div class="preview-area">
+                <div class="preview-panel">
+                    <span class="preview-label">原始图片</span>
+                    <div class="preview-canvas-wrap">
+                        <canvas id="originalCanvas"></canvas>
+                    </div>
+                </div>
+                <div class="preview-panel">
+                    <span class="preview-label">处理后效果</span>
+                    <div class="preview-canvas-wrap">
+                        <canvas id="processedCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 控制面板 -->
+            <div class="controls-grid">
+                <div>
+                    <div class="pixel-box-title" style="margin-top:0; border-top:none; padding-top:0;">&#9872; 裁剪设置</div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            输出尺寸
+                            <span id="cropSizeDisplay">640 px</span>
+                        </label>
+                        <input type="number" id="cropSize" value="640" min="320" max="1024" step="64">
+                    </div>
+
+                    <div class="pixel-box-title" style="margin-top:8px; border-top:none; padding-top:0;">&#9888; 检查清单</div>
+                    <div class="checklist">
+                        <div class="checklist-item" id="check1">正方形裁剪</div>
+                        <div class="checklist-item" id="check2">尺寸 640-1024px</div>
+                        <div class="checklist-item" id="check3">对比度已优化</div>
+                        <div class="checklist-item" id="check4">边缘已锐化</div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="pixel-box-title" style="margin-top:0; border-top:none; padding-top:0;">&#9881; 图像优化</div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            对比度
+                            <span id="contrastDisplay">50%</span>
+                        </label>
+                        <input type="range" id="contrastSlider" min="0" max="100" value="50">
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">
+                            锐化强度
+                            <span id="sharpenDisplay">30%</span>
+                        </label>
+                        <input type="range" id="sharpenSlider" min="0" max="100" value="30">
+                    </div>
+
+                    <div class="tip-box">
+                        对比度建议 40-60%，锐化建议 20-40%。<br>
+                        过度处理会损失特征点，影响识别效果。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="btn-row">
+                <button class="btn btn-secondary" id="resetBtn">重置</button>
+                <button class="btn btn-primary" id="downloadBtn">下载优化图片</button>
+            </div>
+        </div>
+
+        <!-- 页面说明 -->
+        <div class="pixel-box">
+            <div class="pixel-box-title">&#9432; 使用说明</div>
+            <div class="tip-box" style="margin-top:0;">
+                1. 上传校园标记图片（建议分辨率 640x640 以上）<br>
+                2. 调整输出尺寸为正方形（AR.js 要求）<br>
+                3. 适当提升对比度和锐化（注意不要过度）<br>
+                4. 点击「下载优化图片」保存处理结果<br>
+                5. 将下载的图片上传至 AR.js 官方生成器生成 NFT 特征文件<br>
+                <a href="../docs/校园AR标记预处理与生成规范.md" style="color:#FFCD75;">查看完整规范文档 &rarr;</a>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            校园RPG - 标记预处理工具 | 纯前端实现，无需上传服务器
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+
+        // ============================================
+        // 状态
+        // ============================================
+        var _originalImage = null;   // 原始 Image 对象
+        var _cropSize = 640;
+        var _contrast = 50;          // 0-100, 50=不变
+        var _sharpen = 30;           // 0-100, 30=轻微锐化
+
+        // ============================================
+        // DOM 引用
+        // ============================================
+        var uploadZone    = document.getElementById('uploadZone');
+        var fileInput     = document.getElementById('fileInput');
+        var previewSection = document.getElementById('previewSection');
+        var originalCanvas = document.getElementById('originalCanvas');
+        var processedCanvas = document.getElementById('processedCanvas');
+        var cropSizeInput = document.getElementById('cropSize');
+        var cropSizeDisplay = document.getElementById('cropSizeDisplay');
+        var contrastSlider = document.getElementById('contrastSlider');
+        var contrastDisplay = document.getElementById('contrastDisplay');
+        var sharpenSlider  = document.getElementById('sharpenSlider');
+        var sharpenDisplay = document.getElementById('sharpenDisplay');
+        var resetBtn      = document.getElementById('resetBtn');
+        var downloadBtn   = document.getElementById('downloadBtn');
+        var check1 = document.getElementById('check1');
+        var check2 = document.getElementById('check2');
+        var check3 = document.getElementById('check3');
+        var check4 = document.getElementById('check4');
+
+        // ============================================
+        // 上传处理
+        // ============================================
+        uploadZone.addEventListener('click', function () { fileInput.click(); });
+
+        uploadZone.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', function () {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', function (e) {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            var file = e.dataTransfer.files[0];
+            if (file && file.type.match(/image\/(png|jpeg|jpg)/)) {
+                loadImage(file);
+            }
+        });
+
+        fileInput.addEventListener('change', function (e) {
+            var file = e.target.files[0];
+            if (file) loadImage(file);
+        });
+
+        function loadImage(file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var img = new Image();
+                img.onload = function () {
+                    _originalImage = img;
+                    cropSizeInput.max = Math.min(img.width, img.height);
+                    cropSizeInput.value = Math.min(640, Math.min(img.width, img.height));
+                    _cropSize = parseInt(cropSizeInput.value);
+                    previewSection.style.display = 'block';
+                    renderOriginal();
+                    applyProcessing();
+                    updateChecks();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ============================================
+        // 绘制原始图片（居中裁剪后显示缩略图）
+        // ============================================
+        function renderOriginal() {
+            var size = Math.min(_originalImage.width, _originalImage.height);
+            var sx = (_originalImage.width - size) / 2;
+            var sy = (_originalImage.height - size) / 2;
+
+            var maxW = 320;
+            var ratio = maxW / _cropSize;
+            var displaySize = Math.min(_cropSize, maxW);
+
+            originalCanvas.width = displaySize;
+            originalCanvas.height = displaySize;
+            var ctx = originalCanvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(
+                _originalImage,
+                sx, sy, size, size,
+                0, 0, displaySize, displaySize
+            );
+        }
+
+        // ============================================
+        // 图像处理核心
+        // ============================================
+        function applyProcessing() {
+            if (!_originalImage) return;
+
+            // 1. 从原图裁剪正方形
+            var size = Math.min(_originalImage.width, _originalImage.height);
+            var sx = (_originalImage.width - size) / 2;
+            var sy = (_originalImage.height - size) / 2;
+
+            // 创建离屏 canvas（输出尺寸）
+            var offscreen = document.createElement('canvas');
+            offscreen.width = _cropSize;
+            offscreen.height = _cropSize;
+            var offCtx = offscreen.getContext('2d');
+            offCtx.imageSmoothingEnabled = false;
+            offCtx.drawImage(_originalImage, sx, sy, size, size, 0, 0, _cropSize, _cropSize);
+            var imgData = offCtx.getImageData(0, 0, _cropSize, _cropSize);
+
+            // 2. 对比度调整
+            if (_contrast !== 50) {
+                imgData = applyContrast(imgData, _contrast);
+            }
+
+            // 3. 锐化
+            if (_sharpen > 0) {
+                imgData = applySharpen(imgData, _sharpen);
+            }
+
+            offCtx.putImageData(imgData, 0, 0);
+
+            // 4. 显示到预览 canvas（缩放显示）
+            var maxW = 320;
+            var displaySize = Math.min(_cropSize, maxW);
+            processedCanvas.width = displaySize;
+            processedCanvas.height = displaySize;
+            var ctx = processedCanvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(offscreen, 0, 0, displaySize, displaySize);
+        }
+
+        // 对比度调整
+        // level: 0-100, 50 = 不变
+        function applyContrast(imgData, level) {
+            var data = imgData.data;
+            // 将 level 0-100 映射到 contrast factor 0.2-2.5，50=1.0
+            var factor = 0.2 + (level / 50) * 2.3;
+            for (var i = 0; i < data.length; i += 4) {
+                data[i]     = clamp128((data[i]     - 128) * factor + 128);
+                data[i + 1] = clamp128((data[i + 1] - 128) * factor + 128);
+                data[i + 2] = clamp128((data[i + 2] - 128) * factor + 128);
+            }
+            return imgData;
+        }
+
+        function clamp128(v) {
+            return Math.max(0, Math.min(255, Math.round(v)));
+        }
+
+        // USM 锐化卷积
+        // level: 0-100
+        function applySharpen(imgData, level) {
+            if (level === 0) return imgData;
+            var w = imgData.width;
+            var h = imgData.height;
+            var src = imgData.data;
+            var dst = new Uint8ClampedArray(src);
+
+            // amount: 0.2 到 2.5
+            var amount = 0.2 + (level / 100) * 2.3;
+            var kernel = [
+                0, -amount, 0,
+                -amount, 1 + 4 * amount, -amount,
+                0, -amount, 0
+            ];
+
+            for (var y = 1; y < h - 1; y++) {
+                for (var x = 1; x < w - 1; x++) {
+                    var r = 0, g = 0, b = 0;
+                    for (var ky = -1; ky <= 1; ky++) {
+                        for (var kx = -1; kx <= 1; kx++) {
+                            var ki = ((y + ky) * w + (x + kx)) * 4;
+                            var wi = (ky + 1) * 3 + (kx + 1);
+                            var wv = kernel[wi];
+                            r += src[ki]     * wv;
+                            g += src[ki + 1] * wv;
+                            b += src[ki + 2] * wv;
+                        }
+                    }
+                    var di = (y * w + x) * 4;
+                    dst[di]     = clamp128(r);
+                    dst[di + 1] = clamp128(g);
+                    dst[di + 2] = clamp128(b);
+                }
+            }
+
+            imgData.data.set(dst);
+            return imgData;
+        }
+
+        // ============================================
+        // 检查清单更新
+        // ============================================
+        function updateChecks() {
+            // 正方形（始终为正方形）
+            check1.classList.toggle('done', true);
+            // 尺寸
+            check2.classList.toggle('done', _cropSize >= 320);
+            // 对比度（偏离50越大越优化）
+            var contrastDelta = Math.abs(_contrast - 50);
+            check3.classList.toggle('done', contrastDelta >= 5);
+            // 锐化
+            check4.classList.toggle('done', _sharpen > 0);
+        }
+
+        // ============================================
+        // 事件绑定
+        // ============================================
+        cropSizeInput.addEventListener('input', function () {
+            var maxAvail = Math.min(_originalImage.width, _originalImage.height);
+            _cropSize = Math.min(parseInt(this.value) || 320, maxAvail);
+            cropSizeDisplay.textContent = _cropSize + ' px';
+            renderOriginal();
+            applyProcessing();
+            updateChecks();
+        });
+
+        contrastSlider.addEventListener('input', function () {
+            _contrast = parseInt(this.value);
+            contrastDisplay.textContent = _contrast + '%';
+            applyProcessing();
+            updateChecks();
+        });
+
+        sharpenSlider.addEventListener('input', function () {
+            _sharpen = parseInt(this.value);
+            sharpenDisplay.textContent = _sharpen + '%';
+            applyProcessing();
+            updateChecks();
+        });
+
+        resetBtn.addEventListener('click', function () {
+            _contrast = 50;
+            _sharpen = 30;
+            var maxAvail = Math.min(_originalImage.width, _originalImage.height);
+            _cropSize = Math.min(640, maxAvail);
+            cropSizeInput.value = _cropSize;
+            contrastSlider.value = 50;
+            sharpenSlider.value = 30;
+            cropSizeDisplay.textContent = _cropSize + ' px';
+            contrastDisplay.textContent = '50%';
+            sharpenDisplay.textContent = '30%';
+            renderOriginal();
+            applyProcessing();
+            updateChecks();
+        });
+
+        downloadBtn.addEventListener('click', function () {
+            if (!_originalImage) return;
+
+            // 生成全尺寸输出（不含缩放）
+            var size = Math.min(_originalImage.width, _originalImage.height);
+            var sx = (_originalImage.width - size) / 2;
+            var sy = (_originalImage.height - size) / 2;
+
+            var outCanvas = document.createElement('canvas');
+            outCanvas.width = _cropSize;
+            outCanvas.height = _cropSize;
+            var ctx = outCanvas.getContext('2d');
+            ctx.drawImage(_originalImage, sx, sy, size, size, 0, 0, _cropSize, _cropSize);
+
+            var imgData = ctx.getImageData(0, 0, _cropSize, _cropSize);
+
+            if (_contrast !== 50) imgData = applyContrast(imgData, _contrast);
+            if (_sharpen > 0)    imgData = applySharpen(imgData, _sharpen);
+
+            ctx.putImageData(imgData, 0, 0);
+
+            outCanvas.toBlob(function (blob) {
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'marker_optimized_' + _cropSize + 'x' + _cropSize + '.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+{
+  "user": {
+    "name": "测试",
+    "school": "合肥财经大学",
+    "grade": "大一",
+    "major": "物联网应用技术",
+    "goals": [
+      "过四级",
+      "不挂科",
+      "学完高数"
+    ],
+    "apps": {
+      "timetable": "WakeUp课程表",
+      "campus": "学习通"
+    },
+    "interest": "动漫",
+    "lazy_level": 2,
+    "party_size": 2,
+    "long_term_goals": [],
+    "short_term_plans": [],
+    "current_courses": [],
+    "weak_subjects": [],
+    "target_gpa": 3.5,
+    "daily_routine": "regular",
+    "task_completion_rate": 0,
+    "avg_study_duration": 0,
+    "interests": [],
+    "campus_preferences": [],
+    "current_stage": "新生适应期"
+  },
+  "role": {
+    "level": 1,
+    "experience": 0,
+    "experience_needed": 100,
+    "gold": 50
+  },
+  "stats": {
+    "energy": 100,
+    "focus": 100,
+    "mood": 100,
+    "stress": 20,
+    "total_tasks_completed": 0,
+    "total_achievements_unlocked": 5,
+    "days_active": 1,
+    "current_streak": 1
+  },
+  "npc_relationship": {
+    "naruto": {
+      "affection": 20,
+      "max_affection": 100,
+      "title": "热血导师"
+    },
+    "sasuke": {
+      "affection": 10,
+      "max_affection": 100,
+      "title": "傲娇助教"
+    }
+  },
+  "buffs": [
+    {
+      "name": "动漫联动",
+      "description": "学习效率+15%",
+      "duration": "今日有效",
+      "icon": "🎬"
+    }
+  ],
+  "inventory": [
+    {
+      "name": "经验药水",
+      "description": "使用后获得20点经验",
+      "quantity": 3,
+      "icon": "🧪"
+    },
+    {
+      "name": "能量饮料",
+      "description": "恢复30点能量",
+      "quantity": 2,
+      "icon": "🥤"
+    }
+  ],
+  "exploration": {
+    "discovered_locations": [],
+    "current_location": "dorm",
+    "exploration_streak": 0,
+    "hidden_events_found": []
+  },
+  "last_updated": "2026-04-18 23:05:48"
+}

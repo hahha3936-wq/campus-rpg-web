@@ -110,7 +110,9 @@ var ChatWidgetModule = (function() {
                     </div>
                 </div>
                 <div class="chat-header-actions">
+                    <button id="call-xiaoling-btn" class="call-xiaoling-btn" title="召唤小灵 AI 助手（语音对话）">🌟 小灵</button>
                     <button id="chat-clear-btn" title="清空对话" aria-label="清空对话">🗑️</button>
+                    <button id="chat-mobile-close-btn" class="chat-mobile-close-btn" title="关闭" aria-label="关闭">✕</button>
                 </div>
             </div>
 
@@ -396,16 +398,63 @@ var ChatWidgetModule = (function() {
         // 切换窗口
         if (toggle && win) {
             toggle.addEventListener('click', () => {
-                state.isOpen = !state.isOpen;
-                win.classList.toggle('open', state.isOpen);
-                toggle.classList.toggle('active', state.isOpen);
-                toggle.textContent = state.isOpen ? '✕' : '💬';
                 if (state.isOpen) {
-                    input?.focus();
-                    checkAIHealth();
+                    // Always allow closing via toggle (unless suppressed by drag flag)
+                    if (window._chatWidgetDragging) {
+                        window._chatWidgetDragging = false;
+                        return;
+                    }
+                    win.classList.remove('open');
+                    toggle.classList.remove('active');
+                    toggle.textContent = '💬';
+                    state.isOpen = false;
+                    return;
+                }
+                // Widget is closed
+                if (window._chatWidgetDragging) {
+                    window._chatWidgetDragging = false;
+                    return;
+                }
+                restorePosition();
+                restoreTogglePosition();
+                win.classList.add('open');
+                toggle.classList.add('active');
+                toggle.textContent = '✕';
+                const inp = document.getElementById('chat-input');
+                inp?.focus();
+                checkAIHealth();
+                setTimeout(() => { win.style.animation = ''; }, 350);
+            });
+        }
+
+        // 手机端头部关闭按钮
+        const mobileCloseBtn = document.getElementById('chat-mobile-close-btn');
+        if (mobileCloseBtn) {
+            mobileCloseBtn.addEventListener('click', () => {
+                state.isOpen = false;
+                win.classList.remove('open');
+                toggle.classList.remove('active');
+                toggle.textContent = '💬';
+            });
+        }
+
+        // 召唤小灵
+        const xiaolingBtn = document.getElementById('call-xiaoling-btn');
+        if (xiaolingBtn) {
+            xiaolingBtn.addEventListener('click', () => {
+                if (window.VoiceNPC && VoiceNPC.showPanel) {
+                    VoiceNPC.showPanel();
+                } else {
+                    appendMessage('ai', '小灵正在启动中，请稍候在右下角召唤我~', getAvatar('ai'));
                 }
             });
         }
+
+        // 小灵就绪后改变按钮样式
+        document.addEventListener('voicenpc-ready', function () {
+            const btn = document.getElementById('call-xiaoling-btn');
+            if (btn) btn.classList.add('ready');
+        });
 
         // 发送按钮
         if (sendBtn) {
@@ -466,6 +515,26 @@ var ChatWidgetModule = (function() {
         // 快捷问题点击
         bindQuickQuestions();
 
+        // 拖拽支持（toggle 按钮可独立拖动）
+        setupToggleDrag();
+
+        // 手机端适配：虚拟键盘监听 + 窗口位置修正
+        if (window.matchMedia('(max-width: 576px)').matches) {
+            let lastH = window.innerHeight;
+            window.addEventListener('resize', () => {
+                const h = window.innerHeight;
+                // 虚拟键盘打开/关闭时，dvh 布局自动调整，窗口随之重新渲染
+                // 如果窗口被键盘挤出视口，强制滚到输入框
+                if (Math.abs(lastH - h) > 100) {
+                    lastH = h;
+                    const input = document.getElementById('chat-input');
+                    if (input && state.isOpen) {
+                        setTimeout(() => input.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+                    }
+                }
+            });
+        }
+
         // 定期检查 AI 服务状态
         state.connectionCheckTimer = setInterval(checkAIHealth, 30000);
     }
@@ -481,6 +550,288 @@ var ChatWidgetModule = (function() {
                 }
             });
         });
+    }
+
+    // ============================================
+    // 拖拽 & 位置持久化
+    // ============================================
+    function restorePosition() {
+        const wnd = document.getElementById('chat-widget-window');
+        if (!wnd) return;
+        let restored = false;
+        let retries = 0;
+        const MAX_RETRIES = 10;
+
+        function apply() {
+            if (restored) return;
+            try {
+                const saved = JSON.parse(localStorage.getItem('chat-widget-pos'));
+                const toggle = document.getElementById('chat-widget-toggle');
+                if (!saved) {
+                    wnd.style.animation = 'none';
+                    wnd.style.left = '';
+                    wnd.style.top = '';
+                    wnd.style.right = '';
+                    wnd.style.bottom = '';
+                    if (toggle) {
+                        toggle.style.right = '';
+                        toggle.style.bottom = '';
+                    }
+                    restored = true;
+                    return;
+                }
+
+                // New format: toggle drag (right/bottom for both toggle and window)
+                if (saved.toggleRight != null && saved.toggleBottom != null) {
+                    const toggleRight = Math.max(8, saved.toggleRight);
+                    const toggleBottom = Math.max(8, saved.toggleBottom);
+                    const windowRight = Math.max(0, saved.windowRight);
+                    const windowBottom = Math.max(0, saved.windowBottom);
+
+                    // Restore toggle position
+                    if (toggle) {
+                        toggle.style.animation = 'none';
+                        toggle.style.left = 'auto';
+                        toggle.style.top = 'auto';
+                        toggle.style.right = toggleRight + 'px';
+                        toggle.style.bottom = toggleBottom + 'px';
+                    }
+
+                    // Restore window position
+                    wnd.style.animation = 'none';
+                    wnd.style.left = '';
+                    wnd.style.top = '';
+                    wnd.style.right = windowRight + 'px';
+                    wnd.style.bottom = windowBottom + 'px';
+                    restored = true;
+                    return;
+                }
+
+                // Old window drag format: right/bottom coords
+                if (saved.right != null && saved.bottom != null) {
+                    const safeRight = Math.max(0, saved.right);
+                    const safeBottom = Math.max(0, saved.bottom);
+                    // Disable animation to prevent it from overriding our position with top: 0
+                    wnd.style.animation = 'none';
+                    wnd.style.left = '';
+                    wnd.style.top = '';
+                    wnd.style.right = safeRight + 'px';
+                    wnd.style.bottom = safeBottom + 'px';
+                    // Also restore toggle to match window (backward compat)
+                    if (toggle) {
+                        const tRight = Math.max(0, safeRight - 165);
+                        const tBottom = Math.max(0, safeBottom + 570);
+                        toggle.style.right = tRight + 'px';
+                        toggle.style.bottom = tBottom + 'px';
+                    }
+                    restored = true;
+                    return;
+                }
+
+                // Old format: left/top — convert to right/bottom to match CSS defaults
+                if (saved.left != null && saved.top != null) {
+                    if (saved.left < 0 || saved.top < 0) {
+                        localStorage.removeItem('chat-widget-pos');
+                        wnd.style.animation = 'none';
+                        wnd.style.left = '';
+                        wnd.style.top = '';
+                        wnd.style.right = '';
+                        wnd.style.bottom = '';
+                        if (toggle) {
+                            toggle.style.right = '';
+                            toggle.style.bottom = '';
+                        }
+                        restored = true;
+                        return;
+                    }
+                    const newRight = Math.max(0, window.innerWidth - saved.left - (wnd.offsetWidth || 380));
+                    const newBottom = Math.max(0, window.innerHeight - saved.top - (wnd.offsetHeight || 560));
+                    localStorage.setItem('chat-widget-pos', JSON.stringify({ right: newRight, bottom: newBottom }));
+                    wnd.style.animation = 'none';
+                    wnd.style.left = '';
+                    wnd.style.top = '';
+                    wnd.style.right = newRight + 'px';
+                    wnd.style.bottom = newBottom + 'px';
+                    if (toggle) {
+                        const tRight = Math.max(0, newRight - 165);
+                        const tBottom = Math.max(0, newBottom + 570);
+                        toggle.style.right = tRight + 'px';
+                        toggle.style.bottom = tBottom + 'px';
+                    }
+                    restored = true;
+                    return;
+                }
+            } catch (e) {
+                console.warn('[ChatWidget] restorePosition error:', e);
+            }
+        }
+
+        apply();
+        if (!restored && retries < MAX_RETRIES) {
+            function retry() {
+                retries++;
+                apply();
+                if (!restored && retries < MAX_RETRIES) {
+                    requestAnimationFrame(retry);
+                }
+            }
+            requestAnimationFrame(retry);
+        }
+    }
+
+    function _isMobile() {
+        return window.matchMedia('(max-width: 576px)').matches;
+    }
+
+    /**
+     * Restore the toggle button's position from localStorage.
+     * Desktop positions are NOT applied on mobile (different layout system).
+     */
+    function restoreTogglePosition() {
+        const toggle = document.getElementById('chat-widget-toggle');
+        if (!toggle) return;
+        try {
+            const saved = JSON.parse(localStorage.getItem('chat-widget-pos'));
+            if (saved && saved.toggleRight != null && saved.toggleBottom != null) {
+                // On mobile, always use default position (bottom-right drawer)
+                if (_isMobile()) {
+                    toggle.style.animation = 'none';
+                    toggle.style.left = 'auto';
+                    toggle.style.top = 'auto';
+                    toggle.style.right = '16px';
+                    toggle.style.bottom = '16px';
+                    return;
+                }
+                const mobileBound = Math.min(window.innerWidth, window.innerHeight) < 600 ? 4 : 8;
+                toggle.style.animation = 'none';
+                toggle.style.left = 'auto';
+                toggle.style.top = 'auto';
+                toggle.style.right = Math.max(mobileBound, saved.toggleRight) + 'px';
+                toggle.style.bottom = Math.max(mobileBound, saved.toggleBottom) + 'px';
+            }
+        } catch (e) {}
+    }
+
+    /**
+     * Toggle 按钮拖拽：toggle 跟随用户拖动，窗口跟随 toggle 定位。
+     * 位置保存到 localStorage，关闭/刷新后恢复。
+     */
+    function setupToggleDrag() {
+        const toggle = document.getElementById('chat-widget-toggle');
+        if (!toggle) return;
+
+        toggle.style.cursor = 'grab';
+
+        // Restore toggle position from localStorage immediately on init
+        restoreTogglePosition();
+
+        let dragging = false;
+        let startX, startY;
+        // Live position tracking (no re-reading from getComputedStyle)
+        let liveRight, liveBottom;
+        // Track if there was actual mouse movement (to suppress click on real drag)
+        let didDrag = false;
+
+        toggle.addEventListener('mousedown', start);
+        toggle.addEventListener('touchstart', start, { passive: false });
+
+        function start(e) {
+            if (e.target !== toggle) return;
+            e.preventDefault();
+            e.stopPropagation();
+            dragging = true;
+            didDrag = false;
+            toggle.style.cursor = 'grabbing';
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const rect = toggle.getBoundingClientRect();
+
+            startX = clientX - rect.left;
+            startY = clientY - rect.top;
+
+            // Capture initial position as live variables
+            const cs = window.getComputedStyle(toggle);
+            liveRight = parseFloat(cs.right) || 0;
+            liveBottom = parseFloat(cs.bottom) || 0;
+
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onEnd);
+            document.addEventListener('touchmove', onMove, { passive: false });
+            document.addEventListener('touchend', onEnd);
+        }
+
+        function onMove(e) {
+            if (!dragging) return;
+            e.preventDefault();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const newLeft = clientX - startX;
+            const newTop = clientY - startY;
+            const newRight = window.innerWidth - newLeft - toggle.offsetWidth;
+            const newBottom = window.innerHeight - newTop - toggle.offsetHeight;
+
+            // Clamp and update live tracking
+            liveRight = Math.max(8, Math.min(newRight, window.innerWidth - 8));
+            liveBottom = Math.max(8, Math.min(newBottom, window.innerHeight - 8));
+            didDrag = true;
+
+            toggle.style.left = 'auto';
+            toggle.style.top = 'auto';
+            toggle.style.right = liveRight + 'px';
+            toggle.style.bottom = liveBottom + 'px';
+
+            // 窗口跟随 toggle（窗口右上角对齐 toggle 中心）
+            const wnd = document.getElementById('chat-widget-window');
+            if (wnd) {
+                const winRight = liveRight - (wnd.offsetWidth - toggle.offsetWidth) / 2;
+                const winBottom = liveBottom + toggle.offsetHeight + 10;
+                wnd.style.left = 'auto';
+                wnd.style.top = 'auto';
+                wnd.style.right = Math.max(0, winRight) + 'px';
+                wnd.style.bottom = Math.max(0, winBottom) + 'px';
+            }
+        }
+
+        function onEnd() {
+            if (!dragging) return;
+            dragging = false;
+            toggle.style.cursor = 'grab';
+
+            // Only suppress the click if there was actual drag movement
+            if (didDrag) {
+                window._chatWidgetDragging = true;
+                setTimeout(() => { window._chatWidgetDragging = false; }, 150);
+            }
+
+            // Skip if dragged off-screen
+            if (liveRight > window.innerWidth - 8 || liveBottom > window.innerHeight - 8) {
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onEnd);
+                document.removeEventListener('touchmove', onMove);
+                document.removeEventListener('touchend', onEnd);
+                return;
+            }
+
+            // Save position
+            if (didDrag) {
+                try {
+                    const wnd = document.getElementById('chat-widget-window');
+                    localStorage.setItem('chat-widget-pos', JSON.stringify({
+                        toggleRight: liveRight,
+                        toggleBottom: liveBottom,
+                        windowRight: wnd ? Math.max(0, liveRight - (wnd.offsetWidth - toggle.offsetWidth) / 2) : 0,
+                        windowBottom: wnd ? Math.max(0, liveBottom + toggle.offsetHeight + 10) : 0
+                    }));
+                } catch (err) {}
+            }
+
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onEnd);
+            document.removeEventListener('touchmove', onMove);
+            document.removeEventListener('touchend', onEnd);
+        }
     }
 
     // ============================================
@@ -553,14 +904,27 @@ var ChatWidgetModule = (function() {
             const toggle = document.getElementById('chat-widget-toggle');
             console.log('[ChatWidget] adding .open class', { win: !!win, toggle: !!toggle });
             if (win) {
+                // Disable animation BEFORE adding .open class to prevent animation's
+                // top: 0 from overriding the restored position. Animation will be
+                // re-enabled after the animation duration so the next open plays it.
+                win.style.animation = 'none';
                 win.classList.add('open');
-                // 强制重排，确保 CSS 显示生效
-                void win.offsetHeight;
                 console.log('[ChatWidget] win.classList after add:', win.classList.toString());
             }
             if (toggle) {
                 toggle.classList.add('active');
-                toggle.textContent = '💬';
+                toggle.textContent = '✕';
+            }
+            // Flag to suppress the toggle click that fires after a page-button click (same user action)
+            window._chatWidgetPageBtnOpened = true;
+            setTimeout(() => { window._chatWidgetPageBtnOpened = false; }, 150);
+            // Restore position synchronously after class is added but before animation
+            // can override it (the RAF schedules for next frame, which is after our sync code)
+            restorePosition();
+            restoreTogglePosition();
+            // Re-enable animation after 350ms (animation duration + buffer)
+            if (win) {
+                setTimeout(() => { win.style.animation = ''; }, 350);
             }
             _elevateAboveExplorationModal();
             if (context?.message) {

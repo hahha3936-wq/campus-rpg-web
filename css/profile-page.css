@@ -1,225 +1,1484 @@
 /**
- * 校园RPG - 角色页面专用样式
- * 从 profile.html 内联样式提取
+ * 校园RPG - 冒险者角色档案页 专用样式
+ * RPG Pixel Game Character Profile
  */
 
-/* ---- 页头 ---- */
-.page-header {
-    background: var(--gradient-primary);
-    color: white; padding: 3rem 0 2rem;
-    margin-bottom: 2rem;
-    border-radius: 0 0 1.5rem 1.5rem;
-}
-.page-header h1 { font-weight: 900; margin: 0; }
-.page-header .subtitle { opacity: 0.85; font-size: 0.95rem; margin-top: 0.25rem; }
+/* ============================================
+   CSS 变量（沿用主站变量，无重复定义）
+   ============================================ */
 
-/* ---- 角色头像区 ---- */
-.role-avatar-section {
-    text-align: center; margin-bottom: 1.5rem;
+/* ============================================
+   导航栏
+   ============================================ */
+.rpg-nav {
+    background: rgba(15, 15, 35, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid rgba(102, 126, 234, 0.4);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
 }
-.role-avatar-lg {
-    width: 96px; height: 96px; border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 3rem; margin: 0 auto 0.75rem;
-    border: 3px solid rgba(255,255,255,0.5);
-}
-.role-name-lg { font-weight: 900; font-size: 1.25rem; color: var(--text-primary); }
-.role-title-lg { font-size: 0.85rem; opacity: 0.8; margin-top: 0.25rem; color: var(--text-secondary); }
 
-/* ---- 属性网格 ---- */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
+.nav-resource-chips {
+    display: flex;
+    gap: 8px;
+}
+
+.rpg-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 2px solid;
+}
+
+.chip-gold {
+    background: rgba(237, 137, 54, 0.15);
+    border-color: rgba(237, 137, 54, 0.5);
+    color: #f59e0b;
+}
+
+.chip-exp {
+    background: rgba(102, 126, 234, 0.15);
+    border-color: rgba(102, 126, 234, 0.5);
+    color: #818cf8;
+}
+
+.chip-icon { font-size: 0.85rem; }
+
+/* ============================================
+   主布局
+   ============================================ */
+.rpg-profile-main {
+    padding-top: 68px;
+    padding-bottom: 80px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* ============================================
+   通用 Section 样式
+   ============================================ */
+.rpg-section {
     margin-bottom: 1.5rem;
 }
-.stat-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 1rem; padding: 1rem;
-    text-align: center;
-}
-.stat-card .stat-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
-.stat-card .stat-label { font-size: 0.8rem; opacity: 0.6; margin-bottom: 0.25rem; color: var(--text-secondary); }
-.stat-card .stat-value { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); }
 
-/* ---- 进度条区块 ---- */
-.progress-bar-section {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 1rem; padding: 1rem 1.25rem; margin-bottom: 1rem;
+.rpg-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
 }
-.progress-row { margin-bottom: 0.75rem; }
-.progress-row:last-child { margin-bottom: 0; }
-.progress-label { font-size: 0.85rem; display: flex; justify-content: space-between; margin-bottom: 0.4rem; color: var(--text-secondary); }
-.progress-track {
-    height: 8px; border-radius: 4px;
-    background: var(--hover-overlay);
-    overflow: hidden;
-}
-.progress-fill-bar {
-    height: 100%; border-radius: 4px;
-    background: var(--gradient-primary);
-    transition: width 0.5s ease;
-}
-.progress-fill-bar.exp-fill { background: linear-gradient(90deg, var(--warning-color, #f59e0b), #d97706); }
-.progress-fill-bar.energy-fill { background: linear-gradient(90deg, var(--success-color, #22c55e), #16a34a); }
 
-/* ---- 章节标题 ---- */
-.section-title {
-    font-weight: 700; font-size: 1rem; margin: 1.5rem 0 0.75rem;
-    display: flex; align-items: center; gap: 0.5rem;
+.rpg-section-icon {
+    font-size: 1.5rem;
+}
+
+.rpg-section-title {
+    font-size: 1.1rem;
+    font-weight: 900;
     color: var(--text-primary);
+    margin: 0;
+    white-space: nowrap;
 }
 
-/* ---- NPC 好感卡片 ---- */
-.npc-relation-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 1rem; padding: 1rem;
-    display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;
+.rpg-section-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(102,126,234,0.4), transparent);
+    border-radius: 1px;
 }
-.npc-avatar-sm {
-    width: 56px; height: 56px; border-radius: 50%;
-    background: rgba(102,126,234,0.1);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.75rem; flex-shrink: 0;
-}
-.npc-relation-info { flex: 1; min-width: 0; }
-.npc-relation-name { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
-.npc-relation-title { font-size: 0.8rem; opacity: 0.7; color: var(--text-secondary); }
-.npc-affection-row { margin-top: 0.4rem; }
-.npc-affection-track {
-    height: 6px; border-radius: 3px;
-    background: var(--hover-overlay);
+
+/* ============================================
+   1. 角色核心信息区 Banner
+   ============================================ */
+.rpg-hero-banner {
+    position: relative;
+    margin-bottom: 1.5rem;
     overflow: hidden;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border: 2px solid rgba(102,126,234,0.4);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(102,126,234,0.15);
 }
-.npc-affection-fill {
-    height: 100%; border-radius: 3px; background: #f472b6;
-    transition: width 0.5s ease;
-}
-.npc-affection-label { font-size: 0.75rem; display: flex; justify-content: space-between; margin-top: 0.2rem; color: var(--text-secondary); }
 
-/* ---- 背包网格 ---- */
-.inv-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 0.75rem;
-}
-.inv-item {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 0.75rem; padding: 0.75rem;
-    text-align: center; font-size: 1.5rem;
-}
-.inv-item-name { font-size: 0.7rem; margin-top: 0.25rem; opacity: 0.7; color: var(--text-secondary); }
-.inv-item-count { font-size: 0.75rem; font-weight: 700; color: var(--primary-color); }
-
-/* ---- 查看更多按钮 ---- */
-.view-more-btn {
-    display: block; width: 100%; text-align: center;
-    padding: 0.75rem; border-radius: 0.75rem;
-    border: 1px dashed var(--border-color);
-    color: var(--primary-color); font-weight: 600; font-size: 0.9rem;
-    background: transparent; cursor: pointer; margin-top: 0.75rem;
-    text-decoration: none;
-}
-.view-more-btn:hover { background: rgba(102,126,234,0.05); }
-
-/* ---- 资料预览卡片 ---- */
-.profile-preview-list { margin-bottom: 0.75rem; }
-.profile-preview-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 0.75rem;
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-}
-.profile-preview-card .ppt { font-weight: 600; margin-bottom: 0.2rem; color: var(--text-primary); }
-.profile-preview-card .pps { font-size: 0.8rem; opacity: 0.7; color: var(--text-secondary); }
-
-/* ---- 操作按钮行 ---- */
-.profile-action-row {
-    display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0;
-    position: relative;
-    z-index: 2;
-}
-.profile-action-row .btn {
-    position: relative;
-    z-index: 1;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    cursor: pointer;
-}
-.profile-action-row .btn .btn-label {
+.hero-bg-pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 20% 50%, rgba(102,126,234,0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(118,75,162,0.15) 0%, transparent 50%),
+        repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(255,255,255,0.02) 30px, rgba(255,255,255,0.02) 31px),
+        repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(255,255,255,0.02) 30px, rgba(255,255,255,0.02) 31px);
     pointer-events: none;
 }
 
-/* ---- AI推荐任务按钮 - 实色渐变背景 ---- */
-#btn-ai-recommend {
-    background: var(--gradient-primary);
-    border: 2px solid transparent;
-    color: #ffffff;
-    box-shadow: var(--shadow-glow);
-    transition: all var(--transition-normal) ease;
+.hero-content {
+    position: relative;
+    padding: 1.5rem;
 }
 
-#btn-ai-recommend:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(102, 126, 234, 0.4);
-    color: #ffffff;
+/* ---- 角色卡片 ---- */
+.rpg-character-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
 }
 
-#btn-ai-recommend:active {
-    transform: translateY(0);
+/* 头像区 */
+.char-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
 }
 
-/* ---- 经验条全局 .exp-fill::after 闪光层 ---- */
-.progress-fill-bar { position: relative; isolation: isolate; }
-.progress-fill-bar.exp-fill::after { pointer-events: none; }
-
-/* ---- 提示文字 ---- */
-.profile-hint { font-size: 0.85rem; opacity: 0.75; margin-bottom: 1rem; text-align: center; color: var(--text-secondary); }
-
-/* ============================================ */
-/* 深色模式覆盖                                    */
-/* ============================================ */
-body.dark-mode .role-avatar-lg {
-    background: rgba(255,255,255,0.1);
-    border-color: rgba(255,255,255,0.3);
-}
-
-body.dark-mode .stat-card .stat-label {
-    color: var(--text-muted);
-}
-
-body.dark-mode .progress-track {
-    background: rgba(255,255,255,0.1);
-}
-
-body.dark-mode .npc-affection-track {
-    background: rgba(255,255,255,0.1);
-}
-
-body.dark-mode .view-more-btn {
-    border-color: rgba(255,255,255,0.2);
-}
-
-body.dark-mode .view-more-btn:hover {
+.char-avatar-frame {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 3px solid rgba(102,126,234,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: rgba(102,126,234,0.1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(102,126,234,0.3);
 }
 
-body.dark-mode .inv-item {
+.char-avatar {
+    font-size: 3.2rem;
+    line-height: 1;
+}
+
+.char-avatar-glow {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(102,126,234,0.2) 0%, transparent 70%);
+    animation: avatarGlow 2s ease-in-out infinite;
+}
+
+@keyframes avatarGlow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+.char-level-badge {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    border: 2px solid rgba(255,255,255,0.3);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* 角色基础信息 */
+.char-base-info {
+    flex: 1;
+    min-width: 160px;
+}
+
+.char-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.char-name {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(102,126,234,0.5);
+}
+
+.char-edit-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+    border-radius: 8px;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1;
+}
+
+.char-edit-btn:hover {
+    background: rgba(102,126,234,0.3);
+    color: #fff;
+    border-color: rgba(102,126,234,0.6);
+}
+
+.char-title {
+    font-size: 0.85rem;
+    color: #ffd700;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-shadow: 0 0 8px rgba(255,215,0,0.4);
+}
+
+.char-meta-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.char-meta-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border: 1px solid;
+    white-space: nowrap;
+}
+
+.tag-faction {
+    background: rgba(66,153,225,0.15);
+    border-color: rgba(66,153,225,0.4);
+    color: #63b3ed;
+}
+
+.tag-class {
+    background: rgba(72,187,120,0.15);
+    border-color: rgba(72,187,120,0.4);
+    color: #68d391;
+}
+
+.tag-stage {
+    background: rgba(237,137,54,0.15);
+    border-color: rgba(237,137,54,0.4);
+    color: #f6ad55;
+}
+
+.char-uid {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Courier New', monospace;
+}
+
+/* 核心资源 */
+.char-resources {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 10px 14px;
+}
+
+.rpg-resource-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.rpg-resource-icon { font-size: 1.2rem; }
+
+.rpg-resource-value {
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: #fff;
+}
+
+.rpg-resource-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,0.15);
+    margin: 0 4px;
+}
+
+/* ---- 经验条 ---- */
+.rpg-exp-section {
+    position: relative;
+}
+
+.rpg-exp-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.rpg-exp-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #ffd700;
+}
+
+.rpg-exp-star { font-size: 0.9rem; }
+
+.rpg-exp-numbers {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.6);
+    font-weight: 600;
+}
+
+.rpg-exp-bar {
+    height: 14px;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.1);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255,215,0,0.2);
+}
+
+.rpg-exp-fill {
+    height: 100%;
+    border-radius: 7px;
+    background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
+    background-size: 200% 100%;
+    animation: expShimmer 2s linear infinite;
+    box-shadow: 0 0 8px rgba(251,191,36,0.4);
+}
+
+@keyframes expShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.rpg-exp-glow {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 20px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5));
+    animation: expGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes expGlow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+}
+
+.rpg-rank-title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 5px;
+}
+
+#rpg-next-rank {
+    color: #a78bfa;
+    font-weight: 700;
+}
+
+/* ============================================
+   2. 角色属性面板
+   ============================================ */
+.rpg-attrs-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.rpg-attrs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr);
+    gap: 12px;
+}
+
+.rpg-attr-card {
+    background: rgba(0,0,0,0.04);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.25s;
+    cursor: default;
+}
+
+body.dark-mode .rpg-attr-card {
     background: rgba(255,255,255,0.03);
 }
 
-body.dark-mode #btn-ai-recommend:hover {
-    box-shadow: 0 0 25px rgba(102, 126, 234, 0.5);
+.rpg-attr-card:hover {
+    border-color: rgba(102,126,234,0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(102,126,234,0.15);
 }
 
-/* ---- 响应式 ---- */
+.attr-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.attr-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.attr-study .attr-icon-wrap   { background: rgba(66,153,225,0.15); }
+.attr-explore .attr-icon-wrap { background: rgba(72,187,120,0.15); }
+.attr-discipline .attr-icon-wrap { background: rgba(237,137,54,0.15); }
+.attr-achievement .attr-icon-wrap { background: rgba(237,137,54,0.15); }
+.attr-social .attr-icon-wrap  { background: rgba(237,100,166,0.15); }
+
+.attr-info { flex: 1; min-width: 0; }
+
+.attr-name {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.attr-sub-name {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.attr-stars {
+    display: flex;
+    gap: 1px;
+    flex-shrink: 0;
+}
+
+.star { font-size: 0.6rem; }
+
+.star-filled { color: #ffd700; }
+
+.star-empty { color: rgba(255,215,0,0.25); }
+
+.attr-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+}
+
+.attr-progress-bar {
+    flex: 1;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--hover-overlay);
+    overflow: hidden;
+}
+
+.attr-progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+
+.study-fill      { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.explore-fill   { background: linear-gradient(90deg, #22c55e, #4ade80); }
+.discipline-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.achievement-fill { background: linear-gradient(90deg, #eab308, #facc15); }
+.social-fill    { background: linear-gradient(90deg, #ec4899, #f472b6); }
+
+.attr-progress-text {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.attr-desc {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+
+/* ============================================
+   3. 冒险履历里程碑
+   ============================================ */
+.rpg-milestone-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+/* 主线剧情进度 */
+.story-chapters {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 1.25rem;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.story-chapter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 70px;
+    cursor: default;
+}
+
+.chapter-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    border: 2px solid;
+    transition: all 0.3s;
+}
+
+.story-chapter.done .chapter-icon {
+    background: rgba(72,187,120,0.2);
+    border-color: rgba(72,187,120,0.6);
+    box-shadow: 0 0 12px rgba(72,187,120,0.3);
+}
+
+.story-chapter.active .chapter-icon {
+    background: rgba(102,126,234,0.2);
+    border-color: rgba(102,126,234,0.8);
+    box-shadow: 0 0 16px rgba(102,126,234,0.4);
+    animation: activeChapterPulse 2s ease-in-out infinite;
+}
+
+@keyframes activeChapterPulse {
+    0%, 100% { box-shadow: 0 0 16px rgba(102,126,234,0.4); }
+    50% { box-shadow: 0 0 24px rgba(102,126,234,0.7); }
+}
+
+.story-chapter.locked .chapter-icon {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.15);
+    opacity: 0.5;
+}
+
+.chapter-name {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.story-chapter.done .chapter-name   { color: var(--success-color); }
+.story-chapter.active .chapter-name { color: var(--primary-color); }
+
+.chapter-status {
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.story-chapter.done .chapter-status   { color: var(--success-color); }
+.story-chapter.active .chapter-status { color: var(--primary-color); }
+
+.chapter-connector {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-width: 16px;
+}
+
+.connector-line {
+    flex: 1;
+    height: 3px;
+    background: linear-gradient(90deg, #22c55e, rgba(72,187,120,0.5));
+    border-radius: 2px;
+    margin: 0 2px;
+}
+
+.connector-line.locked {
+    background: rgba(255,255,255,0.1);
+}
+
+/* 核心数据看板 */
+.rpg-stats-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr);
+    gap: 10px;
+}
+
+.rpg-stat-card {
+    background: rgba(0,0,0,0.04);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+body.dark-mode .rpg-stat-card {
+    background: rgba(255,255,255,0.03);
+}
+
+.rpg-stat-card:hover {
+    border-color: rgba(102,126,234,0.4);
+    transform: translateY(-2px);
+}
+
+.rpg-stat-icon { font-size: 1.3rem; margin-bottom: 4px; }
+
+.rpg-stat-value {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    line-height: 1.1;
+}
+
+.rpg-stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* ============================================
+   4. 藏品柜与称号系统
+   ============================================ */
+.rpg-collection-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+/* 称号区 */
+.rpg-titles-area { margin-bottom: 1.25rem; }
+
+.rpg-titles-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.rpg-titles-hint {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.rpg-titles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr);
+    gap: 8px;
+}
+
+.rpg-title-empty, .rpg-ach-empty {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 1rem;
+    grid-column: 1 / -1;
+}
+
+.rpg-title-item {
+    background: rgba(0,0,0,0.04);
+    border: 2px solid rgba(237,137,54,0.2);
+    border-radius: 10px;
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+}
+
+body.dark-mode .rpg-title-item {
+    background: rgba(255,255,255,0.03);
+}
+
+.rpg-title-item:hover {
+    border-color: rgba(237,137,54,0.6);
+    background: rgba(237,137,54,0.08);
+    transform: translateY(-2px);
+}
+
+.rpg-title-item.equipped {
+    border-color: #ffd700;
+    background: rgba(255,215,0,0.1);
+    box-shadow: 0 0 12px rgba(255,215,0,0.2);
+}
+
+.rpg-title-icon { font-size: 1.5rem; margin-bottom: 4px; }
+
+.rpg-title-name {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.rpg-title-desc {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+}
+
+/* 成就区 */
+.rpg-achievements-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.rpg-view-more {
+    font-size: 0.7rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.rpg-view-more:hover { text-decoration: underline; }
+
+.rpg-achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr);
+    gap: 8px;
+}
+
+.rpg-ach-item {
+    background: rgba(0,0,0,0.04);
+    border: 2px solid rgba(255,215,0,0.2);
+    border-radius: 10px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: default;
+    transition: all 0.2s;
+}
+
+body.dark-mode .rpg-ach-item {
+    background: rgba(255,255,255,0.03);
+}
+
+.rpg-ach-item:hover {
+    border-color: rgba(255,215,0,0.5);
+    transform: translateY(-2px);
+}
+
+.rpg-ach-icon { font-size: 1.6rem; margin-bottom: 4px; }
+
+.rpg-ach-name {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+/* ============================================
+   5. NPC 好感度
+   ============================================ */
+.rpg-npc-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.rpg-npc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr);
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.rpg-npc-empty {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 1rem;
+    grid-column: 1 / -1;
+}
+
+.rpg-npc-card {
+    display: flex;
+    gap: 12px;
+    background: rgba(0,0,0,0.04);
+    border: 2px solid rgba(244,114,182,0.2);
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.2s;
+}
+
+body.dark-mode .rpg-npc-card {
+    background: rgba(255,255,255,0.03);
+}
+
+.rpg-npc-card:hover {
+    border-color: rgba(244,114,182,0.5);
+    transform: translateX(2px);
+}
+
+.rpg-npc-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(244,114,182,0.1);
+    border: 2px solid rgba(244,114,182,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+}
+
+.rpg-npc-info { flex: 1; min-width: 0; }
+
+.rpg-npc-name {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.rpg-npc-title {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+
+.rpg-npc-affection-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(244,114,182,0.1);
+    overflow: hidden;
+    margin-bottom: 3px;
+}
+
+.rpg-npc-affection-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #ec4899, #f472b6);
+    transition: width 0.8s ease;
+}
+
+.rpg-npc-affection-text {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+}
+
+.rpg-view-more-link {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px dashed var(--border-color);
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.rpg-view-more-link:hover {
+    background: rgba(102,126,234,0.05);
+    text-decoration: none;
+}
+
+/* ============================================
+   6. 背包
+   ============================================ */
+.rpg-inventory-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.rpg-inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr);
+    gap: 10px;
+}
+
+.rpg-inv-empty {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 1.5rem;
+    grid-column: 1 / -1;
+}
+
+.rpg-inv-item {
+    background: rgba(0,0,0,0.04);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px 6px;
+    text-align: center;
+    cursor: default;
+    transition: all 0.2s;
+}
+
+body.dark-mode .rpg-inv-item {
+    background: rgba(255,255,255,0.03);
+}
+
+.rpg-inv-item:hover {
+    border-color: rgba(102,126,234,0.4);
+    transform: translateY(-2px);
+}
+
+.rpg-inv-icon { font-size: 1.8rem; margin-bottom: 4px; }
+
+.rpg-inv-name {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+.rpg-inv-count {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+/* ============================================
+   7. 角色操作区
+   ============================================ */
+.rpg-actions-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.rpg-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.rpg-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 2px solid;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.rpg-btn-primary {
+    background: var(--gradient-primary);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+}
+
+.rpg-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+    color: #fff;
+}
+
+.rpg-btn-secondary {
+    background: rgba(118,75,162,0.1);
+    border-color: rgba(118,75,162,0.4);
+    color: var(--primary-color);
+}
+
+.rpg-btn-secondary:hover {
+    background: rgba(102,126,234,0.1);
+    border-color: rgba(102,126,234,0.6);
+    transform: translateY(-2px);
+    color: var(--primary-color);
+}
+
+.rpg-btn-ghost {
+    background: rgba(245,101,101,0.08);
+    border-color: rgba(245,101,101,0.3);
+    color: var(--danger-color);
+}
+
+.rpg-btn-ghost:hover {
+    background: rgba(245,101,101,0.15);
+    border-color: rgba(245,101,101,0.6);
+    transform: translateY(-2px);
+    color: var(--danger-color);
+}
+
+.rpg-btn-icon { font-size: 1rem; }
+
+.rpg-btn-label { font-size: 0.85rem; }
+
+.rpg-data-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.04);
+    transition: all 0.3s;
+}
+
+body.dark-mode .rpg-data-hint { background: rgba(255,255,255,0.03); }
+
+.rpg-data-hint-warning { background: rgba(245,101,101,0.08); color: var(--danger-color); }
+.rpg-data-hint-info     { background: rgba(102,126,234,0.08); color: var(--primary-color); }
+
+/* ============================================
+   模态框 RPG 样式
+   ============================================ */
+.rpg-modal-header {
+    background: var(--gradient-primary);
+    color: #fff;
+}
+
+.rpg-modal-header .btn-close { filter: invert(1); }
+
+/* ============================================
+   深色模式覆盖
+   ============================================ */
+body.dark-mode .rpg-hero-banner {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+body.dark-mode .char-name { color: #e0e7ff; }
+
+body.dark-mode .story-chapter.locked .chapter-name { color: var(--text-muted); }
+
+body.dark-mode .rpg-attr-card { background: rgba(255,255,255,0.03); }
+
+body.dark-mode .rpg-stat-card { background: rgba(255,255,255,0.03); }
+
+body.dark-mode .rpg-title-item { background: rgba(255,255,255,0.03); }
+
+body.dark-mode .rpg-ach-item { background: rgba(255,255,255,0.03); }
+
+body.dark-mode .rpg-npc-card { background: rgba(255,255,255,0.03); }
+
+body.dark-mode .rpg-inv-item { background: rgba(255,255,255,0.03); }
+
+/* ============================================
+   响应式
+   ============================================ */
 @media (max-width: 576px) {
-    .page-header { padding: 2rem 0 1.5rem; border-radius: 0 0 1rem 1rem; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .rpg-profile-main { padding: 68px 12px 80px; }
+
+    .hero-content { padding: 1rem; }
+
+    .rpg-character-card { gap: 0.75rem; }
+
+    .char-avatar-frame { width: 72px; height: 72px; }
+
+    .char-avatar { font-size: 2.4rem; }
+
+    .char-name { font-size: 1.1rem; }
+
+    .char-meta-tags { gap: 4px; }
+
+    .char-meta-tag { font-size: 0.6rem; padding: 2px 6px; }
+
+    .char-resources { padding: 8px 10px; }
+
+    .rpg-resource-value { font-size: 0.75rem; }
+
+    .rpg-stats-dashboard { grid-template-columns: repeat(2, 1fr); }
+
+    .rpg-attrs-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .rpg-npc-grid { grid-template-columns: 1fr; }
+
+    .story-chapters { gap: 2px; }
+
+    .chapter-icon { width: 36px; height: 36px; font-size: 1.1rem; }
+
+    .chapter-name { font-size: 0.55rem; }
+
+    .rpg-action-buttons { flex-direction: column; }
+
+    .rpg-action-btn { min-width: unset; }
+}
+
+@media (max-width: 375px) {
+    .rpg-attrs-grid { grid-template-columns: 1fr; }
+
+    .rpg-achievements-grid { grid-template-columns: repeat(3, 1fr); }
+
+    .rpg-inventory-grid { grid-template-columns: repeat(3, 1fr); }
+
+    .rpg-titles-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ============================================
+   主线剧情增强样式
+   ============================================ */
+
+/* 线索收集进度 */
+.story-clue-progress {
+    margin-bottom: 1rem;
+}
+
+.story-clue-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 6px 0;
+}
+
+.story-clue-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #29ADFF, #00E436);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+.story-clue-count {
+    font-size: 0.75rem;
+    color: #FFCD75;
+    font-weight: 700;
+}
+
+/* 成长魔法书入口按钮 */
+.growth-magic-book-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #2a1a40, #1D2B53);
+    border: 2px solid #B13E53;
+    border-radius: 4px;
+    color: #FFCD75;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+.growth-magic-book-btn:hover {
+    background: linear-gradient(135deg, #3a2a50, #2a2a63);
+    transform: translateY(-1px);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+.growth-magic-book-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* 毕业纪念册按钮 */
+.graduation-album-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(135deg, #1a3a2a, #1D2B53);
+    border: 2px solid #00E436;
+    border-radius: 4px;
+    color: #00E436;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.graduation-album-btn:hover {
+    background: linear-gradient(135deg, #2a4a3a, #2a2a63);
+}
+
+.graduation-album-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 探索进度条 */
+.story-exploration-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 6px 0;
+}
+
+.story-exploration-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FFA300, #FF6B6B);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+}
+
+/* 分支选择标签 */
+.story-branch-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    background: rgba(177, 62, 83, 0.2);
+    border: 1px solid #B13E53;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    color: #B13E53;
+}
+
+.story-branch-badge-active {
+    background: rgba(177, 62, 83, 0.4);
+    color: #FFCD75;
+}
+
+/* 剧情通知Badge */
+.story-notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    background: #B13E53;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: storyBadgePulse 2s ease-in-out infinite;
+}
+
+@keyframes storyBadgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* 剧情事件弹窗 */
+.story-event-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 11100;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.story-event-box {
+    width: 100%;
+    max-width: 500px;
+    background: #1D2B53;
+    border: 3px solid #FFA300;
+    border-radius: 4px;
+    box-shadow: 6px 6px 0 #000, 0 0 40px rgba(255, 163, 0, 0.2);
+    animation: storyEventIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes storyEventIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.story-event-header {
+    padding: 12px 16px;
+    background: linear-gradient(180deg, rgba(255, 163, 0, 0.2), transparent);
+    border-bottom: 2px solid rgba(255, 163, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.story-event-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #FFCD75;
+}
+
+.story-event-close {
+    background: transparent;
+    border: 2px solid #5F574F;
+    color: #C2C3C7;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    border-radius: 2px;
+    font-size: 12px;
+}
+
+.story-event-body {
+    padding: 16px;
+}
+
+.story-event-name {
+    font-size: 1rem;
+    font-weight: 900;
+    color: #F4F4F4;
+    margin-bottom: 8px;
+}
+
+.story-event-desc {
+    font-size: 0.85rem;
+    color: #C2C3C7;
+    line-height: 1.7;
+}
+
+.story-event-effects {
+    margin-top: 12px;
+    padding: 10px;
+    background: rgba(0, 228, 54, 0.1);
+    border: 1px solid rgba(0, 228, 54, 0.3);
+    border-radius: 3px;
+    font-size: 0.8rem;
+    color: #00E436;
+}
+
+.story-event-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.story-event-btn {
+    flex: 1;
+    padding: 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 3px;
+    transition: all 0.1s;
+}
+
+.story-event-btn-primary {
+    background: #008751;
+    border-color: #00E436;
+    color: #FFF1E8;
+}
+
+.story-event-btn-primary:hover {
+    background: #00E436;
+}
+
+.story-event-btn-secondary {
+    background: transparent;
+    border-color: #5F574F;
+    color: #C2C3C7;
+}
+
+/* 成长魔法书面板 */
+.magic-book-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 11000;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.magic-book-container {
+    width: 100%;
+    max-width: 600px;
+    max-height: 85vh;
+    background: #1D2B53;
+    border: 3px solid #B13E53;
+    border-radius: 4px;
+    box-shadow: 6px 6px 0 #000, 0 0 40px rgba(177, 62, 83, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.magic-book-header {
+    background: linear-gradient(180deg, #3a1940, #2a1030);
+    border-bottom: 3px solid #B13E53;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.magic-book-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #FFCD75;
+    font-weight: 700;
+}
+
+.magic-book-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.magic-book-volume {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #0d1b3e;
+    border: 2px solid #5D275D;
+    border-radius: 4px;
+}
+
+.magic-book-volume.locked {
+    opacity: 0.5;
+    filter: grayscale(0.8);
+}
+
+.magic-book-volume.unlocked {
+    border-color: #B13E53;
+    box-shadow: 0 0 12px rgba(177, 62, 83, 0.2);
+}
+
+.magic-book-volume-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #F4F4F4;
+    margin-bottom: 6px;
+}
+
+.magic-book-volume-desc {
+    font-size: 0.75rem;
+    color: #C2C3C7;
+    line-height: 1.6;
+}
+
+.magic-book-volume-status {
+    font-size: 0.7rem;
+    color: #00E436;
+    margin-top: 4px;
 }

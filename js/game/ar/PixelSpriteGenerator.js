@@ -41,19 +41,19 @@ var PixelSpriteGenerator = (function () {
      */
     var SPRITE_PRINCIPAL = [
         // 帽子
-        [7,1,DARK_BLUE],[8,1,DARK_BLUE],[7,2,DARK_BLUE],[8,2,DARK_BLUE],[9,2,DARK_BLUE],
+        [7,1,'#1D2B53'],[8,1,'#1D2B53'],[7,2,'#1D2B53'],[8,2,'#1D2B53'],[9,2,'#1D2B53'],
         // 头部
-        [7,3,PEACH],[8,3,PEACH],[9,3,PEACH],[6,4,PEACH],[7,4,PEACH],[8,4,DARK_GRAY],[9,4,PEACH],[10,4,PEACH],
-        [6,5,PEACH],[7,5,PEACH],[8,5,DARK_GRAY],[9,5,PEACH],[10,5,PEACH],[6,6,PEACH],[7,6,PEACH],[8,6,DARK_GRAY],[9,6,PEACH],[10,6,PEACH],
-        [7,7,RED],[8,7,RED],[9,7,RED],
+        [7,3,'#FFCCAA'],[8,3,'#FFCCAA'],[9,3,'#FFCCAA'],[6,4,'#FFCCAA'],[7,4,'#FFCCAA'],[8,4,'#5F574F'],[9,4,'#FFCCAA'],[10,4,'#FFCCAA'],
+        [6,5,'#FFCCAA'],[7,5,'#FFCCAA'],[8,5,'#5F574F'],[9,5,'#FFCCAA'],[10,5,'#FFCCAA'],[6,6,'#FFCCAA'],[7,6,'#FFCCAA'],[8,6,'#5F574F'],[9,6,'#FFCCAA'],[10,6,'#FFCCAA'],
+        [7,7,'#FF004D'],[8,7,'#FF004D'],[9,7,'#FF004D'],
         // 身体（礼服）
-        [6,8,DARK_BLUE],[7,8,DARK_BLUE],[8,8,WHITE],[9,8,DARK_BLUE],[10,8,DARK_BLUE],
-        [6,9,DARK_BLUE],[7,9,DARK_BLUE],[8,9,WHITE],[9,9,DARK_BLUE],[10,9,DARK_BLUE],
-        [6,10,DARK_BLUE],[7,10,DARK_BLUE],[8,10,WHITE],[9,10,DARK_BLUE],[10,10,DARK_BLUE],
-        [5,11,DARK_BLUE],[6,11,DARK_BLUE],[7,11,DARK_BLUE],[8,11,WHITE],[9,11,DARK_BLUE],[10,11,DARK_BLUE],[11,11,DARK_BLUE],
-        [5,12,DARK_BLUE],[6,12,DARK_BLUE],[7,12,DARK_BLUE],[8,12,WHITE],[9,12,DARK_BLUE],[10,12,DARK_BLUE],[11,12,DARK_BLUE],
-        [6,13,DARK_GRAY],[7,13,DARK_GRAY],[8,13,DARK_GRAY],[9,13,DARK_GRAY],[10,13,DARK_GRAY],
-        [6,14,DARK_GRAY],[7,14,DARK_GRAY],[8,14,DARK_GRAY],[9,14,DARK_GRAY],[10,14,DARK_GRAY]
+        [6,8,'#1D2B53'],[7,8,'#1D2B53'],[8,8,'#FFF1E8'],[9,8,'#1D2B53'],[10,8,'#1D2B53'],
+        [6,9,'#1D2B53'],[7,9,'#1D2B53'],[8,9,'#FFF1E8'],[9,9,'#1D2B53'],[10,9,'#1D2B53'],
+        [6,10,'#1D2B53'],[7,10,'#1D2B53'],[8,10,'#FFF1E8'],[9,10,'#1D2B53'],[10,10,'#1D2B53'],
+        [5,11,'#1D2B53'],[6,11,'#1D2B53'],[7,11,'#1D2B53'],[8,11,'#FFF1E8'],[9,11,'#1D2B53'],[10,11,'#1D2B53'],[11,11,'#1D2B53'],
+        [5,12,'#1D2B53'],[6,12,'#1D2B53'],[7,12,'#1D2B53'],[8,12,'#FFF1E8'],[9,12,'#1D2B53'],[10,12,'#1D2B53'],[11,12,'#1D2B53'],
+        [6,13,'#5F574F'],[7,13,'#5F574F'],[8,13,'#5F574F'],[9,13,'#5F574F'],[10,13,'#5F574F'],
+        [6,14,'#5F574F'],[7,14,'#5F574F'],[8,14,'#5F574F'],[9,14,'#5F574F'],[10,14,'#5F574F']
     ];
 
     /**
@@ -62,19 +62,19 @@ var PixelSpriteGenerator = (function () {
      */
     var SPRITE_PROFESSOR = [
         // 头部
-        [7,2,PEACH],[8,2,PEACH],[9,2,PEACH],
-        [6,3,PEACH],[7,3,PEACH],[8,3,DARK_GRAY],[9,3,PEACH],[10,3,PEACH],
-        [6,4,PEACH],[7,4,PEACH],[8,4,DARK_GRAY],[9,4,PEACH],[10,4,PEACH],
-        [7,5,RED],[8,5,RED],[9,5,RED],
+        [7,2,'#FFCCAA'],[8,2,'#FFCCAA'],[9,2,'#FFCCAA'],
+        [6,3,'#FFCCAA'],[7,3,'#FFCCAA'],[8,3,'#5F574F'],[9,3,'#FFCCAA'],[10,3,'#FFCCAA'],
+        [6,4,'#FFCCAA'],[7,4,'#FFCCAA'],[8,4,'#5F574F'],[9,4,'#FFCCAA'],[10,4,'#FFCCAA'],
+        [7,5,'#FF004D'],[8,5,'#FF004D'],[9,5,'#FF004D'],
         // 身体
-        [6,6,BLUE],[7,6,BLUE],[8,6,BLUE],[9,6,BLUE],[10,6,BLUE],
-        [6,7,BLUE],[7,7,BLUE],[8,7,WHITE],[9,7,BLUE],[10,7,BLUE],
-        [6,8,BLUE],[7,8,BLUE],[8,8,WHITE],[9,8,BLUE],[10,8,BLUE],
-        [6,9,BLUE],[7,9,BLUE],[8,9,WHITE],[9,9,BLUE],[10,9,BLUE],
-        [6,10,DARK_GRAY],[7,10,DARK_GRAY],[8,10,DARK_GRAY],[9,10,DARK_GRAY],[10,10,DARK_GRAY],
-        [6,11,DARK_GRAY],[7,11,DARK_GRAY],[8,11,DARK_GRAY],[9,11,DARK_GRAY],[10,11,DARK_GRAY],
-        [6,12,DARK_GRAY],[7,12,DARK_GRAY],[8,12,DARK_GRAY],[9,12,DARK_GRAY],[10,12,DARK_GRAY],
-        [6,13,DARK_GRAY],[7,13,DARK_GRAY],[8,13,DARK_GRAY],[9,13,DARK_GRAY],[10,13,DARK_GRAY]
+        [6,6,'#83769C'],[7,6,'#83769C'],[8,6,'#83769C'],[9,6,'#83769C'],[10,6,'#83769C'],
+        [6,7,'#83769C'],[7,7,'#83769C'],[8,7,'#FFF1E8'],[9,7,'#83769C'],[10,7,'#83769C'],
+        [6,8,'#83769C'],[7,8,'#83769C'],[8,8,'#FFF1E8'],[9,8,'#83769C'],[10,8,'#83769C'],
+        [6,9,'#83769C'],[7,9,'#83769C'],[8,9,'#FFF1E8'],[9,9,'#83769C'],[10,9,'#83769C'],
+        [6,10,'#5F574F'],[7,10,'#5F574F'],[8,10,'#5F574F'],[9,10,'#5F574F'],[10,10,'#5F574F'],
+        [6,11,'#5F574F'],[7,11,'#5F574F'],[8,11,'#5F574F'],[9,11,'#5F574F'],[10,11,'#5F574F'],
+        [6,12,'#5F574F'],[7,12,'#5F574F'],[8,12,'#5F574F'],[9,12,'#5F574F'],[10,12,'#5F574F'],
+        [6,13,'#5F574F'],[7,13,'#5F574F'],[8,13,'#5F574F'],[9,13,'#5F574F'],[10,13,'#5F574F']
     ];
 
     /**
@@ -82,14 +82,14 @@ var PixelSpriteGenerator = (function () {
      * 带锁的像素宝箱
      */
     var SPRITE_CHEST = [
-        [4,4,DARK_GRAY],[5,4,DARK_GRAY],[6,4,DARK_GRAY],[7,4,DARK_GRAY],[8,4,DARK_GRAY],[9,4,DARK_GRAY],[10,4,DARK_GRAY],[11,4,DARK_GRAY],
-        [3,5,BROWN],[4,5,BROWN],[5,5,YELLOW],[6,5,YELLOW],[7,5,YELLOW],[8,5,YELLOW],[9,5,YELLOW],[10,5,YELLOW],[11,5,BROWN],[12,5,BROWN],
-        [3,6,BROWN],[4,6,BROWN],[5,6,YELLOW],[6,6,ORANGE],[7,6,ORANGE],[8,6,ORANGE],[9,6,ORANGE],[10,6,YELLOW],[11,6,BROWN],[12,6,BROWN],
-        [3,7,BROWN],[4,7,BROWN],[5,7,YELLOW],[6,7,ORANGE],[7,7,YELLOW],[8,7,YELLOW],[9,7,ORANGE],[10,7,YELLOW],[11,7,BROWN],[12,7,BROWN],
-        [3,8,BROWN],[4,8,BROWN],[5,8,BROWN],[6,8,BROWN],[7,8,BROWN],[8,8,BROWN],[9,8,BROWN],[10,8,BROWN],[11,8,BROWN],[12,8,BROWN],
-        [3,9,BROWN],[4,9,BROWN],[5,9,BROWN],[6,9,DARK_GRAY],[7,9,DARK_GRAY],[8,9,DARK_GRAY],[9,9,DARK_GRAY],[10,9,BROWN],[11,9,BROWN],[12,9,BROWN],
-        [4,10,BROWN],[5,10,BROWN],[6,10,BROWN],[7,10,BROWN],[8,10,BROWN],[9,10,BROWN],[10,10,BROWN],[11,10,BROWN],
-        [4,11,DARK_GRAY],[5,11,DARK_GRAY],[6,11,DARK_GRAY],[7,11,DARK_GRAY],[8,11,DARK_GRAY],[9,11,DARK_GRAY],[10,11,DARK_GRAY],[11,11,DARK_GRAY]
+        [4,4,'#5F574F'],[5,4,'#5F574F'],[6,4,'#5F574F'],[7,4,'#5F574F'],[8,4,'#5F574F'],[9,4,'#5F574F'],[10,4,'#5F574F'],[11,4,'#5F574F'],
+        [3,5,'#AB5236'],[4,5,'#AB5236'],[5,5,'#FFEC27'],[6,5,'#FFEC27'],[7,5,'#FFEC27'],[8,5,'#FFEC27'],[9,5,'#FFEC27'],[10,5,'#FFEC27'],[11,5,'#AB5236'],[12,5,'#AB5236'],
+        [3,6,'#AB5236'],[4,6,'#AB5236'],[5,6,'#FFEC27'],[6,6,'#FFA300'],[7,6,'#FFA300'],[8,6,'#FFA300'],[9,6,'#FFA300'],[10,6,'#FFEC27'],[11,6,'#AB5236'],[12,6,'#AB5236'],
+        [3,7,'#AB5236'],[4,7,'#AB5236'],[5,7,'#FFEC27'],[6,7,'#FFA300'],[7,7,'#FFEC27'],[8,7,'#FFEC27'],[9,7,'#FFA300'],[10,7,'#FFEC27'],[11,7,'#AB5236'],[12,7,'#AB5236'],
+        [3,8,'#AB5236'],[4,8,'#AB5236'],[5,8,'#AB5236'],[6,8,'#AB5236'],[7,8,'#AB5236'],[8,8,'#AB5236'],[9,8,'#AB5236'],[10,8,'#AB5236'],[11,8,'#AB5236'],[12,8,'#AB5236'],
+        [3,9,'#AB5236'],[4,9,'#AB5236'],[5,9,'#AB5236'],[6,9,'#5F574F'],[7,9,'#5F574F'],[8,9,'#5F574F'],[9,9,'#5F574F'],[10,9,'#AB5236'],[11,9,'#AB5236'],[12,9,'#AB5236'],
+        [4,10,'#AB5236'],[5,10,'#AB5236'],[6,10,'#AB5236'],[7,10,'#AB5236'],[8,10,'#AB5236'],[9,10,'#AB5236'],[10,10,'#AB5236'],[11,10,'#AB5236'],
+        [4,11,'#5F574F'],[5,11,'#5F574F'],[6,11,'#5F574F'],[7,11,'#5F574F'],[8,11,'#5F574F'],[9,11,'#5F574F'],[10,11,'#5F574F'],[11,11,'#5F574F']
     ];
 
     /**
@@ -97,15 +97,15 @@ var PixelSpriteGenerator = (function () {
      * 汉堡 + 薯条
      */
     var SPRITE_FOOD = [
-        [5,3,ORANGE],[6,3,ORANGE],[7,3,ORANGE],[8,3,ORANGE],[9,3,ORANGE],[10,3,ORANGE],
-        [4,4,YELLOW],[5,4,ORANGE],[6,4,ORANGE],[7,4,ORANGE],[8,4,ORANGE],[9,4,ORANGE],[10,4,ORANGE],[11,4,YELLOW],
-        [4,5,BROWN],[5,5,ORANGE],[6,5,ORANGE],[7,5,ORANGE],[8,5,ORANGE],[9,5,ORANGE],[10,5,ORANGE],[11,5,BROWN],
-        [4,6,YELLOW],[5,6,ORANGE],[6,6,ORANGE],[7,6,ORANGE],[8,6,ORANGE],[9,6,ORANGE],[10,6,ORANGE],[11,6,YELLOW],
-        [5,7,YELLOW],[6,7,YELLOW],[7,7,YELLOW],[8,7,YELLOW],[9,7,YELLOW],[10,7,YELLOW],
-        [6,8,DARK_GRAY],[7,8,DARK_GRAY],[8,8,DARK_GRAY],[9,8,DARK_GRAY],
-        [5,9,DARK_GRAY],[6,9,DARK_GRAY],[7,9,DARK_GRAY],[8,9,DARK_GRAY],[9,9,DARK_GRAY],[10,9,DARK_GRAY],
-        [5,10,DARK_GRAY],[6,10,DARK_GRAY],[7,10,DARK_GRAY],[8,10,DARK_GRAY],[9,10,DARK_GRAY],[10,10,DARK_GRAY],
-        [5,11,DARK_GRAY],[6,11,DARK_GRAY],[7,11,DARK_GRAY],[8,11,DARK_GRAY],[9,11,DARK_GRAY],[10,11,DARK_GRAY]
+        [5,3,'#FFA300'],[6,3,'#FFA300'],[7,3,'#FFA300'],[8,3,'#FFA300'],[9,3,'#FFA300'],[10,3,'#FFA300'],
+        [4,4,'#FFEC27'],[5,4,'#FFA300'],[6,4,'#FFA300'],[7,4,'#FFA300'],[8,4,'#FFA300'],[9,4,'#FFA300'],[10,4,'#FFA300'],[11,4,'#FFEC27'],
+        [4,5,'#AB5236'],[5,5,'#FFA300'],[6,5,'#FFA300'],[7,5,'#FFA300'],[8,5,'#FFA300'],[9,5,'#FFA300'],[10,5,'#FFA300'],[11,5,'#AB5236'],
+        [4,6,'#FFEC27'],[5,6,'#FFA300'],[6,6,'#FFA300'],[7,6,'#FFA300'],[8,6,'#FFA300'],[9,6,'#FFA300'],[10,6,'#FFA300'],[11,6,'#FFEC27'],
+        [5,7,'#FFEC27'],[6,7,'#FFEC27'],[7,7,'#FFEC27'],[8,7,'#FFEC27'],[9,7,'#FFEC27'],[10,7,'#FFEC27'],
+        [6,8,'#5F574F'],[7,8,'#5F574F'],[8,8,'#5F574F'],[9,8,'#5F574F'],
+        [5,9,'#5F574F'],[6,9,'#5F574F'],[7,9,'#5F574F'],[8,9,'#5F574F'],[9,9,'#5F574F'],[10,9,'#5F574F'],
+        [5,10,'#5F574F'],[6,10,'#5F574F'],[7,10,'#5F574F'],[8,10,'#5F574F'],[9,10,'#5F574F'],[10,10,'#5F574F'],
+        [5,11,'#5F574F'],[6,11,'#5F574F'],[7,11,'#5F574F'],[8,11,'#5F574F'],[9,11,'#5F574F'],[10,11,'#5F574F']
     ];
 
     /**
@@ -113,14 +113,14 @@ var PixelSpriteGenerator = (function () {
      * 用于奖励解锁动画
      */
     var SPRITE_STAR = [
-        [7,1,YELLOW],[8,1,YELLOW],
-        [6,2,YELLOW],[7,2,ORANGE],[8,2,ORANGE],[9,2,YELLOW],
-        [5,3,YELLOW],[6,3,ORANGE],[7,3,YELLOW],[8,3,YELLOW],[9,3,ORANGE],[10,3,YELLOW],
-        [4,4,ORANGE],[5,4,ORANGE],[6,4,YELLOW],[7,4,YELLOW],[8,4,YELLOW],[9,4,YELLOW],[10,4,ORANGE],[11,4,ORANGE],
-        [4,5,ORANGE],[5,5,YELLOW],[6,5,YELLOW],[7,5,YELLOW],[8,5,YELLOW],[9,5,YELLOW],[10,5,YELLOW],[11,5,ORANGE],
-        [5,6,ORANGE],[6,6,YELLOW],[7,6,YELLOW],[8,6,YELLOW],[9,6,YELLOW],[10,6,ORANGE],
-        [6,7,ORANGE],[7,7,YELLOW],[8,7,YELLOW],[9,7,ORANGE],
-        [7,8,ORANGE],[8,8,ORANGE]
+        [7,1,'#FFEC27'],[8,1,'#FFEC27'],
+        [6,2,'#FFEC27'],[7,2,'#FFA300'],[8,2,'#FFA300'],[9,2,'#FFEC27'],
+        [5,3,'#FFEC27'],[6,3,'#FFA300'],[7,3,'#FFEC27'],[8,3,'#FFEC27'],[9,3,'#FFA300'],[10,3,'#FFEC27'],
+        [4,4,'#FFA300'],[5,4,'#FFA300'],[6,4,'#FFEC27'],[7,4,'#FFEC27'],[8,4,'#FFEC27'],[9,4,'#FFEC27'],[10,4,'#FFA300'],[11,4,'#FFA300'],
+        [4,5,'#FFA300'],[5,5,'#FFEC27'],[6,5,'#FFEC27'],[7,5,'#FFEC27'],[8,5,'#FFEC27'],[9,5,'#FFEC27'],[10,5,'#FFEC27'],[11,5,'#FFA300'],
+        [5,6,'#FFA300'],[6,6,'#FFEC27'],[7,6,'#FFEC27'],[8,6,'#FFEC27'],[9,6,'#FFEC27'],[10,6,'#FFA300'],
+        [6,7,'#FFA300'],[7,7,'#FFEC27'],[8,7,'#FFEC27'],[9,7,'#FFA300'],
+        [7,8,'#FFA300'],[8,8,'#FFA300']
     ];
 
     // ============================================

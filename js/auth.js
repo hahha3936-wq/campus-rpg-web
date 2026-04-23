@@ -107,6 +107,17 @@ const Auth = (() => {
         }
         setToken(data.token);
         setUser(data.user);
+
+        // 埋点：用户登录
+        if (typeof BehaviorTrack !== 'undefined') {
+            BehaviorTrack.trackUserLogin(
+                new Date().toISOString(),
+                { userAgent: navigator.userAgent, platform: navigator.platform }
+            );
+        }
+
+        window.dispatchEvent(new CustomEvent('auth:login', {detail: {authenticated: true, user: data.user}}));
+
         return data;
     }
 
@@ -125,6 +136,7 @@ const Auth = (() => {
         }
         setToken(data.token);
         setUser(data.user);
+        window.dispatchEvent(new CustomEvent('auth:login', {detail: {authenticated: true, user: data.user}}));
         return data;
     }
 

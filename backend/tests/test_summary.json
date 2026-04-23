@@ -1,0 +1,106 @@
+{
+  "report": {
+    "project": "Campus RPG - Main Story V2 System",
+    "generated_at": "2026-04-23",
+    "test_framework": "pytest 9.0.3 + Flask test client",
+    "python_version": "3.13.9",
+    "execution_time_seconds": 0.88,
+    "phase": "final_verification"
+  },
+  "summary": {
+    "total": 48,
+    "passed": 48,
+    "failed": 0,
+    "skipped": 0,
+    "pass_rate": "100%",
+    "warnings": 92
+  },
+  "suites": [
+    {
+      "file": "test_ar_integration.py",
+      "classes": ["TestARIntegration", "TestAREdgeCases"],
+      "tests": 6,
+      "passed": 6
+    },
+    {
+      "file": "test_branch_ending.py",
+      "classes": ["TestBranchChoice", "TestEndingSystem", "TestStoryLock"],
+      "tests": 7,
+      "passed": 7
+    },
+    {
+      "file": "test_integration_edge.py",
+      "classes": ["TestIntegration", "TestEdgeCasesV2"],
+      "tests": 9,
+      "passed": 9,
+      "note": "Newly added in Step 5"
+    },
+    {
+      "file": "test_main_story_v2.py",
+      "classes": ["TestBasicInterface", "TestDataInit", "TestFrontendCompatibility", "TestExceptionHandling"],
+      "tests": 13,
+      "passed": 13
+    },
+    {
+      "file": "test_task_flow.py",
+      "classes": ["TestChapterUnlock", "TestTaskFlow", "TestTaskEdgeCases"],
+      "tests": 13,
+      "passed": 13
+    }
+  ],
+  "test_plan_coverage": {
+    "p0_core": {"planned": 25, "implemented": 25, "coverage": "100%"},
+    "p1_integration": {"planned": 9, "implemented": 7, "coverage": "78%", "note": "T26,T33,T34 require E2E"},
+    "p2_edge_cases": {"planned": 10, "implemented": 10, "coverage": "100%"},
+    "overall": {"planned": 44, "implemented": 42, "coverage": "95%"}
+  },
+  "bug_fixes": [
+    {
+      "id": "B1",
+      "severity": "Bug",
+      "title": "谜题提示索引溢出",
+      "file": "backend/main_story_api.py",
+      "location": "get_puzzle_hint function",
+      "description": "next_hint_idx = min(used_hints, len(hints) - 1) 导致第二次请求提示后索引不再增长",
+      "fix": "改为 if used_hints >= len(hints) 提前返回全部解锁提示；否则 next_hint = hints[used_hints]",
+      "verified": true
+    },
+    {
+      "id": "D1",
+      "severity": "Design",
+      "title": "文件并发安全缺失",
+      "file": "backend/main_story_api.py",
+      "location": "_load_json / _save_json functions",
+      "description": "JSON读写无文件锁、无原子写入，与server.py机制不一致；并发请求可能导致数据损坏",
+      "fix": "引入 _acquire_lock / _release_lock 跨平台文件锁 + 原子写入（临时文件+rename），与server.py保持一致",
+      "verified": true
+    },
+    {
+      "id": "D2",
+      "severity": "Design",
+      "title": "增强数据文件缺失静默失败",
+      "file": "backend/main_story_api.py",
+      "location": "_load_enhanced_data function",
+      "description": "_load_enhanced_data 在文件不存在时返回None无任何警告，用户无感知",
+      "fix": "增加 print('[Story] 增强数据文件不存在: {filename}，增强功能暂时不可用') 日志",
+      "verified": true
+    },
+    {
+      "id": "D3",
+      "severity": "Design",
+      "title": "年级识别精度不足",
+      "file": "backend/main_story_api.py",
+      "location": "_grade_to_stage function",
+      "description": "对研三/硕三/博士三等变体识别不完整，部分用户会错误fallback到新生适应期",
+      "fix": "增加对研三/硕三/博士三→毕业冲刺期、硕一/硕士一/博士一→新生适应期的精确匹配，以及英文年级模糊匹配",
+      "verified": true
+    }
+  ],
+  "warnings_detail": {
+    "count": 92,
+    "type": "DeprecationWarning: datetime.datetime.utcnow()",
+    "location": "backend/tests/helpers.py lines 30, 32, 36",
+    "impact": "None - functional correctness unaffected",
+    "recommendation": "Replace datetime.utcnow() with datetime.now(datetime.UTC) for Python 3.12+ compatibility"
+  }
+}

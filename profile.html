@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的角色 - 校园RPG</title>
+    <title>冒险者档案 - 校园RPG</title>
     <meta name="theme-color" content="#667eea">
-    <meta name="description" content="校园RPG角色详情">
+    <meta name="description" content="校园RPG 冒险者角色档案">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/animations.css">
@@ -16,399 +16,1072 @@
     <link rel="stylesheet" href="css/profile-page.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <!-- 顶部导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top rpg-nav">
         <div class="container-fluid px-4">
             <a class="navbar-brand d-flex align-items-center" href="index.html">
                 <span class="brand-icon">🎮</span><span class="brand-text">校园RPG</span>
             </a>
-            <div class="d-flex align-items-center">
-                <div class="user-stats-mini me-3">
-                    <span class="stat-mini"><span class="stat-icon">💰</span><span id="gold-display-nav">--</span></span>
-                    <span class="stat-mini"><span class="stat-icon">⭐</span>Lv.<span id="level-display-nav">--</span></span>
+            <div class="d-flex align-items-center gap-3">
+                <div class="nav-resource-chips">
+                    <span class="rpg-chip chip-gold">
+                        <span class="chip-icon">💰</span>
+                        <span id="nav-gold">--</span>
+                    </span>
+                    <span class="rpg-chip chip-exp">
+                        <span class="chip-icon">⭐</span>
+                        <span>Lv.<span id="nav-level">--</span></span>
+                    </span>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#settingsModal">⚙️</button>
+                <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#settingsModal">⚙️</button>
             </div>
         </div>
     </nav>
 
-    <main class="main-content" style="padding-top: 70px; padding-bottom: 80px;">
-        <div class="container">
-            <div class="page-header">
-                <div class="container">
-                    <h1>👤 我的角色</h1>
-                    <div class="subtitle">校园冒险者的档案</div>
-                </div>
-            </div>
+    <!-- 背景粒子 -->
+    <div id="particles-bg"></div>
 
-            <!-- 角色头像区 -->
-            <div class="role-avatar-section" id="role-avatar-section">
-                <div class="role-avatar-lg" id="role-avatar">--</div>
-                <div class="role-name-lg" id="role-name">加载中...</div>
-                <div class="role-title-lg" id="role-title">--</div>
-            </div>
+    <!-- 主内容 -->
+    <main class="rpg-profile-main">
 
-            <!-- 数值属性 -->
-            <div class="stats-grid" id="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">💰</div><div class="stat-label">金币</div>
-                    <div class="stat-value" id="stat-gold">--</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⭐</div><div class="stat-label">等级</div>
-                    <div class="stat-value" id="stat-level">--</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⚡</div><div class="stat-label">能量</div>
-                    <div class="stat-value" id="stat-energy">--</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🎯</div><div class="stat-label">专注</div>
-                    <div class="stat-value" id="stat-focus">--</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">📅</div><div class="stat-label">连续签到</div>
-                    <div class="stat-value" id="stat-streak">--</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🗺️</div><div class="stat-label">已探索</div>
-                    <div class="stat-value" id="stat-explored">--</div>
-                </div>
-            </div>
+        <!-- ========== 1. 角色核心信息区 ========== -->
+        <section class="rpg-hero-banner" id="rpg-hero-banner">
+            <div class="hero-bg-pattern"></div>
+            <div class="hero-content">
+                <!-- 角色卡片 -->
+                <div class="rpg-character-card" id="rpg-character-card">
+                    <!-- 头像区 -->
+                    <div class="char-avatar-wrap">
+                        <div class="char-avatar-frame" id="char-avatar-frame">
+                            <div class="char-avatar" id="char-avatar">🎮</div>
+                            <div class="char-avatar-glow"></div>
+                        </div>
+                        <!-- 等级角标 -->
+                        <div class="char-level-badge" id="char-level-badge">Lv.1</div>
+                    </div>
 
-            <!-- 经验条 -->
-            <div class="progress-bar-section">
-                <div class="progress-row">
-                    <div class="progress-label">
-                        <span>⭐ 经验值</span>
-                        <span id="exp-text">-- / --</span>
+                    <!-- 角色基础信息 -->
+                    <div class="char-base-info">
+                        <div class="char-name-row">
+                            <span class="char-name" id="char-name">校园冒险者</span>
+                            <button class="char-edit-btn" id="char-edit-btn" title="编辑资料" onclick="ProfilePage.openSettings()">✏️</button>
+                        </div>
+                        <div class="char-title" id="char-title">新生冒险者</div>
+                        <!-- 阵营/职业/阶段标签 -->
+                        <div class="char-meta-tags">
+                            <span class="char-meta-tag tag-faction" id="char-faction">📚 合肥财经大学</span>
+                            <span class="char-meta-tag tag-class" id="char-major">💻 物联网应用技术</span>
+                            <span class="char-meta-tag tag-stage" id="char-stage">🌱 新生适应期</span>
+                        </div>
+                        <!-- UID -->
+                        <div class="char-uid" id="char-uid">UID: --------</div>
                     </div>
-                    <div class="progress-track">
-                        <div class="progress-fill-bar exp-fill" id="exp-bar" style="width:0%"></div>
-                    </div>
-                </div>
-                <div class="progress-row">
-                    <div class="progress-label">
-                        <span>⚡ 能量值</span>
-                        <span id="energy-text">-- / --</span>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-fill-bar energy-fill" id="energy-bar" style="width:0%"></div>
+
+                    <!-- 核心资源 -->
+                    <div class="char-resources">
+                        <div class="rpg-resource-item" title="金币">
+                            <span class="rpg-resource-icon">💰</span>
+                            <span class="rpg-resource-value" id="rpg-gold">0</span>
+                        </div>
+                        <div class="rpg-resource-divider"></div>
+                        <div class="rpg-resource-item" title="成就徽章">
+                            <span class="rpg-resource-icon">🏆</span>
+                            <span class="rpg-resource-value" id="rpg-achievements">0</span>
+                        </div>
+                        <div class="rpg-resource-divider"></div>
+                        <div class="rpg-resource-item" title="道具数量">
+                            <span class="rpg-resource-icon">🎒</span>
+                            <span class="rpg-resource-value" id="rpg-items">0</span>
+                        </div>
                     </div>
                 </div>
+
+                <!-- 经验条 -->
+                <div class="rpg-exp-section">
+                    <div class="rpg-exp-label">
+                        <span class="rpg-exp-title">
+                            <span class="rpg-exp-star">⭐</span>
+                            经验值
+                        </span>
+                        <span class="rpg-exp-numbers">
+                            <span id="rpg-exp-current">0</span> / <span id="rpg-exp-max">100</span>
+                        </span>
+                    </div>
+                    <div class="rpg-exp-bar">
+                        <div class="rpg-exp-fill" id="rpg-exp-fill" style="width:0%"></div>
+                        <div class="rpg-exp-glow" id="rpg-exp-glow"></div>
+                    </div>
+                    <div class="rpg-rank-title" id="rpg-rank-title">
+                        <span>下一级称号：</span><span id="rpg-next-rank">校园新人</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 2. 角色属性面板 ========== -->
+        <section class="rpg-section rpg-attrs-section" id="rpg-attrs-section">
+            <div class="rpg-section-header">
+                <span class="rpg-section-icon">📊</span>
+                <h2 class="rpg-section-title">角色属性</h2>
+                <span class="rpg-section-line"></span>
+            </div>
+            <div class="rpg-attrs-grid" id="rpg-attrs-grid">
+                <!-- 学业力 -->
+                <div class="rpg-attr-card attr-study" data-attr="study">
+                    <div class="attr-header">
+                        <div class="attr-icon-wrap">
+                            <span class="attr-icon">📚</span>
+                        </div>
+                        <div class="attr-info">
+                            <div class="attr-name">学业力</div>
+                            <div class="attr-sub-name">Study Power</div>
+                        </div>
+                        <div class="attr-stars" id="attr-study-stars"></div>
+                    </div>
+                    <div class="attr-progress-wrap">
+                        <div class="attr-progress-bar">
+                            <div class="attr-progress-fill study-fill" id="attr-study-fill" style="width:0%"></div>
+                        </div>
+                        <div class="attr-progress-text"><span id="attr-study-value">0</span>%</div>
+                    </div>
+                    <div class="attr-desc" id="attr-study-desc">任务完成率、学习进度</div>
+                </div>
+
+                <!-- 探索力 -->
+                <div class="rpg-attr-card attr-explore" data-attr="explore">
+                    <div class="attr-header">
+                        <div class="attr-icon-wrap">
+                            <span class="attr-icon">🗺️</span>
+                        </div>
+                        <div class="attr-info">
+                            <div class="attr-name">探索力</div>
+                            <div class="attr-sub-name">Explore Power</div>
+                        </div>
+                        <div class="attr-stars" id="attr-explore-stars"></div>
+                    </div>
+                    <div class="attr-progress-wrap">
+                        <div class="attr-progress-bar">
+                            <div class="attr-progress-fill explore-fill" id="attr-explore-fill" style="width:0%"></div>
+                        </div>
+                        <div class="attr-progress-text"><span id="attr-explore-value">0</span>%</div>
+                    </div>
+                    <div class="attr-desc" id="attr-explore-desc">AR标记解锁、地图探索</div>
+                </div>
+
+                <!-- 自律力 -->
+                <div class="rpg-attr-card attr-discipline" data-attr="discipline">
+                    <div class="attr-header">
+                        <div class="attr-icon-wrap">
+                            <span class="attr-icon">🍅</span>
+                        </div>
+                        <div class="attr-info">
+                            <div class="attr-name">自律力</div>
+                            <div class="attr-sub-name">Discipline Power</div>
+                        </div>
+                        <div class="attr-stars" id="attr-discipline-stars"></div>
+                    </div>
+                    <div class="attr-progress-wrap">
+                        <div class="attr-progress-bar">
+                            <div class="attr-progress-fill discipline-fill" id="attr-discipline-fill" style="width:0%"></div>
+                        </div>
+                        <div class="attr-progress-text"><span id="attr-discipline-value">0</span>%</div>
+                    </div>
+                    <div class="attr-desc" id="attr-discipline-desc">番茄钟完成率、连续签到</div>
+                </div>
+
+                <!-- 成就力 -->
+                <div class="rpg-attr-card attr-achievement" data-attr="achievement">
+                    <div class="attr-header">
+                        <div class="attr-icon-wrap">
+                            <span class="attr-icon">🏆</span>
+                        </div>
+                        <div class="attr-info">
+                            <div class="attr-name">成就力</div>
+                            <div class="attr-sub-name">Achievement Power</div>
+                        </div>
+                        <div class="attr-stars" id="attr-achievement-stars"></div>
+                    </div>
+                    <div class="attr-progress-wrap">
+                        <div class="attr-progress-bar">
+                            <div class="attr-progress-fill achievement-fill" id="attr-achievement-fill" style="width:0%"></div>
+                        </div>
+                        <div class="attr-progress-text"><span id="attr-achievement-value">0</span>/<span id="attr-achievement-total">26</span></div>
+                    </div>
+                    <div class="attr-desc" id="attr-achievement-desc">成就解锁数、稀有成就</div>
+                </div>
+
+                <!-- 社交力 -->
+                <div class="rpg-attr-card attr-social" data-attr="social">
+                    <div class="attr-header">
+                        <div class="attr-icon-wrap">
+                            <span class="attr-icon">🤝</span>
+                        </div>
+                        <div class="attr-info">
+                            <div class="attr-name">社交力</div>
+                            <div class="attr-sub-name">Social Power</div>
+                        </div>
+                        <div class="attr-stars" id="attr-social-stars"></div>
+                    </div>
+                    <div class="attr-progress-wrap">
+                        <div class="attr-progress-bar">
+                            <div class="attr-progress-fill social-fill" id="attr-social-fill" style="width:0%"></div>
+                        </div>
+                        <div class="attr-progress-text"><span id="attr-social-value">0</span>/<span id="attr-social-total">100</span></div>
+                    </div>
+                    <div class="attr-desc" id="attr-social-desc">NPC好感度、互动次数</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 3. 冒险履历里程碑 ========== -->
+        <section class="rpg-section rpg-milestone-section" id="rpg-milestone-section">
+            <div class="rpg-section-header">
+                <span class="rpg-section-icon">🗺️</span>
+                <h2 class="rpg-section-title">冒险履历</h2>
+                <span class="rpg-section-line"></span>
             </div>
 
-            <div id="profile-load-hint" class="profile-hint" style="display:none;"></div>
-
-            <div class="profile-action-row">
-                <button type="button" class="btn btn-primary flex-grow-1" id="btn-open-profile-editor"><span class="btn-label">👤 编辑资料与目标</span></button>
-                <button type="button" class="btn btn-outline-primary flex-grow-1" id="btn-ai-recommend"><span class="btn-label">🪄 AI 推荐任务</span></button>
+            <!-- 主线剧情进度 -->
+            <div class="rpg-story-progress" id="rpg-story-progress">
+                <div class="story-chapters">
+                    <div class="story-chapter done" data-stage="新生适应期">
+                        <div class="chapter-icon">🌱</div>
+                        <div class="chapter-name">新生适应期</div>
+                        <div class="chapter-status">已完成</div>
+                    </div>
+                    <div class="chapter-connector"><div class="connector-line"></div></div>
+                    <div class="story-chapter locked" data-stage="学业成长期">
+                        <div class="chapter-icon">📖</div>
+                        <div class="chapter-name">学业成长期</div>
+                        <div class="chapter-status">🔒 未解锁</div>
+                    </div>
+                    <div class="chapter-connector"><div class="connector-line locked"></div></div>
+                    <div class="story-chapter locked" data-stage="实习准备期">
+                        <div class="chapter-icon">💼</div>
+                        <div class="chapter-name">实习准备期</div>
+                        <div class="chapter-status">🔒 未解锁</div>
+                    </div>
+                    <div class="chapter-connector"><div class="connector-line locked"></div></div>
+                    <div class="story-chapter locked" data-stage="毕业冲刺期">
+                        <div class="chapter-icon">🎓</div>
+                        <div class="chapter-name">毕业冲刺期</div>
+                        <div class="chapter-status">🔒 未解锁</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="section-title">🎯 长期目标</div>
-            <div class="profile-preview-list" id="profile-goals-preview">
-                <div style="text-align:center;padding:1rem;opacity:0.5">加载中...</div>
+            <!-- 剧情增强数据 -->
+            <div id="story-enhance-section" style="display:none;">
+                <!-- 线索收集进度 -->
+                <div class="story-clue-progress" id="story-clue-section">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                        <span style="font-size:0.75rem;color:#C2C3C7;font-weight:700;">📜 线索收集</span>
+                        <span class="story-clue-count" id="story-clue-count">0/32</span>
+                    </div>
+                    <div class="story-clue-bar">
+                        <div class="story-clue-bar-fill" id="story-clue-bar" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <!-- 探索进度 -->
+                <div id="story-explore-section">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                        <span style="font-size:0.75rem;color:#C2C3C7;font-weight:700;">🗺️ 探索进度</span>
+                        <span style="font-size:0.7rem;color:#FFA300;" id="story-explore-pct">0%</span>
+                    </div>
+                    <div class="story-exploration-bar">
+                        <div class="story-exploration-fill" id="story-explore-bar" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <!-- 成长魔法书入口 -->
+                <button class="growth-magic-book-btn" id="btn-growth-magic-book" onclick="if(window.MainStory)window.MainStory.open();" style="margin-top:12px;">
+                    <span>📖</span>
+                    <span>打开成长魔法书</span>
+                </button>
             </div>
 
-            <div class="section-title">📅 短期计划</div>
-            <div class="profile-preview-list" id="profile-plans-preview">
-                <div style="text-align:center;padding:1rem;opacity:0.5">加载中...</div>
+            <!-- 核心数据看板 -->
+            <div class="rpg-stats-dashboard" id="rpg-stats-dashboard">
+                <div class="rpg-stat-card">
+                    <div class="rpg-stat-icon">📋</div>
+                    <div class="rpg-stat-value" id="stat-tasks-completed">0</div>
+                    <div class="rpg-stat-label">完成任务</div>
+                </div>
+                <div class="rpg-stat-card">
+                    <div class="rpg-stat-icon">🗺️</div>
+                    <div class="rpg-stat-value" id="stat-explored">0</div>
+                    <div class="rpg-stat-label">AR解锁标记</div>
+                </div>
+                <div class="rpg-stat-card">
+                    <div class="rpg-stat-icon">🍅</div>
+                    <div class="rpg-stat-value" id="stat-pomodoro">0</div>
+                    <div class="rpg-stat-label">累计番茄钟</div>
+                </div>
+                <div class="rpg-stat-card">
+                    <div class="rpg-stat-icon">📍</div>
+                    <div class="rpg-stat-value" id="stat-map-progress">0%</div>
+                    <div class="rpg-stat-label">地图探索</div>
+                </div>
+                <div class="rpg-stat-card">
+                    <div class="rpg-stat-icon">📅</div>
+                    <div class="rpg-stat-value" id="stat-streak">0</div>
+                    <div class="rpg-stat-label">连续签到</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 4. 藏品柜与称号系统 ========== -->
+        <section class="rpg-section rpg-collection-section" id="rpg-collection-section">
+            <div class="rpg-section-header">
+                <span class="rpg-section-icon">🏅</span>
+                <h2 class="rpg-section-title">称号与藏品</h2>
+                <span class="rpg-section-line"></span>
             </div>
 
-            <!-- NPC 好感度 -->
-            <div class="section-title">🤝 NPC 好感度</div>
-            <div id="npc-relations">
-                <div style="text-align:center;padding:2rem;opacity:0.5">加载中...</div>
+            <!-- 已解锁称号 -->
+            <div class="rpg-titles-area">
+                <div class="rpg-titles-header">
+                    <span>🎖️ 已解锁称号</span>
+                    <span class="rpg-titles-hint">点击称号可装备/卸下</span>
+                </div>
+                <div class="rpg-titles-grid" id="rpg-titles-grid">
+                    <div class="rpg-title-empty">暂时没有解锁的称号，继续努力冒险吧！</div>
+                </div>
             </div>
-            <a class="view-more-btn" href="npc.html">🌟 查看全部 NPC 详情 →</a>
 
-            <!-- 背包预览 -->
-            <div class="section-title">🎒 背包预览</div>
-            <div class="inv-grid" id="inventory-grid">
-                <div style="text-align:center;padding:2rem;opacity:0.5;grid-column:1/-1">加载中...</div>
+            <!-- 最近成就 -->
+            <div class="rpg-achievements-area">
+                <div class="rpg-achievements-header">
+                    <span>🏆 最近成就</span>
+                    <a href="achievements.html" class="rpg-view-more">查看全部 →</a>
+                </div>
+                <div class="rpg-achievements-grid" id="rpg-achievements-grid">
+                    <div class="rpg-ach-empty">暂无成就，继续加油！</div>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <!-- ========== 5. NPC 好感度 ========== -->
+        <section class="rpg-section rpg-npc-section" id="rpg-npc-section">
+            <div class="rpg-section-header">
+                <span class="rpg-section-icon">🍥</span>
+                <h2 class="rpg-section-title">NPC 好感度</h2>
+                <span class="rpg-section-line"></span>
+            </div>
+            <div class="rpg-npc-grid" id="rpg-npc-grid">
+                <div class="rpg-npc-empty">暂无 NPC 关系数据</div>
+            </div>
+            <a href="npc.html" class="rpg-view-more-link">🌟 查看全部 NPC 详情 →</a>
+        </section>
+
+        <!-- ========== 6. 背包/道具 ========== -->
+        <section class="rpg-section rpg-inventory-section" id="rpg-inventory-section">
+            <div class="rpg-section-header">
+                <span class="rpg-section-icon">🎒</span>
+                <h2 class="rpg-section-title">背包</h2>
+                <span class="rpg-section-line"></span>
+            </div>
+            <div class="rpg-inventory-grid" id="rpg-inventory-grid">
+                <div class="rpg-inv-empty">背包空空如也，去完成任务获取道具吧！</div>
+            </div>
+        </section>
+
+        <!-- ========== 7. 角色操作区 ========== -->
+        <section class="rpg-section rpg-actions-section" id="rpg-actions-section">
+            <div class="rpg-action-buttons">
+                <button class="rpg-action-btn rpg-btn-primary" id="rpg-btn-edit" onclick="ProfilePage.openProfileEditor()">
+                    <span class="rpg-btn-icon">✏️</span>
+                    <span class="rpg-btn-label">编辑冒险者档案</span>
+                </button>
+                <button class="rpg-action-btn rpg-btn-secondary" id="rpg-btn-ai" onclick="ProfilePage.openAIRecommend()">
+                    <span class="rpg-btn-icon">🪄</span>
+                    <span class="rpg-btn-label">AI推荐任务</span>
+                </button>
+                <button class="rpg-action-btn rpg-btn-ghost" id="rpg-btn-logout" onclick="ProfilePage.logout()">
+                    <span class="rpg-btn-icon">🚪</span>
+                    <span class="rpg-btn-label">退出登录</span>
+                </button>
+            </div>
+            <div class="rpg-data-hint" id="rpg-data-hint"></div>
+        </section>
+
     </main>
 
+    <!-- 底部导航栏 -->
     <nav class="bottom-nav">
-        <a class="nav-btn" href="index.html"><span class="nav-icon" aria-hidden="true">🏠</span><span class="nav-text">主页</span></a>
-        <a class="nav-btn" href="tasks.html"><span class="nav-icon" aria-hidden="true">📋</span><span class="nav-text">任务</span></a>
-        <a class="nav-btn" href="achievements.html"><span class="nav-icon" aria-hidden="true">🏆</span><span class="nav-text">成就</span></a>
-        <a class="nav-btn active" href="profile.html"><span class="nav-icon" aria-hidden="true">👤</span><span class="nav-text">我的</span></a>
-        <a class="nav-btn nav-btn-game" href="game.html"><span class="nav-icon" aria-hidden="true">🌾</span><span class="nav-text">农场</span></a>
+        <a class="nav-btn" href="index.html"><span class="nav-icon">🏠</span><span class="nav-text">主页</span></a>
+        <a class="nav-btn" href="tasks.html"><span class="nav-icon">📋</span><span class="nav-text">任务</span></a>
+        <a class="nav-btn" href="achievements.html"><span class="nav-icon">🏆</span><span class="nav-text">成就</span></a>
+        <a class="nav-btn active" href="profile.html"><span class="nav-icon">👤</span><span class="nav-text">我的</span></a>
+        <a class="nav-btn nav-btn-game" href="game.html"><span class="nav-icon">🌾</span><span class="nav-text">农场</span></a>
     </nav>
 
+    <!-- 设置模态框 -->
     <div class="modal fade" id="settingsModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header rpg-modal-header">
                     <h5 class="modal-title">⚙️ 设置</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="settings-modal-body">
-                    <div class="settings-group">
-                        <label class="settings-label">
-                            <span>🎵 音效</span>
-                            <input type="checkbox" id="sound-toggle" checked>
-                        </label>
-                    </div>
-                    <div class="settings-group">
-                        <label class="settings-label">
-                            <span>🌙 夜间模式</span>
-                            <input type="checkbox" id="darkmode-toggle">
-                        </label>
-                    </div>
-                    <div class="settings-group">
-                        <label class="settings-label">
-                            <span>✨ 动画效果</span>
-                            <input type="checkbox" id="animation-toggle" checked>
-                        </label>
-                    </div>
-                    <div class="settings-divider"></div>
-                    <button type="button" class="btn btn-outline-primary w-100 mb-2" onclick="PlanManager.openProfileEditor()">
-                        👤 个人资料与目标计划
-                    </button>
-                    <div class="settings-divider"></div>
-                    <button type="button" class="btn btn-outline-danger w-100" onclick="resetData()">
-                        🔄 重置数据
-                    </button>
+                    <!-- 设置内容由 JS 渲染 -->
                 </div>
                 <div class="modal-footer" id="settings-modal-footer" style="display:none;">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="PlanManager.saveAndClose()">保存</button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="PlanManager.saveAndClose()">💾 保存设置</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Toast 容器 -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="live-toast" class="toast" role="alert">
+            <div class="toast-header">
+                <span id="toast-icon">🎉</span>
+                <strong class="me-auto" id="toast-title">通知</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toast-body">操作成功!</div>
+        </div>
+    </div>
     <div class="notification-container" id="notification-container"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/api-base.js"></script>
-    <script src="js/init.js"></script>
-    <script src="js/game/ar/ar-main.js" defer></script>
-    <script src="js/core/event-bus.js"></script>
-    <script src="js/core/state-manager.js"></script>
-    <script src="js/components.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/features/plan-manager.js"></script>
-    <script src="js/features/recommend-modal.js"></script>
+    <!-- 脚本依赖 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <script src="js/api-base.js" defer></script>
+    <script src="js/init.js" defer></script>
+    <script src="js/core/event-bus.js" defer></script>
+    <script src="js/core/state-manager.js" defer></script>
+    <script src="js/core/offline-storage.js" defer></script>
+    <script src="js/components.js" defer></script>
+    <script src="js/api.js" defer></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/features/plan-manager.js" defer></script>
+    <script src="js/features/recommend-modal.js" defer></script>
+    <script src="js/features/main-story.js" defer></script>
+    <script src="js/features/story-dialogue.js" defer></script>
+    <script src="js/features/story-clue.js" defer></script>
+    <script src="js/features/story-puzzle.js" defer></script>
+    <script src="js/features/story-exploration.js" defer></script>
+    <script src="js/features/story-random-event.js" defer></script>
+
     <script>
     (function () {
         'use strict';
 
-        var defaultSettingsBodyHtml = '';
-
-        function resetData() {
-            if (confirm('确定要重置所有数据吗？此操作不可撤销！')) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-        window.resetData = resetData;
-
-        function escapeHtml(s) {
+        // ========== 全局工具 ==========
+        function escHtml(s) {
             if (s == null || s === '') return '';
             var d = document.createElement('div');
             d.textContent = s;
             return d.innerHTML;
         }
 
-        function renderGoalsPreview(goals) {
-            var el = document.getElementById('profile-goals-preview');
+        function showNotification(message, type) {
+            type = type || 'info';
+            var icon = '🎉';
+            if (type === 'success') icon = '✅';
+            if (type === 'error') icon = '❌';
+            if (type === 'info') icon = '💡';
+            var t = document.getElementById('live-toast');
+            var tb = document.getElementById('toast-body');
+            var ti = document.getElementById('toast-icon');
+            var tt = document.getElementById('toast-title');
+            if (!t || !tb) return;
+            if (ti) ti.textContent = icon;
+            if (tt) tt.textContent = type === 'success' ? '成功' : type === 'error' ? '错误' : '提示';
+            tb.textContent = message;
+            var toast = new bootstrap.Toast(t, { delay: 2500 });
+            toast.show();
+        }
+
+        function showDataHint(text, type) {
+            var el = document.getElementById('rpg-data-hint');
             if (!el) return;
-            if (!goals || !goals.length) {
-                el.innerHTML = '<div class="profile-preview-card"><div class="pps">暂无长期目标，点击「编辑资料与目标」添加</div></div>';
-                return;
+            if (!text) { el.textContent = ''; el.className = 'rpg-data-hint'; return; }
+            el.textContent = text;
+            el.className = 'rpg-data-hint rpg-data-hint-' + (type || 'info');
+        }
+
+        // ========== 称号数据映射 ==========
+        var ACHIEVEMENT_TITLES = {
+            'ach_library_master': { title: '📖 图书馆长', desc: '累计在图书馆自习超过10小时' },
+            'ach_self_discipline_king': { title: '👑 自律王者', desc: '连续签到30天' },
+            'ach_explorer': { title: '🗺️ AR探险家', desc: '探索校园全部地点' },
+            'ach_first_task': { title: '⚔️ 任务新人', desc: '完成第一个任务' },
+            'ach_night_explorer': { title: '🌙 深夜探险家', desc: '在深夜探索校园' },
+        };
+
+        // ========== 等级称号表 ==========
+        var LEVEL_RANKS = [
+            { level: 1,  rank: '校园新人' },
+            { level: 5,  rank: '校园学徒' },
+            { level: 10, rank: '学业新手' },
+            { level: 15, rank: '校园探索家' },
+            { level: 20, rank: '学业达人' },
+            { level: 30, rank: '校园精英' },
+            { level: 50, rank: '校园大师' },
+            { level: 100, rank: '传奇冒险者' },
+        ];
+
+        function getRankForLevel(level) {
+            var rank = LEVEL_RANKS[0].rank;
+            for (var i = 0; i < LEVEL_RANKS.length; i++) {
+                if (level >= LEVEL_RANKS[i].level) rank = LEVEL_RANKS[i].rank;
+                else break;
             }
-            el.innerHTML = goals.slice(0, 5).map(function (g) {
-                return '<div class="profile-preview-card"><div class="ppt">' + escapeHtml(g.title || '未命名') + '</div>' +
-                    '<div class="pps">' + escapeHtml((g.target_date ? '截止 ' + g.target_date + ' · ' : '') + '进度 ' + (g.progress || 0) + '%') + '</div></div>';
-            }).join('');
+            return rank;
         }
 
-        function renderPlansPreview(plans) {
-            var el = document.getElementById('profile-plans-preview');
-            if (!el) return;
-            if (!plans || !plans.length) {
-                el.innerHTML = '<div class="profile-preview-card"><div class="pps">暂无短期计划</div></div>';
-                return;
+        function getNextRank(level) {
+            for (var i = 0; i < LEVEL_RANKS.length; i++) {
+                if (LEVEL_RANKS[i].level > level) return LEVEL_RANKS[i].rank;
             }
-            el.innerHTML = plans.slice(0, 5).map(function (p) {
-                return '<div class="profile-preview-card"><div class="ppt">' + escapeHtml(p.title || '未命名') + '</div>' +
-                    '<div class="pps">' + escapeHtml((p.deadline ? '截止 ' + p.deadline + ' · ' : '') + (p.status || 'pending')) + '</div></div>';
-            }).join('');
+            return '传奇冒险者';
         }
 
-        function showLoadHint(text) {
-            var h = document.getElementById('profile-load-hint');
-            if (!h) return;
-            h.style.display = text ? 'block' : 'none';
-            h.textContent = text || '';
+        function getExpForLevel(level) {
+            return level * 100;
         }
 
-        async function fetchUserBundle() {
-            var data = await API.getUser();
+        // ========== 星级计算 ==========
+        function buildStars(value, max) {
+            var pct = max > 0 ? Math.min(1, value / max) : 0;
+            var filled = Math.round(pct * 5);
+            var stars = '';
+            for (var i = 0; i < 5; i++) {
+                stars += '<span class="star ' + (i < filled ? 'star-filled' : 'star-empty') + '">★</span>';
+            }
+            return stars;
+        }
+
+        // ========== 主角数据获取 ==========
+        async function fetchUserData() {
+            var data = null;
+            try {
+                data = await API.getUser();
+            } catch (e) {}
+
             var usedFallback = false;
             if (!data || !data.user) {
+                var uid = localStorage.getItem('campus_rpg_user') ? JSON.parse(localStorage.getItem('campus_rpg_user')).id : 'guest';
+                var userKey = 'campus_rpg_user_data_' + uid;
                 try {
-                    var url = typeof apiUrl === 'function' ? apiUrl('/data/user_data.json') : '/data/user_data.json';
-                    var r = await fetch(url);
-                    if (r.ok) {
-                        data = await r.json();
-                        usedFallback = true;
-                    }
-                } catch (e) { /* ignore */ }
+                    var saved = JSON.parse(localStorage.getItem(userKey) || 'null');
+                    if (saved && saved.user) { data = saved; usedFallback = true; }
+                } catch (e) {}
             }
             if (!data || !data.user) {
                 data = StateManager.getDefaultUser();
                 usedFallback = true;
             }
             if (usedFallback && !localStorage.getItem('campus_rpg_token')) {
-                showLoadHint('未登录或接口不可用，已显示本地默认数据。前往主页登录后可同步云端档案。');
+                showDataHint('未登录或接口不可用，已显示本地数据。前往主页登录后可同步云端档案。', 'warning');
             } else if (usedFallback) {
-                showLoadHint('已使用本地备用数据；若需同步请检查网络或重新登录。');
+                showDataHint('已使用本地备用数据，若需同步请检查网络或重新登录。', 'info');
             } else {
-                showLoadHint('');
+                showDataHint('', '');
             }
             return data;
         }
 
-        function applyUserToDom(data) {
-            var profile = data.user || {};
+        async function fetchAchievements() {
+            try {
+                var ach = await API.getAchievements();
+                return ach || StateManager.getDefaultAchievements();
+            } catch (e) {
+                return StateManager.getDefaultAchievements();
+            }
+        }
+
+        async function fetchExplorationData() {
+            try {
+                var resp = await fetch(apiUrl('/api/exploration/locations'));
+                if (resp.ok) {
+                    var data = await resp.json();
+                    return data.locations || [];
+                }
+            } catch (e) {}
+            return [];
+        }
+
+        async function fetchStoryProgress(uid) {
+            try {
+                var resp = await fetch(apiUrl('/api/story/progress'));
+                if (resp.ok) {
+                    var data = await resp.json();
+                    return data;
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        // ========== 渲染函数 ==========
+
+        function applyUserToUI(data, achData, locations) {
+            var user = data.user || {};
             var role = data.role || {};
             var stats = data.stats || {};
-            var gold = role.gold != null ? role.gold : 0;
-            var level = role.level != null ? role.level : 1;
-            var energy = stats.energy != null ? stats.energy : 0;
-            var energyMax = 100;
-            var focus = stats.focus != null ? stats.focus : 0;
-            var streak = stats.current_streak != null ? stats.current_streak : 0;
+            var exploration = data.exploration || {};
 
-            document.getElementById('gold-display-nav').textContent = gold;
-            document.getElementById('level-display-nav').textContent = level;
+            var level = role.level || 1;
+            var exp = role.experience || 0;
+            var expNeeded = role.experience_needed || getExpForLevel(level);
+            var gold = role.gold || 0;
+            var uid = localStorage.getItem('campus_rpg_user') ? JSON.parse(localStorage.getItem('campus_rpg_user')).id : 'guest';
 
-            document.getElementById('role-avatar').textContent = role.avatar || '🎮';
-            document.getElementById('role-name').textContent = profile.name || '校园冒险者';
-            document.getElementById('role-title').textContent = role.title || (profile.grade ? profile.grade + ' · 冒险者' : '新生');
+            // --- 导航栏资源 ---
+            document.getElementById('nav-gold').textContent = gold;
+            document.getElementById('nav-level').textContent = level;
 
-            document.getElementById('stat-gold').textContent = gold;
-            document.getElementById('stat-level').textContent = level;
-            document.getElementById('stat-energy').textContent = energy + '/' + energyMax;
-            document.getElementById('stat-focus').textContent = focus;
-            document.getElementById('stat-streak').textContent = streak;
+            // --- 角色卡片 ---
+            document.getElementById('char-avatar').textContent = role.avatar || user.avatar || '🎮';
+            document.getElementById('char-name').textContent = user.name || '校园冒险者';
+            document.getElementById('char-level-badge').textContent = 'Lv.' + level;
+            document.getElementById('char-faction').textContent = '📚 ' + (user.school || '未知学校');
+            document.getElementById('char-major').textContent = '💻 ' + (user.major || user.grade || '未知专业');
+            var stage = user.current_stage || StateManager.inferGrowthStage(user.grade);
+            document.getElementById('char-stage').textContent = '🌱 ' + stage;
+            document.getElementById('char-uid').textContent = 'UID: ' + uid;
 
-            var exp = role.experience != null ? role.experience : 0;
-            var expNeeded = role.experience_needed != null ? role.experience_needed : Math.max(100, level * 100);
-            document.getElementById('exp-text').textContent = exp + '/' + expNeeded;
-            document.getElementById('exp-bar').style.width = Math.min(100, expNeeded ? (exp / expNeeded * 100) : 0) + '%';
+            var rank = getRankForLevel(level);
+            document.getElementById('char-title').textContent = rank;
+            document.getElementById('rpg-next-rank').textContent = getNextRank(level);
 
-            document.getElementById('energy-text').textContent = energy + '/' + energyMax;
-            document.getElementById('energy-bar').style.width = Math.min(100, energy / energyMax * 100) + '%';
-
-            var npcRelations = data.npc_relationship || {};
-            var npcEls = document.getElementById('npc-relations');
-            if (Object.keys(npcRelations).length === 0) {
-                npcEls.innerHTML = '<div style="text-align:center;padding:1rem;opacity:0.5">暂无 NPC 关系数据</div>';
-            } else {
-                var npcIcons = { naruto: '🍥', sasuke: '👤' };
-                var npcNames = { naruto: '漩涡鸣人老师', sasuke: '宇智波佐助助教' };
-                npcEls.innerHTML = Object.entries(npcRelations).map(function (entry) {
-                    var id = entry[0];
-                    var npc = entry[1];
-                    var maxA = npc.max_affection || 100;
-                    var aff = npc.affection || 0;
-                    var pct = Math.round((aff / maxA) * 100);
-                    return '<div class="npc-relation-card">' +
-                        '<div class="npc-avatar-sm">' + (npcIcons[id] || '👤') + '</div>' +
-                        '<div class="npc-relation-info">' +
-                        '<div class="npc-relation-name">' + escapeHtml(npcNames[id] || id) + '</div>' +
-                        '<div class="npc-relation-title">' + escapeHtml(npc.title || '初识') + '</div>' +
-                        '<div class="npc-affection-row">' +
-                        '<div class="npc-affection-track">' +
-                        '<div class="npc-affection-fill" style="width:' + pct + '%"></div></div>' +
-                        '<div class="npc-affection-label"><span>好感度</span><span>' + aff + '/' + maxA + '</span></div>' +
-                        '</div></div></div>';
-                }).join('');
+            // --- 核心资源 ---
+            document.getElementById('rpg-gold').textContent = gold;
+            var unlockedAch = 0;
+            var totalAch = 0;
+            if (achData && achData.achievements) {
+                Object.values(achData.achievements).forEach(function (list) {
+                    (list || []).forEach(function (a) {
+                        totalAch++;
+                        if (a.status === 'unlocked') unlockedAch++;
+                    });
+                });
             }
+            document.getElementById('rpg-achievements').textContent = unlockedAch;
+            document.getElementById('rpg-items').textContent = (data.inventory || []).length;
 
-            var inv = data.inventory || [];
-            var invGrid = document.getElementById('inventory-grid');
-            if (inv.length === 0) {
-                invGrid.innerHTML = '<div style="text-align:center;padding:2rem;opacity:0.5;grid-column:1/-1">背包空空如也</div>';
-            } else {
-                invGrid.innerHTML = inv.slice(0, 8).map(function (item) {
-                    var qty = item.quantity != null ? item.quantity : (item.count != null ? item.count : 1);
-                    return '<div class="inv-item">' +
-                        '<div>' + (item.icon || '📦') + '</div>' +
-                        '<div class="inv-item-name">' + escapeHtml(item.name || '物品') + '</div>' +
-                        '<div class="inv-item-count">x' + qty + '</div></div>';
-                }).join('');
-                if (inv.length > 8) {
-                    invGrid.innerHTML += '<div class="inv-item" style="opacity:0.5"><div>📦</div><div class="inv-item-name">更多</div><div class="inv-item-count">+' + (inv.length - 8) + '</div></div>';
-                }
-            }
+            // --- 经验条 ---
+            var expPct = expNeeded > 0 ? Math.min(100, (exp / expNeeded) * 100) : 0;
+            document.getElementById('rpg-exp-current').textContent = exp;
+            document.getElementById('rpg-exp-max').textContent = expNeeded;
+            var expFill = document.getElementById('rpg-exp-fill');
+            expFill.style.width = expPct + '%';
+            // 动画：逐帧增长
+            expFill.style.transition = 'width 1s cubic-bezier(0.4,0,0.2,1)';
+            setTimeout(function () { expFill.style.transition = 'width 0.3s ease'; }, 1100);
 
-            renderGoalsPreview(profile.long_term_goals);
-            renderPlansPreview(profile.short_term_plans);
+            // --- 五大属性 ---
+            renderAttrs(data, achData, locations);
 
+            // --- 冒险履历 ---
+            renderMilestones(data, achData, locations);
+
+            // --- 称号 ---
+            renderTitles(achData);
+
+            // --- 成就 ---
+            renderRecentAchievements(achData);
+
+            // --- NPC 好感度 ---
+            renderNPCs(data);
+
+            // --- 背包 ---
+            renderInventory(data);
+
+            // --- 存档给 PlanManager ---
             PlanManager._userData = data;
         }
 
-        async function loadExploredCount(data) {
-            var disc = ((data.exploration && data.exploration.discovered_locations) || []).length;
-            var total = 0;
-            try {
-                var explResp = await fetch(apiUrl('/api/exploration/locations'));
-                if (explResp.ok) {
-                    var lj = await explResp.json();
-                    total = (lj.locations || []).length;
+        function renderAttrs(data, achData, locations) {
+            var user = data.user || {};
+            var stats = data.stats || {};
+            var exploration = data.exploration || {};
+            var tasks = data.tasks || [];
+            var pomodoro = data.pomodoro || {};
+            var achievements = achData || {};
+
+            // 学业力：任务完成率
+            var totalTasks = tasks.length || 1;
+            var completedTasks = tasks.filter(function (t) { return t.status === 'completed' || t.progress === 100; }).length;
+            var taskRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            var studyVal = user.task_completion_rate || taskRate;
+
+            // 探索力：AR标记解锁数
+            var discovered = (exploration.discovered_locations || []).length;
+            var totalLocations = locations.length || 24;
+            var exploreVal = totalLocations > 0 ? Math.round((discovered / totalLocations) * 100) : 0;
+
+            // 自律力：番茄钟完成数 + 签到天数
+            var pomodoroSessions = pomodoro.total_sessions || 0;
+            var streak = stats.current_streak || 0;
+            var disciplineVal = Math.min(100, Math.round(pomodoroSessions * 5 + streak * 3));
+
+            // 成就力：已解锁数 / 总数
+            var totalAch = 0, unlockedAch = 0;
+            if (achievements && achievements.achievements) {
+                Object.values(achievements.achievements).forEach(function (list) {
+                    (list || []).forEach(function (a) {
+                        totalAch++;
+                        if (a.status === 'unlocked') unlockedAch++;
+                    });
+                });
+            }
+            var achievementVal = totalAch > 0 ? unlockedAch : 0;
+            var achievementTotal = totalAch || 26;
+
+            // 社交力：NPC 好感度总和
+            var npcRelations = data.npc_relationship || {};
+            var npcTotal = 0, npcMax = 0;
+            Object.values(npcRelations).forEach(function (npc) {
+                npcTotal += npc.affection || 0;
+                npcMax += npc.max_affection || 100;
+            });
+            var socialVal = npcMax > 0 ? Math.round((npcTotal / npcMax) * 100) : 0;
+
+            // 更新 DOM
+            var attrs = [
+                { key: 'study',      val: studyVal,      max: 100, desc: '任务完成率 ' + taskRate + '%，课程学习进度' },
+                { key: 'explore',    val: exploreVal,    max: 100, desc: 'AR解锁 ' + discovered + '/' + totalLocations + '，地图探索' },
+                { key: 'discipline', val: disciplineVal, max: 100, desc: '番茄钟 ' + pomodoroSessions + '次，连续签到 ' + streak + '天' },
+                { key: 'achievement', val: achievementVal, max: achievementTotal, desc: '成就 ' + achievementVal + '/' + achievementTotal + '，稀有成就完成度' },
+                { key: 'social',     val: socialVal,     max: 100, desc: 'NPC好感度 ' + npcTotal + '，校园互动数据' },
+            ];
+
+            attrs.forEach(function (a) {
+                var fill = document.getElementById('attr-' + a.key + '-fill');
+                var valEl = document.getElementById('attr-' + a.key + '-value');
+                var totalEl = document.getElementById('attr-' + a.key + '-total');
+                var descEl = document.getElementById('attr-' + a.key + '-desc');
+                var starsEl = document.getElementById('attr-' + a.key + '-stars');
+
+                if (fill) {
+                    var pct = a.max > 0 ? Math.min(100, (a.val / a.max) * 100) : 0;
+                    fill.style.width = pct + '%';
+                    fill.style.transition = 'width 0.8s cubic-bezier(0.4,0,0.2,1)';
                 }
-            } catch (e) { /* ignore */ }
-            document.getElementById('stat-explored').textContent = total ? (disc + '/' + total) : String(disc);
-        }
+                if (valEl) valEl.textContent = a.val;
+                if (totalEl) totalEl.textContent = a.max;
+                if (descEl) descEl.textContent = a.desc;
+                if (starsEl) starsEl.innerHTML = buildStars(a.val, a.max);
+            });
 
-        async function loadData() {
-            try {
-                var data = await fetchUserBundle();
-                applyUserToDom(data);
-                await loadExploredCount(data);
-            } catch (e) {
-                console.warn('角色数据加载失败:', e);
-                document.getElementById('role-name').textContent = '加载失败';
-                document.getElementById('role-title').textContent = '请刷新或返回主页重试';
-                showLoadHint('数据加载异常，请检查网络或登录状态。');
-                renderGoalsPreview([]);
-                renderPlansPreview([]);
-                document.getElementById('npc-relations').innerHTML = '<div style="text-align:center;padding:1rem;opacity:0.5">加载失败</div>';
-                document.getElementById('inventory-grid').innerHTML = '<div style="text-align:center;padding:2rem;opacity:0.5;grid-column:1/-1">加载失败</div>';
-            }
-        }
+            // 属性卡片 hover 提示
+            document.querySelectorAll('.rpg-attr-card').forEach(function (card) {
+                var attrKey = card.dataset.attr;
+                var attr = attrs.find(function (a) { return a.key === attrKey; });
+                if (!attr) return;
 
-        var settingsBody = document.getElementById('settings-modal-body');
-        if (settingsBody) defaultSettingsBodyHtml = settingsBody.innerHTML;
-
-        document.getElementById('btn-open-profile-editor').addEventListener('click', async function () {
-            await PlanManager.openProfileEditor();
-            var el = document.getElementById('settingsModal');
-            if (el && typeof bootstrap !== 'undefined') {
-                var inst = bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el);
-                inst.show();
-            }
-        });
-
-        document.getElementById('btn-ai-recommend').addEventListener('click', function () {
-            if (typeof RecommendModal !== 'undefined') RecommendModal.open();
-        });
-
-        var settingsModalEl = document.getElementById('settingsModal');
-        if (settingsModalEl) {
-            settingsModalEl.addEventListener('hidden.bs.modal', function () {
-                var body = document.getElementById('settings-modal-body');
-                if (body && defaultSettingsBodyHtml) body.innerHTML = defaultSettingsBodyHtml;
-                loadData();
+                card.title = attr.desc;
+                card.addEventListener('mouseenter', function () {
+                    card.querySelector('.attr-desc').style.color = 'var(--primary-color)';
+                });
+                card.addEventListener('mouseleave', function () {
+                    card.querySelector('.attr-desc').style.color = '';
+                });
             });
         }
 
-        loadData();
+        async function renderMilestones(data, achData, locations) {
+            var user = data.user || {};
+            var stats = data.stats || {};
+            var exploration = data.exploration || {};
+            var tasks = data.tasks || [];
+
+            // 核心数据
+            var completedTasks = tasks.filter(function (t) { return t.status === 'completed' || t.progress === 100; }).length;
+            document.getElementById('stat-tasks-completed').textContent = completedTasks;
+            document.getElementById('stat-explored').textContent = (exploration.discovered_locations || []).length;
+
+            var pomodoroSessions = (data.pomodoro || {}).total_sessions || 0;
+            document.getElementById('stat-pomodoro').textContent = pomodoroSessions;
+
+            var streak = stats.current_streak || 0;
+            document.getElementById('stat-streak').textContent = streak;
+
+            var totalLocations = locations.length || 24;
+            var discovered = (exploration.discovered_locations || []).length;
+            var mapPct = totalLocations > 0 ? Math.round((discovered / totalLocations) * 100) : 0;
+            document.getElementById('stat-map-progress').textContent = mapPct + '%';
+
+            // 主线剧情阶段
+            var currentStage = user.current_stage || StateManager.inferGrowthStage(user.grade);
+            var stageOrder = ['新生适应期', '学业成长期', '实习准备期', '毕业冲刺期'];
+            var currentIdx = stageOrder.indexOf(currentStage);
+
+            document.querySelectorAll('.story-chapter').forEach(function (ch) {
+                var stageName = ch.dataset.stage;
+                var idx = stageOrder.indexOf(stageName);
+                ch.classList.remove('done', 'active', 'locked');
+                if (idx < currentIdx) {
+                    ch.classList.add('done');
+                    ch.querySelector('.chapter-status').textContent = '已完成';
+                    ch.querySelector('.chapter-icon').textContent = '✅';
+                } else if (idx === currentIdx) {
+                    ch.classList.add('active');
+                    ch.querySelector('.chapter-status').textContent = '进行中';
+                    ch.querySelector('.chapter-icon').textContent = stageOrder[idx] === '新生适应期' ? '🌱' :
+                        stageOrder[idx] === '学业成长期' ? '📖' :
+                        stageOrder[idx] === '实习准备期' ? '💼' : '🎓';
+                } else {
+                    ch.classList.add('locked');
+                    ch.querySelector('.chapter-status').textContent = '🔒 未解锁';
+                }
+            });
+
+            // 剧情增强数据：加载线索收集和探索进度
+            var storyEnhanceSection = document.getElementById('story-enhance-section');
+            if (storyEnhanceSection) {
+                storyEnhanceSection.style.display = 'block';
+                try {
+                    var storyResp = await window.Auth.apiFetch('/api/story/progress');
+                    if (storyResp && storyResp.ok) {
+                        var storyData = await storyResp.json();
+                        if (storyData.success && storyData.progress) {
+                            var p = storyData.progress;
+                            // 线索收集进度
+                            var cluesCount = p.clues_count || (p.clues_collected || []).length;
+                            var totalClues = 32;
+                            var cluePct = Math.round((cluesCount / totalClues) * 100);
+                            var clueEl = document.getElementById('story-clue-count');
+                            var clueBar = document.getElementById('story-clue-bar');
+                            if (clueEl) clueEl.textContent = cluesCount + '/' + totalClues;
+                            if (clueBar) clueBar.style.width = cluePct + '%';
+
+                            // 探索进度
+                            var puzzlesSolved = (p.puzzles_solved || []).length;
+                            var explorePct = Math.min(100, Math.round((discovered / totalLocations) * 100 + puzzlesSolved * 5));
+                            var explorePctEl = document.getElementById('story-explore-pct');
+                            var exploreBarEl = document.getElementById('story-explore-bar');
+                            if (explorePctEl) explorePctEl.textContent = explorePct + '%';
+                            if (exploreBarEl) exploreBarEl.style.width = explorePct + '%';
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[profile] 加载剧情增强数据失败:', e);
+                }
+            }
+        }
+
+        function renderTitles(achData) {
+            var grid = document.getElementById('rpg-titles-grid');
+            var unlockedTitles = [];
+
+            if (achData && achData.achievements) {
+                Object.entries(achData.achievements).forEach(function (entry) {
+                    var catName = entry[0];
+                    var list = entry[1] || [];
+                    list.forEach(function (ach) {
+                        if (ach.status === 'unlocked') {
+                            var mapped = ACHIEVEMENT_TITLES[ach.id];
+                            unlockedTitles.push({
+                                id: ach.id,
+                                name: mapped ? mapped.title : '🏅 ' + ach.name,
+                                desc: mapped ? mapped.desc : ach.desc || '',
+                                icon: ach.icon || '🏅',
+                            });
+                        }
+                    });
+                });
+            }
+
+            if (unlockedTitles.length === 0) {
+                grid.innerHTML = '<div class="rpg-title-empty">暂时没有解锁的称号，继续努力冒险吧！</div>';
+                return;
+            }
+
+            grid.innerHTML = unlockedTitles.map(function (t) {
+                return '<div class="rpg-title-item" data-id="' + escHtml(t.id) + '" title="' + escHtml(t.desc) + '" onclick="ProfilePage.toggleTitle(this)">' +
+                    '<div class="rpg-title-icon">' + t.icon + '</div>' +
+                    '<div class="rpg-title-name">' + t.name + '</div>' +
+                    '<div class="rpg-title-desc">' + t.desc + '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function renderRecentAchievements(achData) {
+            var grid = document.getElementById('rpg-achievements-grid');
+            var recent = [];
+
+            if (achData && achData.achievements) {
+                Object.values(achData.achievements).forEach(function (list) {
+                    (list || []).forEach(function (ach) {
+                        if (ach.status === 'unlocked') {
+                            recent.push(ach);
+                        }
+                    });
+                });
+                recent.sort(function (a, b) {
+                    return (b.date || '').localeCompare(a.date || '');
+                });
+            }
+
+            if (recent.length === 0) {
+                grid.innerHTML = '<div class="rpg-ach-empty">暂无成就，继续加油！</div>';
+                return;
+            }
+
+            grid.innerHTML = recent.slice(0, 6).map(function (ach) {
+                return '<div class="rpg-ach-item" title="' + escHtml(ach.desc || '') + '">' +
+                    '<div class="rpg-ach-icon">' + (ach.icon || '🏆') + '</div>' +
+                    '<div class="rpg-ach-name">' + escHtml(ach.name || '') + '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function renderNPCs(data) {
+            var grid = document.getElementById('rpg-npc-grid');
+            var npcs = data.npc_relationship || {};
+
+            if (Object.keys(npcs).length === 0) {
+                grid.innerHTML = '<div class="rpg-npc-empty">暂无 NPC 关系数据</div>';
+                return;
+            }
+
+            var npcIcons = { naruto: '🍥', sasuke: '⚡' };
+            var npcNames = { naruto: '漩涡鸣人老师', sasuke: '宇智波佐助助教' };
+
+            grid.innerHTML = Object.entries(npcs).map(function (entry) {
+                var id = entry[0];
+                var npc = entry[1];
+                var pct = Math.round(((npc.affection || 0) / (npc.max_affection || 100)) * 100);
+                return '<div class="rpg-npc-card">' +
+                    '<div class="rpg-npc-avatar">' + (npcIcons[id] || '👤') + '</div>' +
+                    '<div class="rpg-npc-info">' +
+                    '<div class="rpg-npc-name">' + escHtml(npcNames[id] || id) + '</div>' +
+                    '<div class="rpg-npc-title">' + escHtml(npc.title || '初识') + '</div>' +
+                    '<div class="rpg-npc-affection-bar">' +
+                    '<div class="rpg-npc-affection-fill" style="width:' + pct + '%"></div></div>' +
+                    '<div class="rpg-npc-affection-text">好感度 ' + (npc.affection || 0) + '/' + (npc.max_affection || 100) + '</div>' +
+                    '</div></div>';
+            }).join('');
+        }
+
+        function renderInventory(data) {
+            var grid = document.getElementById('rpg-inventory-grid');
+            var inv = data.inventory || [];
+
+            if (inv.length === 0) {
+                grid.innerHTML = '<div class="rpg-inv-empty">背包空空如也，去完成任务获取道具吧！</div>';
+                return;
+            }
+
+            grid.innerHTML = inv.map(function (item) {
+                return '<div class="rpg-inv-item" title="' + escHtml(item.description || item.name) + '">' +
+                    '<div class="rpg-inv-icon">' + (item.icon || '📦') + '</div>' +
+                    '<div class="rpg-inv-name">' + escHtml(item.name || '物品') + '</div>' +
+                    '<div class="rpg-inv-count">x' + (item.quantity != null ? item.quantity : 1) + '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        // ========== 主加载 ==========
+        var _userDataCache = null;
+
+        async function loadAllData() {
+            try {
+                var data = await fetchUserData();
+                var achData = await fetchAchievements();
+                var locations = await fetchExplorationData();
+
+                // 补充 tasks 到 data
+                try {
+                    var tasksData = await API.getTasks();
+                    if (tasksData && tasksData.tasks) data.tasks = tasksData.tasks;
+                    else data.tasks = [];
+                } catch (e) { data.tasks = []; }
+
+                // 补充 pomodoro
+                try {
+                    var pomData = await API.getPomodoroStats();
+                    if (pomData) data.pomodoro = pomData;
+                } catch (e) { data.pomodoro = {}; }
+
+                _userDataCache = data;
+                applyUserToUI(data, achData, locations);
+            } catch (e) {
+                console.warn('[ProfilePage] 加载失败:', e);
+                showDataHint('数据加载异常，请检查网络或登录状态。', 'error');
+            }
+        }
+
+        // ========== 设置模态框 ==========
+        var _defaultSettingsHtml = '';
+
+        function initSettingsModal() {
+            var body = document.getElementById('settings-modal-body');
+            if (body) _defaultSettingsHtml = body.innerHTML;
+        }
+
+        // ========== 角色操作 ==========
+        window.ProfilePage = {
+            openProfileEditor: function () {
+                var el = document.getElementById('settingsModal');
+                if (!el) return;
+                // 打开个人资料编辑器
+                PlanManager.openProfileEditor();
+                var m = bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el);
+                m.show();
+            },
+            openAIRecommend: function () {
+                if (typeof RecommendModal !== 'undefined' && RecommendModal.open) {
+                    RecommendModal.open();
+                } else {
+                    showNotification('AI推荐功能正在加载中，请稍后...', 'info');
+                }
+            },
+            openSettings: function () {
+                var el = document.getElementById('settingsModal');
+                if (el) {
+                    var m = bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el);
+                    m.show();
+                }
+            },
+            logout: function () {
+                if (!confirm('确定要退出登录吗？')) return;
+                Auth.logout();
+            },
+            toggleTitle: function (el) {
+                el.classList.toggle('equipped');
+                var equipped = el.classList.contains('equipped');
+                el.querySelector('.rpg-title-name').style.color = equipped ? 'var(--warning-color)' : '';
+                showNotification(equipped ? '称号已装备！' : '称号已卸下', 'success');
+            },
+            refresh: function () {
+                loadAllData();
+            }
+        };
+        window.ProfilePage = window.ProfilePage;
+
+        // ========== 事件绑定 ==========
+        document.addEventListener('DOMContentLoaded', function () {
+            initSettingsModal();
+            loadAllData();
+
+            // 设置弹窗关闭后刷新数据
+            var settingsEl = document.getElementById('settingsModal');
+            if (settingsEl) {
+                settingsEl.addEventListener('hidden.bs.modal', function () {
+                    if (PlanManager._editorShown) {
+                        PlanManager._editorShown = false;
+                        var body = document.getElementById('settings-modal-body');
+                        if (body && _defaultSettingsHtml) body.innerHTML = _defaultSettingsHtml;
+                        loadAllData();
+                    }
+                });
+            }
+
+            // 全局数据变化监听
+            if (typeof EventBus !== 'undefined') {
+                EventBus.on('user:update', function () { loadAllData(); });
+            }
+        });
+
     })();
     </script>
 </body>

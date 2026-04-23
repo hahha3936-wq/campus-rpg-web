@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="css/chat-widget.css">
     <link rel="stylesheet" href="css/profile-modal.css">
     <link rel="stylesheet" href="css/npc-page.css">
+    <!-- NPC生态系统样式 -->
+    <link rel="stylesheet" href="css/npc-ecosystem.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
@@ -34,9 +36,65 @@
     <main class="main-content" style="padding-top: 70px; padding-bottom: 80px;">
         <div class="container" style="max-width: 600px;">
             <div style="padding: 1rem 0 0.5rem; font-size: 0.85rem; opacity: 0.6;">校园RPG / NPC</div>
-            <h1 style="font-weight: 900; margin-bottom: 1.5rem; font-size: 1.75rem;">🌟 NPC 角色</h1>
+            <h1 style="font-weight: 900; margin-bottom: 1rem; font-size: 1.75rem;">🌟 NPC 伙伴</h1>
 
-            <!-- NPC 选择 -->
+            <!-- NPC生态系统入口 -->
+            <div id="npc-ecosystem-entry" style="
+                background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1));
+                border: 2px solid rgba(102,126,234,0.3);
+                border-radius: 12px;
+                padding: 14px 16px;
+                margin-bottom: 1.5rem;
+                cursor: pointer;
+                transition: all 0.2s;
+            " onclick="openNPCCosystem()">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <div style="
+                            width:44px;height:44px;border-radius:50%;
+                            background:linear-gradient(135deg,#667eea,#764ba2);
+                            display:flex;align-items:center;justify-content:center;
+                            font-size:22px;
+                            box-shadow:0 0 16px rgba(102,126,234,0.4);
+                        ">🎭</div>
+                        <div>
+                            <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;">
+                                校园专属NPC生态
+                            </div>
+                            <div id="npc-progress-text" style="font-size:11px;color:#667eea;">
+                                已解锁 0/13 位NPC伙伴
+                            </div>
+                        </div>
+                    </div>
+                    <div style="font-size:20px;color:#667eea;">→</div>
+                </div>
+                <div style="margin-top:10px;">
+                    <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                        <span class="npc-rank-badge lv1" style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(102,126,234,0.2);color:#667eea;">🎓导师</span>
+                        <span class="npc-rank-badge lv2" style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(16,185,129,0.2);color:#10b981;">👨‍🎓学长</span>
+                        <span class="npc-rank-badge lv3" style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(139,92,246,0.2);color:#8b5cf6;">🏫校园</span>
+                        <span class="npc-rank-badge lv4" style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(236,72,153,0.2);color:#ec4899;">🎨兴趣</span>
+                        <span class="npc-rank-badge lv5" style="font-size:9px;padding:2px 6px;border-radius:8px;background:rgba(251,191,36,0.2);color:#fbbf24;">✨神秘</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分隔线 -->
+            <div style="
+                display:flex;align-items:center;gap:12px;
+                margin-bottom:1.5rem;
+            ">
+                <div style="flex:1;height:1px;background:rgba(102,126,234,0.2);"></div>
+                <span style="font-size:11px;color:#5D275D;font-weight:600;">动漫世界</span>
+                <div style="flex:1;height:1px;background:rgba(102,126,234,0.2);"></div>
+            </div>
+
+            <!-- 原有动漫NPC选择（兼容层） -->
+            <div style="font-size:12px;color:#888;margin-bottom:1rem;display:flex;align-items:center;gap:6px;">
+                <span>🍥</span>
+                <span>经典动漫角色（保留功能）</span>
+            </div>
+
             <div class="npc-selector">
                 <div class="npc-tab-btn active" data-npc="naruto" onclick="switchNPC('naruto')">
                     <span class="npc-tab-icon">🍥</span>
@@ -50,7 +108,7 @@
                 </div>
             </div>
 
-            <!-- NPC 详情卡 -->
+            <!-- NPC 详情卡（原有功能，保留完整） -->
             <div class="npc-detail-card" id="npc-detail-card">
                 <div class="npc-header naruto" id="npc-header">
                     <div class="npc-detail-avatar" id="npc-avatar">🍥</div>
@@ -68,6 +126,7 @@
                     </div>
                     <div class="affection-rank" id="affection-rank">
                         <span class="rank-pip active">初识</span>
+                        <span class="rank-pip">熟悉</span>
                         <span class="rank-pip">信赖</span>
                         <span class="rank-pip">挚友</span>
                     </div>
@@ -76,9 +135,7 @@
                 <div class="npc-bio">
                     <div class="npc-bio-title">角色介绍</div>
                     <div class="npc-bio-text" id="npc-bio">
-                        漩涡鸣人是你的热血导师，总是充满干劲。他相信每个人都有自己的成长节奏，
-                        会用忍者的故事来激励你在学业上前进。作为曾经的"吊车尾"，他最懂得
-                        如何帮助被看轻的学生找到自己的道路。
+                        漩涡鸣人是你的热血导师，总是充满干劲。他相信每个人都有自己的成长节奏，会用忍者的故事来激励你在学业上前进。作为曾经的"吊车尾"，他最懂得如何帮助被看轻的学生找到自己的道路。
                     </div>
                 </div>
 
@@ -86,13 +143,18 @@
                     <div class="dialogue-section-title">💬 对话历史 <span id="npc-typing-indicator" aria-hidden="true" style="display:none;font-size:0.8rem;opacity:0.7;">typing...</span></div>
                     <div id="dialogue-history">
                         <div class="dialogue-bubble ai">今天的任务加油哦！🔥</div>
-                        <div class="dialogue-bubble ai" style="opacity:0.6;font-size:0.8rem">（昨天 14:23）</div>
                     </div>
-                    <div style="text-align:center;margin-top:0.5rem">
-                        <button class="npc-action-btn secondary" style="flex:none;padding:0.5rem 1rem;font-size:0.8rem" onclick="showFullHistory()">
-                            查看全部对话 →
-                        </button>
-                    </div>
+                </div>
+
+                <div class="dialogue-input-area" id="dialogue-input-area">
+                    <input type="text"
+                           id="npc-message-input"
+                           class="npc-message-input"
+                           placeholder="输入日语或中文与NPC对话..."
+                           autocomplete="off">
+                    <button class="npc-send-btn" id="npc-send-btn" onclick="sendUserMessage()">
+                        发送
+                    </button>
                 </div>
 
                 <div class="npc-actions">
@@ -149,13 +211,14 @@
                         <label class="settings-label"><span>🌙 夜间模式</span><input type="checkbox" id="darkmode-toggle"></label>
                     </div>
                     <hr>
-                    <div style="text-align:center;opacity:0.7;font-size:0.85rem">🎮 校园RPG v1.0.0</div>
+                    <div style="text-align:center;opacity:0.7;font-size:0.85rem">🎮 校园RPG v2.0.0</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gcoord@0.2.3/dist/gcoord.global.prod.min.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/init.js"></script>
     <script src="js/game/ar/ar-main.js" defer></script>
@@ -163,6 +226,14 @@
     <script src="js/core/state-manager.js"></script>
     <script src="js/components.js"></script>
     <script src="js/api.js"></script>
+    <!-- NPC生态系统核心 -->
+    <script src="js/features/npc-ecosystem-data.js"></script>
+    <script src="js/features/npc-ecosystem.js"></script>
+    <!-- NPC UI界面 -->
+    <script src="js/features/npc-ui.js"></script>
+    <!-- NPC系统集成桥接 -->
+    <script src="js/features/npc-ecosystem-bridge.js"></script>
+    <!-- 原有NPC管理器（保留完整功能） -->
     <script src="js/features/npc-manager.js"></script>
     <script>
     (function() {
@@ -176,20 +247,79 @@
             document.body.classList.toggle('dark-mode', darkToggle.checked);
             localStorage.setItem('campusRPG_dark', darkToggle.checked ? '1' : '0');
         });
+
+        // 更新NPC解锁进度显示
+        function updateNPCProgress() {
+            const progressText = document.getElementById('npc-progress-text');
+            if (progressText && window.NPCEcosystemBridge) {
+                const progress = NPCEcosystemBridge.getUnlockProgress();
+                progressText.textContent = `已解锁 ${progress.unlocked}/${progress.total} 位NPC伙伴`;
+            }
+        }
+
+        // 打开NPC生态系统界面
+        window.openNPCCosystem = function() {
+            if (window.NPCUI) {
+                NPCUI.open();
+            }
+        };
+
+        // 页面加载时更新进度
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(updateNPCProgress, 2000);
+            });
+        } else {
+            setTimeout(updateNPCProgress, 2000);
+        }
+
+        // 监听NPC解锁事件，更新进度
+        if (window.EventBus) {
+            EventBus.on('npc:unlocked', function() {
+                setTimeout(updateNPCProgress, 500);
+            });
+            EventBus.on('data:loaded', function() {
+                setTimeout(updateNPCProgress, 1000);
+            });
+        }
     })();
     </script>
     <script>
     (async function() {
         'use strict';
 
-        // 页面加载时初始化 NPCManager
+        // 等待所有依赖模块加载
+        await new Promise(function(resolve) {
+            var check = function() {
+                if (typeof NPCManager !== 'undefined' && typeof StateManager !== 'undefined') {
+                    resolve();
+                } else {
+                    setTimeout(check, 50);
+                }
+            };
+            check();
+        });
+
+        // 初始化 NPCManager
         await NPCManager.init();
 
         // 暴露全局函数供 HTML onclick 调用
-        window.switchNPC    = (id) => NPCManager.switchNpc(id);
-        window.triggerDialogue = () => NPCManager.triggerDialogue();
-        window.sendGift     = () => NPCManager.sendGift();
-        window.showFullHistory = () => NPCManager.showFullHistory();
+        window.switchNPC    = function(id) { NPCManager.switchNpc(id); };
+        window.triggerDialogue = function() { NPCManager.triggerDialogue(); };
+        window.sendGift     = function() { NPCManager.sendGift(); };
+        window.showFullHistory = function() { NPCManager.showFullHistory(); };
+        window.sendUserMessage = function() { NPCManager.sendUserMessage(); };
+
+        // 回车发送消息
+        const input = document.getElementById('npc-message-input');
+        if (input) {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    NPCManager.sendUserMessage();
+                }
+            });
+        }
     })();
     </script>
 </body>

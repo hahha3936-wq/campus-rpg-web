@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"校园RPG应用默认权限配置","local":true,"windows":["main"],"permissions":["core:default","core:window:allow-set-title","core:window:allow-minimize","core:window:allow-maximize","core:window:allow-close","core:window:allow-set-fullscreen","core:window:allow-set-always-on-top","shell:allow-open"]}}

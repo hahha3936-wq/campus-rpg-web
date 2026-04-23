@@ -5,21 +5,49 @@
  */
 
 const PlanManager = {
-    // 缓存当前用户数据中的计划
     _userData: null,
     _modalInstance: null,
+
+    /**
+     * 转义 HTML 特殊字符
+     */
+    _escapeHtml(str) {
+        return String(str || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    },
+
+    /**
+     * 转义用于 HTML 属性的字符串
+     */
+    _escapeAttr(str) {
+        return String(str || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    },
 
     /**
      * 初始化模块，加载用户数据
      */
     async init() {
-        let data = await API.getUser();
+        let data = null;
+        try {
+            data = await API.getUser();
+        } catch (err) {
+            console.warn('[PlanManager] API.getUser() 失败:', err);
+        }
         if (!data || !data.user) {
+            const uid = localStorage.getItem('campus_rpg_user') ? JSON.parse(localStorage.getItem('campus_rpg_user')).id : 'guest';
+            const userKey = `campus_rpg_user_data_${uid}`;
             try {
-                const url = typeof window.apiUrl === 'function' ? window.apiUrl('/data/user_data.json') : '/data/user_data.json';
-                const r = await fetch(url);
-                if (r.ok) data = await r.json();
-            } catch (e) { /* ignore */ }
+                const saved = JSON.parse(localStorage.getItem(userKey) || 'null');
+                if (saved?.user) {
+                    data = saved;
+                }
+            } catch (e) {
+                console.warn('[PlanManager] JSON.parse localStorage 失败:', e);
+            }
         }
         if (!data || !data.user) {
             if (typeof StateManager !== 'undefined' && typeof StateManager.getDefaultUser === 'function') {
@@ -239,10 +267,13 @@ const PlanManager = {
     // ============================================
 
     /**
-     * 保存所有更改到后端
+     * 保存所有更改到后端（失败时保存到 localStorage 兜底）
      */
     async save() {
-        if (!this._userData) return false;
+        if (!this._userData) {
+            console.error('[PlanManager] _userData 为空，无法保存。请检查用户是否已登录。');
+            return false;
+        }
 
         try {
             const result = await API.updateUserProfile({
@@ -259,16 +290,40 @@ const PlanManager = {
             });
 
             if (result?.success) {
-                // 将后端返回的完整数据同步到本地缓存，避免 getUser 后数据不一致
                 if (result.user) {
                     this._userData = result.user;
                 }
                 return true;
             }
+
+            // 后端返回失败，解析错误类型
+            const errorMsg = result?.error || '';
+            if (errorMsg.includes('登录') || errorMsg.includes('token') || errorMsg.includes('过期') || errorMsg.includes('重新登录')) {
+                console.warn('[PlanManager] 未登录或登录已过期，数据仅保存在本地');
+            } else {
+                console.warn('[PlanManager] 后端保存失败，将保存到本地:', errorMsg);
+            }
+            this._saveToLocalStorage();
             return false;
+
         } catch (e) {
-            console.warn('[PlanManager] 保存失败:', e);
+            console.warn('[PlanManager] 保存异常，保存到本地:', e.message);
+            this._saveToLocalStorage();
             return false;
+        }
+    },
+
+    /**
+     * 保存到 localStorage（兜底方案）
+     */
+    _saveToLocalStorage() {
+        try {
+            const uid = localStorage.getItem('campus_rpg_user') ? JSON.parse(localStorage.getItem('campus_rpg_user')).id : 'guest';
+            const key = `campus_rpg_user_data_${uid}`;
+            localStorage.setItem(key, JSON.stringify(this._userData));
+            console.info('[PlanManager] 用户数据已保存到本地 storage');
+        } catch (e) {
+            console.warn('[PlanManager] localStorage 保存失败:', e);
         }
     },
 
@@ -876,20 +931,21 @@ const PlanManager = {
             this._userData.user.lazy_level = lazy_level;
         }
 
-        const success = await this.save();
+        const result = await this.save();
 
-        if (success) {
+        if (result) {
             showNotification('设置已保存！', 'success');
-            // 通知 StateManager 刷新
-            if (window.StateManager) {
-                StateManager.set('user', this._userData);
-            }
-            // 更新 AppState
-            if (window.AppState) {
-                AppState.user = this._userData;
-            }
         } else {
-            showNotification('保存失败，请重试', 'error');
+            showNotification('已保存到本地（后端未连接，将稍后同步）', 'info');
+        }
+
+        // 通知 StateManager 刷新
+        if (window.StateManager) {
+            StateManager.set('user', this._userData);
+        }
+        // 更新 AppState
+        if (window.AppState) {
+            AppState.user = this._userData;
         }
 
         // 关闭设置弹窗
@@ -903,6 +959,12 @@ const PlanManager = {
     async openProfileEditor() {
         await this.init();
         this._renderPlannerContent();
+        this._editorShown = true;
+        var el = document.getElementById('settingsModal');
+        if (el && typeof bootstrap !== 'undefined') {
+            var m = bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el);
+            m.show();
+        }
     }
 };
 

@@ -1,0 +1,785 @@
+{
+  "campus_level_week": {
+    "type": "campus_level",
+    "period": "week",
+    "updated_at": "2026-04-22 23:20:34",
+    "cached_at": "2026-04-22T23:20:34.184358",
+    "rankings": [
+      {
+        "rank": 1,
+        "user_id": "702268b5",
+        "name": "123123",
+        "level": 1,
+        "value": 1010
+      },
+      {
+        "rank": 2,
+        "user_id": "a948e6ac",
+        "name": "111",
+        "level": 1,
+        "value": 1010
+      },
+      {
+        "rank": 3,
+        "user_id": "0b597d92",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 4,
+        "user_id": "0e0ceb1d",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 5,
+        "user_id": "1d998c64",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 6,
+        "user_id": "1efd45f2",
+        "name": "测试用户797529",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 7,
+        "user_id": "2188a05d",
+        "name": "123123",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 8,
+        "user_id": "24675c09",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 9,
+        "user_id": "25a75313",
+        "name": "11111",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 10,
+        "user_id": "43df52eb",
+        "name": "测试学校",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 11,
+        "user_id": "440a2936",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 12,
+        "user_id": "4a92fdd2",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 13,
+        "user_id": "523884cf",
+        "name": "11111111",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 14,
+        "user_id": "54c1cd28",
+        "name": "测试用户026235",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 15,
+        "user_id": "6a9fe227",
+        "name": "测试用户544668",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 16,
+        "user_id": "6f00b5e5",
+        "name": "测试用户364391",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 17,
+        "user_id": "73d913a3",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 18,
+        "user_id": "73f40b81",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 19,
+        "user_id": "7acd6cac",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 20,
+        "user_id": "7b2b6fa7",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 21,
+        "user_id": "8291751a",
+        "name": "测试学校",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 22,
+        "user_id": "867d7e21",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 23,
+        "user_id": "8a8051a7",
+        "name": "TestUser2",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 24,
+        "user_id": "950e7429",
+        "name": "测试学校",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 25,
+        "user_id": "a5186bfa",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 26,
+        "user_id": "b469d288",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 27,
+        "user_id": "d00f6252",
+        "name": "测试用户721924",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 28,
+        "user_id": "ddcc9e98",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 29,
+        "user_id": "dec16bb9",
+        "name": "测试用户081215",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 30,
+        "user_id": "e7768de9",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 31,
+        "user_id": "ea92faa5",
+        "name": "测试用户602335",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 32,
+        "user_id": "ecc42c92",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 33,
+        "user_id": "ed881c0b",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 34,
+        "user_id": "f0526f37",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 35,
+        "user_id": "f0da2350",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 36,
+        "user_id": "f33336f0",
+        "name": "测试",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 37,
+        "user_id": "f5cc6ce3",
+        "name": "测试用户771727",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 38,
+        "user_id": "f9a21238",
+        "name": "???",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 39,
+        "user_id": "fab5084d",
+        "name": "测试用户771815",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 40,
+        "user_id": "fcb0b662",
+        "name": "测试149448",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 41,
+        "user_id": "ff962a15",
+        "name": "测试用户843204",
+        "level": 1,
+        "value": 1000
+      }
+    ]
+  },
+  "campus_level_month": {
+    "type": "campus_level",
+    "period": "month",
+    "updated_at": "2026-04-18 20:58:13",
+    "cached_at": "2026-04-18T20:58:13.332091",
+    "rankings": [
+      {
+        "rank": 1,
+        "user_id": "702268b5",
+        "name": "123123",
+        "level": 1,
+        "value": 1010
+      },
+      {
+        "rank": 2,
+        "user_id": "2188a05d",
+        "name": "123123",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 3,
+        "user_id": "25a75313",
+        "name": "11111",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 4,
+        "user_id": "523884cf",
+        "name": "11111111",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 5,
+        "user_id": "8a8051a7",
+        "name": "TestUser2",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 6,
+        "user_id": "f9a21238",
+        "name": "???",
+        "level": 1,
+        "value": 1000
+      }
+    ]
+  },
+  "campus_level_day": {
+    "type": "campus_level",
+    "period": "day",
+    "updated_at": "2026-04-18 20:58:14",
+    "cached_at": "2026-04-18T20:58:14.484581",
+    "rankings": [
+      {
+        "rank": 1,
+        "user_id": "702268b5",
+        "name": "123123",
+        "level": 1,
+        "value": 1010
+      },
+      {
+        "rank": 2,
+        "user_id": "2188a05d",
+        "name": "123123",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 3,
+        "user_id": "25a75313",
+        "name": "11111",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 4,
+        "user_id": "523884cf",
+        "name": "11111111",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 5,
+        "user_id": "8a8051a7",
+        "name": "TestUser2",
+        "level": 1,
+        "value": 1000
+      },
+      {
+        "rank": 6,
+        "user_id": "f9a21238",
+        "name": "???",
+        "level": 1,
+        "value": 1000
+      }
+    ]
+  },
+  "class_tasks_day": {
+    "type": "class_tasks",
+    "period": "day",
+    "updated_at": "2026-04-18 20:58:15",
+    "cached_at": "2026-04-18T20:58:15.531813",
+    "rankings": [
+      {
+        "rank": 1,
+        "user_id": "2188a05d",
+        "name": "123123",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 2,
+        "user_id": "25a75313",
+        "name": "11111",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 3,
+        "user_id": "523884cf",
+        "name": "11111111",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 4,
+        "user_id": "702268b5",
+        "name": "123123",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 5,
+        "user_id": "8a8051a7",
+        "name": "TestUser2",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 6,
+        "user_id": "f9a21238",
+        "name": "???",
+        "level": 1,
+        "value": 0
+      }
+    ]
+  },
+  "ar_explore_day": {
+    "type": "ar_explore",
+    "period": "day",
+    "updated_at": "2026-04-18 20:58:16",
+    "cached_at": "2026-04-18T20:58:16.252233",
+    "rankings": [
+      {
+        "rank": 1,
+        "user_id": "2188a05d",
+        "name": "123123",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 2,
+        "user_id": "25a75313",
+        "name": "11111",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 3,
+        "user_id": "523884cf",
+        "name": "11111111",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 4,
+        "user_id": "702268b5",
+        "name": "123123",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 5,
+        "user_id": "8a8051a7",
+        "name": "TestUser2",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 6,
+        "user_id": "f9a21238",
+        "name": "???",
+        "level": 1,
+        "value": 0
+      }
+    ]
+  },
+  "class_tasks_week": {
+    "type": "class_tasks",
+    "period": "week",
+    "updated_at": "2026-04-20 17:09:56",
+    "cached_at": "2026-04-20T17:09:56.555888",
+    "rankings": [
+      {
+        "rank": 1,
+        "user_id": "0b597d92",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 2,
+        "user_id": "0e0ceb1d",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 3,
+        "user_id": "1d998c64",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 4,
+        "user_id": "1efd45f2",
+        "name": "测试用户797529",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 5,
+        "user_id": "2188a05d",
+        "name": "123123",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 6,
+        "user_id": "24675c09",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 7,
+        "user_id": "25a75313",
+        "name": "11111",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 8,
+        "user_id": "43df52eb",
+        "name": "测试学校",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 9,
+        "user_id": "440a2936",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 10,
+        "user_id": "4a92fdd2",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 11,
+        "user_id": "523884cf",
+        "name": "11111111",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 12,
+        "user_id": "54c1cd28",
+        "name": "测试用户026235",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 13,
+        "user_id": "6a9fe227",
+        "name": "测试用户544668",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 14,
+        "user_id": "6f00b5e5",
+        "name": "测试用户364391",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 15,
+        "user_id": "702268b5",
+        "name": "123123",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 16,
+        "user_id": "73d913a3",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 17,
+        "user_id": "73f40b81",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 18,
+        "user_id": "7acd6cac",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 19,
+        "user_id": "7b2b6fa7",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 20,
+        "user_id": "8291751a",
+        "name": "测试学校",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 21,
+        "user_id": "867d7e21",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 22,
+        "user_id": "8a8051a7",
+        "name": "TestUser2",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 23,
+        "user_id": "950e7429",
+        "name": "测试学校",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 24,
+        "user_id": "a5186bfa",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 25,
+        "user_id": "b469d288",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 26,
+        "user_id": "d00f6252",
+        "name": "测试用户721924",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 27,
+        "user_id": "ddcc9e98",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 28,
+        "user_id": "dec16bb9",
+        "name": "测试用户081215",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 29,
+        "user_id": "e7768de9",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 30,
+        "user_id": "ea92faa5",
+        "name": "测试用户602335",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 31,
+        "user_id": "ecc42c92",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 32,
+        "user_id": "ed881c0b",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 33,
+        "user_id": "f0526f37",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 34,
+        "user_id": "f0da2350",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 35,
+        "user_id": "f33336f0",
+        "name": "测试",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 36,
+        "user_id": "f5cc6ce3",
+        "name": "测试用户771727",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 37,
+        "user_id": "f9a21238",
+        "name": "???",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 38,
+        "user_id": "fab5084d",
+        "name": "测试用户771815",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 39,
+        "user_id": "fcb0b662",
+        "name": "测试149448",
+        "level": 1,
+        "value": 0
+      },
+      {
+        "rank": 40,
+        "user_id": "ff962a15",
+        "name": "测试用户843204",
+        "level": 1,
+        "value": 0
+      }
+    ]
+  }
+}

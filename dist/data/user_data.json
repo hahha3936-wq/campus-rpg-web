@@ -1,0 +1,140 @@
+{
+  "user": {
+    "name": "同学",
+    "school": "合肥财经大学·物联网应用技术",
+    "grade": "大一",
+    "goals": [
+      "过四级",
+      "不挂科",
+      "学完高数"
+    ],
+    "apps": {
+      "timetable": "WakeUp课程表",
+      "campus": "学习通"
+    },
+    "interest": "动漫",
+    "lazy_level": 2,
+    "party_size": 2,
+    "long_term_goals": [
+      {
+        "id": "lt_1",
+        "title": "通过英语四级考试",
+        "description": "在大学一年级通过CET-4考试，目标分数450+",
+        "target_date": "2026-12-31",
+        "status": "active",
+        "progress": 30,
+        "tags": ["英语", "考试", "四级"]
+      },
+      {
+        "id": "lt_2",
+        "title": "保持不挂科",
+        "description": "大一所有课程顺利通过，不挂科",
+        "target_date": "2026-07-01",
+        "status": "active",
+        "progress": 50,
+        "tags": ["学业", "考试"]
+      }
+    ],
+    "short_term_plans": [
+      {
+        "id": "st_1",
+        "title": "本周高数复习计划",
+        "description": "完成第三章至第五章的习题练习",
+        "deadline": "2026-04-17",
+        "priority": "high",
+        "status": "in_progress",
+        "linked_long_term": "lt_2",
+        "estimated_hours": 8,
+        "tasks": []
+      },
+      {
+        "id": "st_2",
+        "title": "四级单词背诵",
+        "description": "每天背诵20个四级核心词汇",
+        "deadline": "2026-04-30",
+        "priority": "medium",
+        "status": "pending",
+        "linked_long_term": "lt_1",
+        "estimated_hours": 5,
+        "tasks": []
+      }
+    ]
+  },
+  "role": {
+    "level": 2,
+    "experience": 90,
+    "experience_needed": 200,
+    "gold": 155
+  },
+  "stats": {
+    "energy": 100,
+    "focus": 100,
+    "mood": 100,
+    "stress": 20,
+    "total_tasks_completed": 0,
+    "total_achievements_unlocked": 5,
+    "days_active": 1,
+    "current_streak": 1
+  },
+  "signin": {
+    "last_signin_date": "2026-04-09",
+    "total_signins": 2,
+    "longest_streak": 2,
+    "current_streak": 2,
+    "records": [
+      "2026-04-08",
+      "2026-04-09"
+    ]
+  },
+  "npc_relationship": {
+    "naruto": {
+      "affection": 20,
+      "max_affection": 100,
+      "title": "热血导师"
+    },
+    "sasuke": {
+      "affection": 10,
+      "max_affection": 100,
+      "title": "傲娇助教"
+    }
+  },
+  "buffs": [
+    {
+      "name": "动漫联动",
+      "description": "学习效率+15%",
+      "duration": "今日有效",
+      "icon": "🎬"
+    }
+  ],
+  "inventory": [
+    {
+      "name": "经验药水",
+      "description": "使用后获得20点经验",
+      "quantity": 3,
+      "icon": "🧪"
+    },
+    {
+      "name": "能量饮料",
+      "description": "恢复30点能量",
+      "quantity": 2,
+      "icon": "🥤"
+    }
+  ],
+  "exploration": {
+    "discovered_locations": [
+      "library",
+      "canteen_east",
+      "east_gate",
+      "lake",
+      "plaza",
+      "dorm_jiayuan",
+      "canteen_west"
+    ],
+    "current_location": "canteen_east",
+    "exploration_streak": 7,
+    "hidden_events_found": [
+      "rare_book"
+    ]
+  },
+  "last_updated": "2026-04-10 11:45:24"
+}

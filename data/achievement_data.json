@@ -129,6 +129,126 @@
           "gold": 100,
           "title": "学霸"
         }
+      },
+      {
+        "id": "ach_freshman_1",
+        "name": "校园探索者",
+        "desc": "完成故事任务：校园初印象",
+        "status": "unlocked",
+        "icon": "🎓",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_freshman_2",
+        "name": "选课老手",
+        "desc": "完成故事任务：选课大战",
+        "status": "unlocked",
+        "icon": "📋",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_freshman_3",
+        "name": "钢铁意志",
+        "desc": "完成故事任务：军训淬炼",
+        "status": "unlocked",
+        "icon": "💪",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_freshman_4",
+        "name": "室友联盟",
+        "desc": "完成故事任务：室友联盟",
+        "status": "unlocked",
+        "icon": "🏠",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_freshman_5",
+        "name": "社团达人",
+        "desc": "完成故事任务：社团初体验",
+        "status": "unlocked",
+        "icon": "🎪",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_chapter_fresh",
+        "name": "新生适应大师",
+        "desc": "完成第一章：校园初探",
+        "status": "unlocked",
+        "icon": "🏅",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_academic_1",
+        "name": "专业探索者",
+        "desc": "完成故事任务：专业入门仪式",
+        "status": "unlocked",
+        "icon": "🔬",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_academic_2",
+        "name": "竞赛新人",
+        "desc": "完成故事任务：竞赛初体验",
+        "status": "unlocked",
+        "icon": "🏆",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_academic_3",
+        "name": "科研小白",
+        "desc": "完成故事任务：实验室初探",
+        "status": "unlocked",
+        "icon": "🧪",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_academic_4",
+        "name": "英语达人",
+        "desc": "完成故事任务：英语进阶之路",
+        "status": "unlocked",
+        "icon": "📖",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_academic_5",
+        "name": "证书收集者",
+        "desc": "完成故事任务：技能认证挑战",
+        "status": "unlocked",
+        "icon": "📜",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_chapter_academic",
+        "name": "学业精进大师",
+        "desc": "完成第二章：学业精进",
+        "status": "unlocked",
+        "icon": "📚",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_career_1",
+        "name": "实习启航",
+        "desc": "完成第三章：职前试炼",
+        "status": "unlocked",
+        "icon": "💼",
+        "date": "2026-04-23"
+      },
+      {
+        "id": "ach_career_2",
+        "status": "unlocked",
+        "date": "2026-04-23",
+        "name": "方向探索者",
+        "desc": "站在人生的十字路口，深入分析考研、就业、出国三条路的利弊，做出适合自己的选择。",
+        "icon": "🏆"
+      },
+      {
+        "id": "ach_career_3",
+        "status": "unlocked",
+        "date": "2026-04-23",
+        "name": "研究入门",
+        "desc": "选定毕业设计/论文课题，制定研究计划，与导师建立稳定的沟通机制。",
+        "icon": "🏆"
       }
     ],
     "探索成就": [
@@ -363,7 +483,7 @@
   },
   "statistics": {
     "total_achievements": 26,
-    "unlocked": 6,
+    "unlocked": 21,
     "in_progress": 6,
     "not_started": 12,
     "hidden": 3

@@ -14,7 +14,13 @@
     },
     "interest": "动漫",
     "lazy_level": 2,
-    "party_size": 2
+    "party_size": 2,
+    "current_stage": "新生适应期",
+    "main_story_progress": {
+      "stage": "新生适应期",
+      "completed_chapters": [],
+      "current_task": "story_fresh_1"
+    }
   },
   "role": {
     "level": 1,

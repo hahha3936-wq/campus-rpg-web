@@ -9,57 +9,119 @@ const ExplorationMap = {
     markersLayer: null,
     isInitialized: false,
     modalInstance: null,
-    campusPOIs: [],   // 从 campus_pois.json 加载的地点数据
+    campusPOIs: [],      // 从 campus_pois.json 加载的地点数据（原始 WGS-84）
+    campusPOIsGCJ: {},   // 地点 GCJ-02 坐标缓存 { id: { lat, lng } }，避免重复转换
     schematicLayer: null,  // 示意图叠图层
     _tileLayer: null,      // 当前底图瓦片层（高德或 OSM）
-    currentLayer: 'amap', // 'amap' | 'osm' | 'schematic' | 'hybrid'
+    _fallbackLayer: null,  // 高德瓦片加载失败时的 OSM 降级图层
+    _currentTileSource: null,  // 当前实际使用的瓦片源（与 currentLayer 可能不同）
+    currentLayer: 'amap', // 'amap' | 'osm' | 'tianditu' | 'geoq' | 'schematic' | 'hybrid'
+    _tileLoadTimer: null,      // 瓦片加载超时计时器
+    _tileErrorCount: 0,        // 当前瓦片层的连续错误计数（重置于 _doAddTileLayer 开头）
+    _tileErrorWarned: false,   // 是否已提示过瓦片错误
+    _consecutiveErrors: 0,     // 跨层级的连续错误（累积，不重置）
+    _maxTileErrors: 10,        // 触发降级的连续错误阈值
     _currentNavTarget: null,    // 当前导航目标地点 ID
     _routeLoading: false,        // 路线计算中
 
     /**
      * 初始化探索地图
      */
-    init() {
+    async init() {
         if (this.isInitialized) return;
 
-        // 立即注册模态生命周期（不依赖 Leaflet，早于异步加载完成）
-        this._bindModalLifecycle();
+        try {
+            // 立即注册模态生命周期（不依赖 Leaflet，早于异步加载完成）
+            this._bindModalLifecycle();
 
-        // 加载 Leaflet CSS/JS（延迟加载，仅探索时加载）
-        this._loadLeaflet(() => {
+            // 加载 Leaflet + gcoord（等待加载完成后再初始化地图）
+            await this._loadLeaflet();
+
             this._initMap();
             this._renderMarkers();
             this._bindLeafletEvents();
             this.isInitialized = true;
-        });
+        } catch (err) {
+            console.error('[ExplorationMap] 初始化出错:', err.message);
+            this.isInitialized = false; // 允许重试
+            throw err;
+        }
     },
 
     /**
-     * 延迟加载 Leaflet CDN
+     * 延迟加载 Leaflet 和 gcoord 坐标转换库
+     * 优先使用本地文件（lib/），CDN 作为 fallback
+     * gcoord 必须在 Leaflet 之前加载完成，确保 CampusNavigation.toGCJ02 可用
      */
-    _loadLeaflet(callback) {
-        if (window.L) {
-            callback();
-            return;
-        }
+    _loadLeaflet() {
+        return new Promise((resolve, reject) => {
+            function loadScript(src, onLoad, onError) {
+                if (document.querySelector(`script[src="${src}"]`)) {
+                    // 已加载，直接回调
+                    onLoad();
+                    return;
+                }
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = onLoad;
+                script.onerror = onError;
+                document.head.appendChild(script);
+            }
+            function loadCSS(href) {
+                if (document.querySelector(`link[href="${href}"]`)) return;
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = href;
+                document.head.appendChild(link);
+            }
 
-        // 加载 CSS
-        if (!document.querySelector('link[href*="leaflet"]')) {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-            document.head.appendChild(link);
-        }
+            // 本地文件路径（优先）
+            const localGcoord = 'lib/gcoord/gcoord.global.prod.js';
+            const localLeafletCSS = 'lib/leaflet/leaflet.css';
+            const localLeafletJS = 'lib/leaflet/leaflet.js';
+            // CDN fallback 路径
+            const cdnGcoord = 'https://unpkg.com/gcoord/dist/gcoord.global.prod.js';
+            const cdnLeafletCSS = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+            const cdnLeafletJS = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
 
-        // 加载 JS
-        if (!document.querySelector('script[src*="leaflet"]')) {
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-            script.onload = callback;
-            document.head.appendChild(script);
-        } else {
-            callback();
-        }
+            // 先加载 gcoord，再加载 Leaflet
+            loadScript(localGcoord, () => {
+                CampusNavigation._gcoord = true;
+                console.log('[ExplorationMap] gcoord 加载成功（本地）');
+                loadCSS(localLeafletCSS);
+                loadScript(localLeafletJS, resolve, () => {
+                    // Leaflet 本地失败，尝试 CDN
+                    console.warn('[ExplorationMap] Leaflet 本地加载失败，尝试 CDN');
+                    loadCSS(cdnLeafletCSS);
+                    loadScript(cdnLeafletJS, resolve, () => {
+                        console.error('[ExplorationMap] Leaflet CDN 加载也失败');
+                        reject(new Error('Leaflet 加载失败'));
+                    });
+                });
+            }, () => {
+                // gcoord 本地失败，尝试 CDN
+                console.warn('[ExplorationMap] gcoord 本地加载失败，尝试 CDN');
+                loadScript(cdnGcoord, () => {
+                    CampusNavigation._gcoord = true;
+                    console.log('[ExplorationMap] gcoord 加载成功（CDN）');
+                    loadCSS(localLeafletCSS);
+                    loadScript(localLeafletJS, resolve);
+                }, () => {
+                    // gcoord 完全失败，坐标不转换但地图继续
+                    console.warn('[ExplorationMap] gcoord CDN 也失败，坐标将使用原始 WGS-84');
+                    CampusNavigation._gcoord = false;
+                    setTimeout(() => {
+                        if (typeof window.showNotification === 'function') {
+                            window.showNotification('坐标转换库加载失败，地图标记位置可能存在偏移', 'warning');
+                        } else if (typeof showNotification === 'function') {
+                            showNotification('坐标转换库加载失败，地图标记位置可能存在偏移', 'warning');
+                        }
+                    }, 1000);
+                    loadCSS(localLeafletCSS);
+                    loadScript(localLeafletJS, resolve);
+                });
+            });
+        });
     },
 
     /**
@@ -83,7 +145,9 @@ const ExplorationMap = {
         };
         try {
             const resp = await fetch('data/campus_bounds.json');
-            if (resp.ok) {
+            if (!resp.ok) {
+                console.warn(`[ExplorationMap] 加载 campus_bounds.json 失败，状态码: ${resp.status}，使用默认配置`);
+            } else {
                 const data = await resp.json();
                 if (data.leaflet_config) {
                     mapConfig = { ...mapConfig, ...data.leaflet_config };
@@ -97,23 +161,19 @@ const ExplorationMap = {
         const mapCenterGCJ = CampusNavigation.toGCJ02(mapConfig.center[1], mapConfig.center[0]);
 
         // 创建地图
+        // maxBoundsViscosity=0.8：允许轻微拖出边界，橡皮筋效果柔和拉回
         this.map = L.map('exploration-map-container', {
             center: [mapCenterGCJ.lat, mapCenterGCJ.lng],
             zoom: mapConfig.zoom,
-            maxBounds: [
-                CampusNavigation.toGCJ02(mapConfig.maxBounds[0][1], mapConfig.maxBounds[0][0]),
-                CampusNavigation.toGCJ02(mapConfig.maxBounds[1][1], mapConfig.maxBounds[1][0])
-            ],
             zoomControl: true,
             attributionControl: false
         });
 
         // 添加底图层（默认高德栅格瓦片，国内访问稳定；坐标统一用 GCJ-02）
+        // 必须先初始化导航模块（加载高德 API Key），再设置底图瓦片 URL
+        await CampusNavigation.init();
         this._setupTileLayer('amap');
         this.markersLayer = L.layerGroup().addTo(this.map);
-
-        // 初始化导航模块（异步加载高德 API Key）
-        CampusNavigation.init();
 
         // 加载 campus_pois.json 作为地点数据源
         await this._loadCampusPOIs();
@@ -129,40 +189,139 @@ const ExplorationMap = {
     },
 
     /**
+     * 定位我的位置（由「回到我的位置」按钮调用）
+     */
+    _locateMe() {
+        if (!this.map) return;
+        const btn = document.getElementById('locate-me-btn');
+        if (btn) btn.disabled = true;
+
+        // 显示正在定位
+        const originalText = btn ? btn.textContent : '';
+        if (btn) btn.textContent = '定位中...';
+
+        CampusNavigation.getCurrentPosition().then(userPos => {
+            const accuracyLevel = CampusNavigation.getAccuracyLevel(userPos.accuracy);
+            const accuracyText = userPos.accuracy ? `约 ${Math.round(userPos.accuracy)}m` : '未知';
+            const sourceText = { gps: 'GPS', 'gps-low': 'GPS(低精度)', ip: 'IP定位', 'fallback-campus-center': '默认位置' }[userPos._source] || 'GPS';
+            const onCampus = CampusNavigation.isOnCampusWithTolerance(userPos.lat, userPos.lng, userPos.accuracy);
+            const locationHint = onCampus ? '校园内' : (userPos._city ? `当前位置: ${userPos._city}` : '校园外');
+
+            // 显示通知
+            showNotification(`定位成功 | ${sourceText} | 精度: ${accuracyText} (${accuracyLevel.text}) | ${locationHint}`, 'info', 3000);
+
+            // 无论是否在校内都飞向该位置并显示标记
+            this.map.flyTo([userPos.lat, userPos.lng], 17, { animate: true, duration: 1 });
+            this._showUserMarker(userPos);
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }).catch(err => {
+            showNotification('定位失败：' + (err.message || '请检查定位权限'), 'warning');
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
+    },
+
+    /**
+     * 切换地图瓦片源
+     */
+    switchTileSource(source) {
+        if (!this.map) return;
+        console.log('[ExplorationMap] 切换地图源:', source);
+        this.currentLayer = source;
+        this._setupTileLayer(source);
+    },
+
+    /**
      * 获取用户 GPS 位置并飞至该处
+     * 即使不在校园内也显示位置标记（便于用户确认当前位置）
      */
     async _locateUser() {
         try {
             const pos = await CampusNavigation.getCurrentPosition();
-            if (pos && CampusNavigation.isOnCampus(pos.lat, pos.lng)) {
-                // 用户在校内，飞至用户位置
+            if (!pos) return;
+
+            const accuracyLevel = CampusNavigation.getAccuracyLevel(pos.accuracy);
+            const accuracyText = pos.accuracy ? `约 ${Math.round(pos.accuracy)}m` : '未知';
+            const sourceText = { gps: 'GPS', 'gps-low': 'GPS(低精度)', ip: 'IP定位', 'fallback-campus-center': '默认位置' }[pos._source] || '未知';
+            console.log(`[ExplorationMap] 定位成功 | 来源: ${sourceText} | 精度: ${accuracyText} (${accuracyLevel.text}) | 坐标: (${pos.lat?.toFixed(6)}, ${pos.lng?.toFixed(6)})`);
+
+            // 判断是否在校内（使用宽容判断，考虑 GPS 精度误差）
+            const onCampus = CampusNavigation.isOnCampusWithTolerance(pos.lat, pos.lng, pos.accuracy);
+            if (onCampus) {
+                console.log('[ExplorationMap] 用户位于校园内');
                 this.map.flyTo([pos.lat, pos.lng], 17, { animate: true, duration: 1 });
-                this._showUserMarker(pos);
+            } else {
+                // 即使不在校内，也显示位置（用户可能在校园附近）
+                console.log('[ExplorationMap] 用户位于校园外或边界附近，仍显示位置标记');
+                if (pos._hint) {
+                    showNotification(`当前位置: ${pos._hint}`, 'info', 4000);
+                }
+                this.map.flyTo([pos.lat, pos.lng], 16, { animate: true, duration: 1 });
             }
+            this._showUserMarker(pos);
         } catch (err) {
             console.warn('[ExplorationMap] GPS 定位失败:', err.message);
-            // 定位失败不影响地图使用，静默忽略
+            showNotification('无法获取您的位置，请检查定位权限和GPS设置', 'warning');
         }
     },
 
     /**
-     * 在地图上显示用户位置标记
+     * 在地图上显示用户位置标记（带精度圈）
      */
     _showUserMarker(pos) {
         // 移除旧标记
         if (this._userMarker) {
             this.map.removeLayer(this._userMarker);
         }
+        if (this._accuracyCircle) {
+            this.map.removeLayer(this._accuracyCircle);
+        }
+
         // pos 已是 GCJ-02 坐标（navigation.js 已转换）
+        const accuracyLevel = CampusNavigation.getAccuracyLevel(pos.accuracy);
+
+        // 添加精度圆圈（颜色根据精度等级）
+        this._accuracyCircle = L.circle([pos.lat, pos.lng], {
+            radius: pos.accuracy || 100,
+            color: accuracyLevel.color,
+            fillColor: accuracyLevel.color,
+            fillOpacity: 0.15,
+            weight: 1,
+            dashArray: '4, 4'
+        }).addTo(this.map);
+
+        // 精度信息
+        let accuracyText = pos.accuracy ? `约 ${Math.round(pos.accuracy)}m` : '未知';
+
         this._userMarker = L.circleMarker([pos.lat, pos.lng], {
             radius: 8,
-            fillColor: '#38bdf8',
+            fillColor: accuracyLevel.color,
             fillOpacity: 0.9,
             color: '#fff',
             weight: 2,
             opacity: 1
         }).addTo(this.map);
-        this._userMarker.bindPopup('<b>你的位置</b>').openPopup();
+
+        let popupContent = `<b>你的位置</b><br>`;
+        const sourceText = { gps: 'GPS', 'gps-low': 'GPS(低精度)', ip: 'IP定位', 'fallback-campus-center': '默认位置', watch: '实时追踪' }[pos._source] || 'GPS';
+        popupContent += `<small>来源: ${sourceText}</small><br>`;
+        if (pos._wgs) {
+            popupContent += `<small>GPS精度: ${accuracyText}</small><br>`;
+            popupContent += `<small style="color:${accuracyLevel.color}">精度等级: ${accuracyLevel.text}</small>`;
+        }
+        if (pos._calibrated) {
+            popupContent += `<br><small style="color:#22c55e">Wi-Fi校准: ${pos._wifi}</small>`;
+        }
+        if (pos._city) {
+            popupContent += `<br><small>城市: ${pos._city}</small>`;
+        }
+
+        this._userMarker.bindPopup(popupContent).openPopup();
     },
 
     /**
@@ -177,11 +336,34 @@ const ExplorationMap = {
         this._watchId = navigator.geolocation.watchPosition(
             pos => {
                 const userPos = CampusNavigation.toGCJ02(pos.coords.longitude, pos.coords.latitude);
-                if (CampusNavigation.isOnCampus(userPos.lat, userPos.lng)) {
+                userPos.accuracy = pos.coords.accuracy;
+                userPos._source = 'watch';
+
+                // 尝试 Wi-Fi 校准
+                const calibratedPos = CampusNavigation.calibrateWithWifi(userPos);
+
+                // 使用宽容判断：即使略在校外，也在 GPS 精度范围内显示
+                const onCampus = CampusNavigation.isOnCampusWithTolerance(calibratedPos.lat, calibratedPos.lng, calibratedPos.accuracy);
+
+                if (onCampus) {
                     if (this._userMarker) {
-                        this._userMarker.setLatLng([userPos.lat, userPos.lng]);
+                        this._userMarker.setLatLng([calibratedPos.lat, calibratedPos.lng]);
+                        // 同时更新精度圈
+                        if (this._accuracyCircle) {
+                            this._accuracyCircle.setLatLng([calibratedPos.lat, calibratedPos.lng]);
+                            this._accuracyCircle.setRadius(calibratedPos.accuracy || 100);
+                        }
                     } else {
-                        this._showUserMarker(userPos);
+                        this._showUserMarker(calibratedPos);
+                    }
+                } else {
+                    // 校外在校园边界附近时，仍然显示但不触发通知
+                    if (this._userMarker) {
+                        this._userMarker.setLatLng([calibratedPos.lat, calibratedPos.lng]);
+                        if (this._accuracyCircle) {
+                            this._accuracyCircle.setLatLng([calibratedPos.lat, calibratedPos.lng]);
+                            this._accuracyCircle.setRadius(calibratedPos.accuracy || 100);
+                        }
                     }
                 }
             },
@@ -202,15 +384,20 @@ const ExplorationMap = {
             this.map.removeLayer(this._tileLayer);
             this._tileLayer = null;
         }
-        if (this.schemematicLayer) {
-            this.map.removeLayer(this.schemematicLayer);
-            this.schemematicLayer = null;
+        this._currentTileSource = null;
+        if (this.schematicLayer) {
+            this.map.removeLayer(this.schematicLayer);
+            this.schematicLayer = null;
         }
 
         if (mode === 'amap') {
             this._setupTileLayer('amap');
         } else if (mode === 'osm') {
             this._setupTileLayer('osm');
+        } else if (mode === 'tianditu') {
+            this._setupTileLayer('tianditu');
+        } else if (mode === 'geoq') {
+            this._setupTileLayer('geoq');
         } else if (mode === 'schematic') {
             this._setupTileLayer('amap');
             this._loadSchematicOverlay();
@@ -224,34 +411,464 @@ const ExplorationMap = {
     },
 
     /**
-     * 设置瓦片层
+     * 设置瓦片层（用户/UI 触发入口）
      * @param {'amap'|'osm'} type
      */
     _setupTileLayer(type) {
-        if (type === 'amap') {
-            // 高德栅格瓦片（Web 地图图层，坐标系 GCJ-02）
-            // subdomains 用数字域名避免 CDN 被屏蔽
-            this._tileLayer = L.tileLayer(
-                'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
-                {
-                    maxZoom: 19,
-                    subdomains: ['1', '2', '3', '4'],
-                    attribution: '© 高德地图'
-                }
-            ).addTo(this.map);
-        } else {
-            // OpenStreetMap（WGS-84）
-            this._tileLayer = L.tileLayer(
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                { maxZoom: 19, attribution: '© OpenStreetMap' }
-            ).addTo(this.map);
+        // 清理旧底图层
+        if (this._tileLayer) {
+            this.map.removeLayer(this._tileLayer);
+            this._tileLayer = null;
+        }
+        if (this._fallbackLayer) {
+            this.map.removeLayer(this._fallbackLayer);
+            this._fallbackLayer = null;
+        }
+        if (this._tileLoadTimer) {
+            clearTimeout(this._tileLoadTimer);
+            this._tileLoadTimer = null;
         }
 
-        // 瓦片加载失败时降级提示
-        this._tileLayer.on('tileerror', (e) => {
-            console.warn('[ExplorationMap] 瓦片加载失败:', e.tile.src);
-            showNotification('底图瓦片加载失败，请检查网络或尝试切换图层', 'warning');
+        // 优先探测用户选择的瓦片源，失败后再按降级链切换
+        this._autoSelectAndAddTileLayer(type);
+    },
+
+    /**
+     * 探测瓦片源是否可达（多位置探测，更稳定）
+     */
+    _probeSource(source) {
+        const tileConfigs = {
+            tianditu: {
+                url: 'https://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TileCol={x}&TileRow={y}&TileMatrix={z}&tk=a5a575082271807059c6e581b8eaf937',
+                subdomains: '0,1,2,3,4,5,6,7'
+            },
+            geoq: {
+                url: 'https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity_Mapping/MapServer/tile/{z}/{y}/{x}',
+                subdomains: ''
+            },
+            amap: {
+                // 通过后端代理探测
+                url: '/api/tile/amap?x={x}&y={y}&z={z}',
+                subdomains: ''
+            },
+            osm: {
+                url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                subdomains: ''
+            },
+            tencent: {
+                url: 'https://p2.map.gtimg.com/maptilesv2/{z}/{x}/{y}.png',
+                subdomains: ''
+            }
+        };
+        // 多位置探测，提高稳定性
+        const probePositions = [
+            { z: 10, x: 500, y: 300 },
+            { z: 12, x: 1250, y: 750 }
+        ];
+        let successCount = 0;
+        const requiredSuccess = 1;
+
+        return new Promise((resolve) => {
+            const cfg = tileConfigs[source];
+            if (!cfg) { resolve(false); return; }
+
+            const checkComplete = () => {
+                if (successCount >= requiredSuccess) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            };
+
+            probePositions.forEach((pos, idx) => {
+                const testUrl = cfg.url
+                    .replace('{x}', pos.x).replace('{y}', pos.y).replace('{z}', pos.z)
+                    .replace('{s}', '0');
+                const img = new Image();
+                const timer = setTimeout(() => {
+                    if (idx === probePositions.length - 1) checkComplete();
+                }, 3000);
+                img.onload = () => {
+                    clearTimeout(timer);
+                    successCount++;
+                    if (successCount >= requiredSuccess) checkComplete();
+                };
+                img.onerror = () => {
+                    clearTimeout(timer);
+                    if (idx === probePositions.length - 1) checkComplete();
+                };
+                img.src = testUrl + '&t=' + Date.now();
+            });
         });
+    },
+
+    /**
+     * 自动选择并添加瓦片图层
+     * @param {string} preferredSource - 用户/默认指定的首选源
+     */
+    async _autoSelectAndAddTileLayer(preferredSource) {
+        const container = document.getElementById('exploration-map-container');
+
+        // OSM 直接使用
+        if (preferredSource === 'osm') {
+            console.log('[ExplorationMap] 使用 OpenStreetMap 瓦片');
+            this._currentTileSource = 'osm';
+            this._doAddTileLayer('osm', container);
+            return;
+        }
+
+        // 高优先级探测列表（按可靠性排序，amap 最稳定）
+        const probeOrder = ['amap', 'tianditu', 'tencent', 'geoq'];
+
+        for (let i = 0; i < probeOrder.length; i++) {
+            const source = probeOrder[i];
+            const isAvailable = await this._probeSource(source);
+            if (isAvailable) {
+                console.log(`[ExplorationMap] 探测成功，使用 ${source} 瓦片`);
+                this._currentTileSource = source;
+                this._doAddTileLayer(source, container);
+                return;
+            }
+            console.warn(`[ExplorationMap] ${source} 不可用，尝试下一个...`);
+        }
+
+        // 所有在线瓦片均失败，降级到 amap（最稳定，直接使用不做探测）
+        console.warn('[ExplorationMap] 所有在线瓦片探测均失败，降级到 amap');
+        this._currentTileSource = 'amap';
+        this._doAddTileLayer('amap', container);
+    },
+
+    /**
+     * 实际添加瓦片图层（内部方法，由 _autoSelectAndAddTileLayer 调用）
+     */
+    _doAddTileLayer(source, container) {
+        const tileConfigs = {
+            tianditu: {
+                url: 'https://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TileCol={x}&TileRow={y}&TileMatrix={z}&tk=a5a575082271807059c6e581b8eaf937',
+                subdomains: '0,1,2,3,4,5,6,7',
+                attribution: '© 天地图',
+                opacity: 1
+            },
+            geoq: {
+                url: 'https://map.geoq.cn/ArcGIS/rest/services/ChinaOnlineCommunity_Mapping/MapServer/tile/{z}/{y}/{x}',
+                subdomains: '',
+                attribution: '© GeoQ / Esri China',
+                opacity: 1
+            },
+            amap: {
+                // 通过后端代理，解决 CORS 和认证问题
+                url: '/api/tile/amap?x={x}&y={y}&z={z}',
+                subdomains: '',
+                attribution: '© 高德地图',
+                opacity: 1
+            },
+            osm: {
+                url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                subdomains: '',
+                attribution: '© OpenStreetMap contributors',
+                opacity: 1
+            },
+            tencent: {
+                url: 'https://p2.map.gtimg.com/maptilesv2/{z}/{x}/{y}.png',
+                subdomains: '',
+                attribution: '© 腾讯地图',
+                opacity: 1
+            }
+        };
+
+        // 降级链：按可靠性排序，确保每层都有可用 fallback
+        // 重要：OSM 使用 WGS-84 坐标系，与其他底图（GCJ-02）不一致，
+        // 不将其加入自动降级链，避免 POI 坐标（GCJ-02）与底图（WGS-84）不匹配导致偏移
+        // OSM 仍作为用户手动选择的底图选项保留（用户需注意坐标系差异）
+        const fallbackChain = {
+            tianditu: ['amap', 'tencent', 'geoq'],
+            geoq:     ['amap', 'tencent', 'tianditu'],
+            amap:     ['tencent', 'tianditu', 'geoq'],
+            osm:      ['amap', 'tencent', 'geoq', 'tianditu'],  // OSM 降级到 GCJ-02 底图
+            tencent:  ['amap', 'tianditu', 'geoq']
+        };
+
+        const cfg = tileConfigs[source];
+        if (!cfg) return;
+
+        this._hideTileLoadError(container);
+
+        // 清理旧的底图层
+        if (this._tileLayer) {
+            this._tileLayer.remove();
+            this._tileLayer = null;
+        }
+        if (this._tileLoadTimer) {
+            clearTimeout(this._tileLoadTimer);
+            this._tileLoadTimer = null;
+        }
+
+        // 重置当前层的错误计数
+        this._tileErrorCount = 0;
+        this._tileErrorWarned = false;
+
+        this._tileLayer = L.tileLayer(cfg.url, {
+            subdomains: cfg.subdomains,
+            maxZoom: 19,
+            minZoom: 14,
+            attribution: cfg.attribution,
+            opacity: cfg.opacity,
+            keepBuffer: 5,
+            updateWhenIdle: true,
+            updateWhenZooming: true,
+            keepOnMinZoom: true,
+            noWrap: true,
+            retry: true,
+            zIndex: 1,
+            preload: 1
+        }).addTo(this.map);
+
+        // 标记加载开始
+        this._tileLoadStarted = false;
+
+        // 监听瓦片加载事件
+        this._tileLayer.on('loading', () => {
+            if (!this._tileLoadStarted) {
+                this._tileLoadStarted = true;
+                this._showTileLoadingIndicator();
+            }
+        });
+        this._tileLayer.on('load', () => {
+            this._tileLoadStarted = false;
+            this._hideTileLoadingIndicator();
+        });
+
+        // 首块瓦片加载成功后清理背景和错误提示
+        this._tileLayer.once('load', () => {
+            if (container) {
+                container.style.background = '';
+                this._hideTileLoadError(container);
+            }
+        });
+
+        // 降级函数：清理当前层，切换到下一个源
+        const doFallback = () => {
+            const fallbacks = fallbackChain[source] || [];
+            if (fallbacks.length > 0) {
+                const next = fallbacks[0];
+                console.warn(`[ExplorationMap] ${source} 瓦片加载失败，降级到 ${next}`);
+                this._currentTileSource = next;
+                this._doAddTileLayer(next, container);
+            } else {
+                console.warn('[ExplorationMap] 所有在线瓦片加载失败，使用离线示意图');
+                if (container) container.style.background = '';
+                this._loadSchematicAsBaseLayer();
+            }
+        };
+
+        // 超时降级：20 秒内瓦片未加载完成则自动切换到下一个源
+        this._tileLoadTimer = setTimeout(() => {
+            if (this._tileLoadTimer === null) return;
+            this._tileLoadTimer = null;
+            if (this._tileLayer) {
+                this._tileLayer.remove();
+                this._tileLayer = null;
+            }
+            this._preloadSchematic();
+            doFallback();
+        }, 20000);
+
+        // 监听瓦片加载事件（成功时重置错误计数）
+        this._tileLayer.on('tileload', () => {
+            // 成功加载一块瓦片，清除错误累积（允许瓦片自我修复，不轻易降级）
+            if (this._consecutiveErrors > 0) {
+                this._consecutiveErrors = Math.max(0, this._consecutiveErrors - 2);
+            }
+        });
+
+        // 监听瓦片错误，超过阈值则降级
+        this._tileLayer.on('tileerror', (e) => {
+            this._tileErrorCount++;
+            this._consecutiveErrors++;
+            console.warn(`[ExplorationMap] 瓦片错误 #${this._tileErrorCount} (总累计: ${this._consecutiveErrors}): ${e.tile?.src_ || ''}`);
+
+            // 单个瓦片失败时：自动重试（Leaflet retry:true 会自动重试，额外触发一次重绘）
+            if (this._tileErrorCount < this._maxTileErrors) {
+                setTimeout(() => {
+                    if (this._tileLayer) this._tileLayer.redraw();
+                }, 1500);
+            }
+
+            // 连续错误超过阈值时，降级到备用源（仅在真的持续失败时降级）
+            if (this._consecutiveErrors >= this._maxTileErrors) {
+                console.warn(`[ExplorationMap] 错误次数超过阈值(${this._maxTileErrors})，降级到备用瓦片`);
+                if (this._tileLoadTimer) { clearTimeout(this._tileLoadTimer); this._tileLoadTimer = null; }
+                if (this._tileLayer) { this._tileLayer.remove(); this._tileLayer = null; }
+                doFallback();
+            }
+        });
+    },
+
+    /**
+     * 预加载当前视口周围的瓦片，减少拖动时的空白闪烁
+     */
+    _preloadViewportTiles() {
+        if (!this._tileLayer || !this.map) return;
+        // 延迟预加载，让初始瓦片先完成渲染
+        // 注意：不要调用 _pruneTiles()，它会强制移除仍在视口内的瓦片导致闪烁
+        setTimeout(() => {
+            if (this._tileLayer) {
+                this._tileLayer._pruneTiles();
+            }
+        }, 2000);
+    },
+
+    _showTileLoadError(container, message) {
+        if (!container) return;
+        const isOfflineMode = message && message.includes('离线模式');
+        let el = container.querySelector('.tile-load-error');
+        if (!el) {
+            el = document.createElement('div');
+            el.className = 'tile-load-error';
+            container.appendChild(el);
+        }
+        // 离线模式使用 info 样式，不遮挡地图
+        el.className = isOfflineMode ? 'tile-load-error offline-mode' : 'tile-load-error';
+        el.textContent = message;
+        // 离线模式 5 秒后自动隐藏提示（地图正常显示，无需持续提示）
+        if (isOfflineMode) {
+            setTimeout(() => {
+                if (el && el.parentNode && el.textContent === message) {
+                    el.style.opacity = '0';
+                    setTimeout(() => { if (el && el.parentNode) el.remove(); }, 300);
+                }
+            }, 5000);
+        }
+
+        // 添加重试按钮
+        if (!el.querySelector('.retry-btn')) {
+            const retryBtn = document.createElement('button');
+            retryBtn.className = 'retry-btn';
+            retryBtn.textContent = '重试加载';
+            retryBtn.onclick = () => {
+                el.textContent = '正在重新加载...';
+                el.classList.add('loading');
+                // 移除现有瓦片层，重新尝试加载
+                if (this._tileLayer) {
+                    this.map.removeLayer(this._tileLayer);
+                    this._tileLayer = null;
+                }
+                this._setupTileLayer('amap');
+                setTimeout(() => el.classList.remove('loading'), 500);
+            };
+            el.appendChild(document.createElement('br'));
+            el.appendChild(retryBtn);
+        }
+    },
+
+    _hideTileLoadError(container) {
+        if (!container) return;
+        const el = container.querySelector('.tile-load-error');
+        if (el) el.remove();
+    },
+
+    /**
+     * 显示瓦片加载指示器（减少空白闪烁的视觉反馈）
+     */
+    _showTileLoadingIndicator() {
+        const container = document.getElementById('exploration-map-container');
+        if (!container) return;
+        let el = container.querySelector('.tile-loading-indicator');
+        if (!el) {
+            el = document.createElement('div');
+            el.className = 'tile-loading-indicator';
+            el.innerHTML = '<span class="loading-dots"></span>';
+            container.appendChild(el);
+        }
+        el.classList.add('active');
+    },
+
+    /**
+     * 隐藏瓦片加载指示器
+     */
+    _hideTileLoadingIndicator() {
+        const container = document.getElementById('exploration-map-container');
+        if (!container) return;
+        const el = container.querySelector('.tile-loading-indicator');
+        if (el) el.classList.remove('active');
+    },
+
+    _preloadSchematic() {
+        if (this._schematicPreloaded) return;
+        this._schematicPreloaded = true;
+        ['assets/maps/campus_schematic.png', 'assets/maps/campus_schematic.svg'].forEach(url => {
+            const img = new Image();
+            img.src = url;
+        });
+    },
+
+    /**
+     * 将校园示意图作为独立底图显示（所有在线瓦片失败时的最终降级）
+     */
+    async _loadSchematicAsBaseLayer() {
+        if (this.schematicLayer) {
+            this.map.removeLayer(this.schematicLayer);
+            this.schematicLayer = null;
+        }
+        // 优先尝试 PNG，降级 SVG
+        const pngOk = await new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(false);
+            img.src = 'assets/maps/campus_schematic.png?t=' + Date.now();
+        });
+        const url = pngOk ? 'assets/maps/campus_schematic.png' : 'assets/maps/campus_schematic.svg';
+
+        try {
+            const resp = await fetch('data/campus_bounds.json');
+            if (!resp.ok) throw new Error('加载 bounds 失败');
+            const boundsData = await resp.json();
+            const pts = boundsData.image_overlay?.gcs_points;
+            if (!pts || pts.length < 4) throw new Error('控制点数据不完整');
+
+            // GCS 控制点为 WGS-84，高德底图为 GCJ-02，需转换
+            const useGCJ = CampusNavigation._gcoord;
+            const toLatLng = (pt) => {
+                const gcj = useGCJ ? CampusNavigation.toGCJ02(pt.lng, pt.lat) : [pt.lng, pt.lat];
+                return L.latLng(gcj[1], gcj[0]);
+            };
+            const converted = pts.map(toLatLng);
+            const lats = converted.map(p => p.lat);
+            const lngs = converted.map(p => p.lng);
+            const bounds = L.latLngBounds(
+                L.latLng(Math.min(...lats), Math.min(...lngs)),
+                L.latLng(Math.max(...lats), Math.max(...lngs))
+            );
+
+            this.schematicLayer = L.imageOverlay(url, bounds, { opacity: 1 });
+            this.schematicLayer.addTo(this.map);
+
+            const container = document.getElementById('exploration-map-container');
+            if (container) {
+                this._hideTileLoadError(container);
+                this._showTileLoadError(container, '离线模式：显示校园示意图');
+            }
+            console.log('[ExplorationMap] 离线示意图加载成功:', url);
+        } catch (err) {
+            console.warn('[ExplorationMap] 离线示意图加载失败:', err.message);
+            const container = document.getElementById('exploration-map-container');
+            if (container) {
+                this._hideTileLoadError(container);
+                this._showTileLoadError(container, '地图加载失败，请检查网络连接');
+            }
+        }
+    },
+
+    _showSchematicOverlayOffline() {
+        if (this.schemematicLayer) {
+            this.map.removeLayer(this.schemematicLayer);
+            this.schematicLayer = null;
+        }
+        const container = document.getElementById('exploration-map-container');
+        if (container) {
+            this._showTileLoadError(container, '离线模式：显示校园示意图');
+        }
+        this._loadSchematicOverlay();
     },
 
     /**
@@ -260,16 +877,57 @@ const ExplorationMap = {
     async _loadCampusPOIs() {
         try {
             const resp = await fetch('data/campus_pois.json');
-            if (resp.ok) {
-                const data = await resp.json();
-                this.campusPOIs = data.pois || [];
-                // 同步到 StateManager（兼容旧逻辑）
-                if (this.campusPOIs.length > 0 && !StateManager.get('locations')?.length) {
-                    StateManager.set('locations', this.campusPOIs);
+            if (!resp.ok) {
+                console.warn(`[ExplorationMap] 加载 campus_pois.json 失败，状态码: ${resp.status}`);
+                // 尝试使用 StateManager 中的缓存数据
+                const cachedLocations = StateManager.get('locations') || [];
+                if (cachedLocations.length > 0) {
+                    this.campusPOIs = cachedLocations;
+                    this.campusPOIsGCJ = {};
+                    cachedLocations.forEach(loc => {
+                        if (loc?.position?.lat && loc?.position?.lng) {
+                            this.campusPOIsGCJ[loc.id] = CampusNavigation.toGCJ02(
+                                loc.position.lng, loc.position.lat
+                            );
+                        }
+                    });
+                    console.log(`[ExplorationMap] 使用缓存的 ${this.campusPOIs.length} 个地点数据`);
                 }
+                return;
+            }
+            const data = await resp.json();
+            this.campusPOIs = data.pois || [];
+            // 一次性预转换并缓存 GCJ-02 坐标，避免每次渲染时重复转换
+            this.campusPOIsGCJ = {};
+            this.campusPOIs.forEach(loc => {
+                if (loc?.position?.lat && loc?.position?.lng) {
+                    this.campusPOIsGCJ[loc.id] = CampusNavigation.toGCJ02(
+                        loc.position.lng, loc.position.lat
+                    );
+                }
+            });
+            console.log(`[ExplorationMap] 加载 ${this.campusPOIs.length} 个 POI，坐标已预转换至 GCJ-02`);
+            // 始终同步 POI 数据到 StateManager（覆盖旧版 locations.json 数据）
+            StateManager.set('locations', this.campusPOIs);
+            if (this.campusPOIs.length > 0) {
+                console.log(`[ExplorationMap] 已同步 ${this.campusPOIs.length} 个 POI 到 StateManager`);
             }
         } catch (err) {
             console.warn('[ExplorationMap] 加载 campus_pois.json 失败:', err.message);
+            // 网络错误时也尝试使用缓存
+            const cachedLocations = StateManager.get('locations') || [];
+            if (cachedLocations.length > 0) {
+                this.campusPOIs = cachedLocations;
+                this.campusPOIsGCJ = {};
+                cachedLocations.forEach(loc => {
+                    if (loc?.position?.lat && loc?.position?.lng) {
+                        this.campusPOIsGCJ[loc.id] = CampusNavigation.toGCJ02(
+                            loc.position.lng, loc.position.lat
+                        );
+                    }
+                });
+                console.log(`[ExplorationMap] 网络错误，使用缓存的 ${this.campusPOIs.length} 个地点数据`);
+            }
         }
     },
 
@@ -277,6 +935,8 @@ const ExplorationMap = {
      * 渲染所有地点标记
      */
     _renderMarkers() {
+        if (!this.map || !this.markersLayer) return;
+
         // 优先使用 campus_pois.json 的数据，回退到 StateManager.locations
         const locations = this.campusPOIs.length > 0
             ? this.campusPOIs
@@ -291,6 +951,10 @@ const ExplorationMap = {
             if (!loc?.position?.lat || !loc?.position?.lng) {
                 console.warn('地点缺少坐标信息:', loc);
                 return;
+            }
+            const lat = loc.position.lat, lng = loc.position.lng;
+            if (lat < 31.87 || lat > 31.89 || lng < 117.27 || lng > 117.30) {
+                console.warn(`地点坐标超出校园范围 [${loc.id}]: (${lat}, ${lng})`);
             }
             const isDiscovered = discovered.includes(loc.id);
 
@@ -310,11 +974,10 @@ const ExplorationMap = {
                 popupAnchor: [0, -30]
             });
 
-            // POI 数据为 WGS-84，高德底图为 GCJ-02，需要转换；OSM 底图则无需转换
-            const useGCJ = this.currentLayer === 'amap' || this.currentLayer === 'hybrid' || this.currentLayer === 'schematic';
-            const markerLatLng = useGCJ
-                ? CampusNavigation.toGCJ02(loc.position.lng, loc.position.lat)
-                : { lng: loc.position.lng, lat: loc.position.lat };
+            // 直接使用预缓存的 GCJ-02 坐标（由 _loadCampusPOIs 一次性转换）
+            // 无论哪种底图，所有 POI 均使用 GCJ-02 坐标渲染
+            const gcj = this.campusPOIsGCJ[loc.id];
+            const markerLatLng = gcj || { lng: loc.position.lng, lat: loc.position.lat };
             const marker = L.marker([markerLatLng.lat, markerLatLng.lng], { icon });
 
             // 绑定点击事件
@@ -590,23 +1253,48 @@ const ExplorationMap = {
     async _loadSchematicOverlay(transparent = false) {
         try {
             const resp = await fetch('data/campus_bounds.json');
-            if (!resp.ok) return;
+            if (!resp.ok) {
+                console.warn(`[ExplorationMap] 加载 campus_bounds.json 失败，状态码: ${resp.status}`);
+                return;
+            }
             const boundsData = await resp.json();
             const pts = boundsData.image_overlay?.gcs_points;
-            if (!pts || pts.length < 4) return;
+            if (!pts || pts.length < 4) {
+                console.warn('[ExplorationMap] 示意图控制点数据不完整');
+                return;
+            }
 
-            // 使用 4 个 GCS 控制点计算 bounding box
-            const lats = pts.map(p => p.lat);
-            const lngs = pts.map(p => p.lng);
+            // GCS 控制点为 WGS-84，但高德底图为 GCJ-02，需转换以正确对齐
+            const useGCJ = this.currentLayer === 'amap' || this.currentLayer === 'hybrid';
+            const toGCJ = (pt) => {
+                if (!useGCJ) return pt;
+                return CampusNavigation.toGCJ02(pt.lng, pt.lat);
+            };
+            const converted = pts.map(toGCJ);
+            const lats = converted.map(p => p.lat);
+            const lngs = converted.map(p => p.lng);
             const sw = L.latLng(Math.min(...lats), Math.min(...lngs));
             const ne = L.latLng(Math.max(...lats), Math.max(...lngs));
             const bounds = L.latLngBounds(sw, ne);
 
+            // 优先尝试 PNG，不存在则降级到 SVG
             const url = 'assets/maps/campus_schematic.png';
             const opacity = transparent ? 0.45 : 0.9;
 
             this.schematicLayer = L.imageOverlay(url, bounds, { opacity });
             this.schematicLayer.addTo(this.map);
+
+            // 监听图片加载错误，自动降级到 SVG
+            this.schematicLayer.on('error', () => {
+                console.warn('[ExplorationMap] PNG 示意图加载失败，尝试 SVG 备选');
+                this.map.removeLayer(this.schematicLayer);
+                const svgUrl = 'assets/maps/campus_schematic.svg';
+                this.schematicLayer = L.imageOverlay(svgUrl, bounds, { opacity });
+                this.schematicLayer.addTo(this.map);
+                this.schematicLayer.once('load', () => {
+                    console.log('[ExplorationMap] SVG 示意图加载成功');
+                });
+            });
         } catch (err) {
             console.warn('[ExplorationMap] 示意图加载失败:', err.message);
         }
@@ -619,8 +1307,34 @@ const ExplorationMap = {
         const locations = this.campusPOIs.length > 0
             ? this.campusPOIs
             : (StateManager.get('locations') || []);
+
+        if (!locations || locations.length === 0) {
+            console.error('[ExplorationMap] _activateBuff: no locations available');
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('地图数据未加载，请刷新页面重试', 'warning');
+            } else {
+                alert('地图数据未加载，请刷新页面重试');
+            }
+            return;
+        }
+
         const location = locations.find(l => l.id === locationId);
-        if (!location?.buff) return;
+
+        if (!location) {
+            console.error('[ExplorationMap] _activateBuff: location not found:', locationId);
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('未找到该地点，请重新点击地图标记', 'warning');
+            }
+            return;
+        }
+
+        if (!location.buff) {
+            console.warn('[ExplorationMap] _activateBuff: location has no buff:', locationId);
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('此处暂无可探索的Buff内容', 'info');
+            }
+            return;
+        }
 
         const user = StateManager.get('user');
         // effects 可能是对象 { energy: 10, focus: 5 } 也可能是字符串 "任务经验+10%"
@@ -645,6 +1359,8 @@ const ExplorationMap = {
             if (e4) effects.stress = -e4.val;
             const e5 = parseMatch(raw, '金币', 'gold');
             if (e5) effects.gold = e5.val;
+            const e6 = parseMatch(raw, '经验', 'exp');
+            if (e6) effects.exp = e6.val;
         } else if (raw && typeof raw === 'object') {
             effects = raw;
         }
@@ -679,7 +1395,9 @@ const ExplorationMap = {
         // 触发事件
         EventBus.emit(EVENTS.BUFF_ACTIVATED, { location, buff: location.buff });
 
-        showNotification(`获得 Buff：${location.buff.name}！`, 'success');
+        if (typeof window.showNotification === 'function') {
+            window.showNotification('获得 Buff：' + location.buff.name + '！', 'success');
+        }
         updateStatusDisplay('energy', user.stats.energy);
         updateStatusDisplay('focus', user.stats.focus);
         updateStatusDisplay('mood', user.stats.mood);
@@ -757,7 +1475,7 @@ const ExplorationMap = {
         }
 
         // 2. 在地图上添加目标标记
-        // POI 坐标是 WGS-84，底图为 amap 时需转 GCJ-02；OSM 底图则无需转换
+        // 直接转换坐标（gcoord 已确保在探索地图初始化时加载）
         const useGCJ = this.currentLayer === 'amap' || this.currentLayer === 'hybrid' || this.currentLayer === 'schematic';
         const destPos = useGCJ
             ? CampusNavigation.toGCJ02(lng, lat)
@@ -918,6 +1636,16 @@ const ExplorationMap = {
         return loc.short_name || loc.official_name || loc.name || loc.id || '未知地点';
     },
 
+    /** XSS 防护：转义 HTML 特殊字符 */
+    _escapeHtml(str) {
+        return String(str || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    },
+
     /**
      * 渲染底部地点快捷列表
      */
@@ -1015,7 +1743,10 @@ const ExplorationMap = {
         this._boundModalLifecycle = true;
 
         const modal = document.getElementById('explorationModal');
-        if (!modal) return;
+        if (!modal) {
+            console.warn('[ExplorationMap] #explorationModal 元素未找到，模态框功能将不可用');
+            return;
+        }
 
         // 模态框打开后：渲染列表 + 清理多余的 backdrop + 切换 body class
         modal.addEventListener('shown.bs.modal', () => {
@@ -1028,8 +1759,13 @@ const ExplorationMap = {
             }
             // 同步 backdrop z-index，确保在探索模态之下
             backdrops.forEach(bp => { bp.style.zIndex = '11999'; });
-            // 地图尺寸修正（模态动画完成后调用，确保瓦片请求正确的视图区域）
-            if (this.map) this.map.invalidateSize({ animate: false });
+            // 地图尺寸修正：立即触发一次，再延迟多次重试（防止模态动画期间容器尺寸仍为 0）
+            if (this.map) {
+                this.map.invalidateSize({ animate: false });
+                setTimeout(() => { if (this.map) this.map.invalidateSize({ animate: false }); }, 300);
+                setTimeout(() => { if (this.map) this.map.invalidateSize({ animate: false }); }, 600);
+                setTimeout(() => { if (this.map) this.map.invalidateSize({ animate: false }); }, 1000);
+            }
         });
 
         // 模态框关闭后：恢复 chat-widget，移除 body class，若无其它 modal 打开则清理孤儿 backdrop
@@ -1054,6 +1790,9 @@ const ExplorationMap = {
         }
         if (this._userMarker) {
             this.map.removeLayer(this._userMarker);
+        }
+        if (this._accuracyCircle) {
+            this.map.removeLayer(this._accuracyCircle);
         }
         if (this.map) {
             this.map.remove();
@@ -1120,12 +1859,20 @@ const ExplorationMap = {
     /**
      * 打开探索地图（由外部调用）
      */
-    open() {
+    async open() {
         const modal = document.getElementById('explorationModal');
-        // 防御：如果模态框已经在显示中，直接返回防止重复打开
         if (modal && modal.classList.contains('show')) return;
 
-        this.init();
+        // 防止重复初始化时静默卡住
+        const initPromise = this.isInitialized ? Promise.resolve() : this.init();
+        let initError = null;
+        await initPromise.catch(err => { initError = err; });
+
+        if (initError) {
+            console.error('[ExplorationMap] 初始化失败:', initError.message);
+            showNotification('地图加载失败，请刷新页面重试', 'error');
+            return;
+        }
 
         if (modal && window.bootstrap?.Modal) {
             // 防御性清理：移除所有残留 backdrop，保证单层栈

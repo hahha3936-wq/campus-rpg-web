@@ -7,6 +7,9 @@ function _smApiUrl(path) {
     return typeof window.apiUrl === 'function' ? window.apiUrl(path) : path;
 }
 
+// 成长阶段常量
+const GROWTH_STAGES = ['新生适应期', '学业成长期', '实习准备期', '毕业冲刺期'];
+
 const StateManager = {
     // 状态缓存
     _state: {
@@ -81,22 +84,33 @@ const StateManager = {
      */
     async loadAll() {
         const results = await Promise.allSettled([
-            fetch('data/user_data.json').then(r => r.ok ? r.json() : Promise.reject()),
-            fetch('data/task_data.json').then(r => r.ok ? r.json() : Promise.reject()),
-            fetch('data/achievements_data.json').then(r => r.ok ? r.json() : Promise.reject()),
-            fetch('data/locations.json').then(r => r.ok ? r.json() : Promise.reject()),
             fetch(_smApiUrl('/api/user')).then(r => r.ok ? r.json() : Promise.reject()).catch(() => null),
+            // 模板文件（只读，不涉及用户数据，可以读共享文件）
+            fetch('data/task_data.json').then(r => r.ok ? r.json() : Promise.reject()).catch(() => null),
+            fetch('data/achievement_data.json').then(r => r.ok ? r.json() : Promise.reject()).catch(() => null),
+            // 优先加载 campus_pois.json（24 个 POI），向后兼容 fallback 到 locations.json（9 个旧地点）
+            fetch('data/campus_pois.json').then(r => r.ok ? r.json() : Promise.reject()).catch(() => null),
+            fetch('data/locations.json').then(r => r.ok ? r.json() : Promise.reject()).catch(() => null),
         ]);
 
-        const [userData, taskData, achievementData, locationData, apiUserData] = results.map(r => r.value);
+        const [apiUserData, taskData, achievementData, campusPoiData, oldLocationData] = results.map(r => r.value);
 
-        // 优先使用API数据，否则用本地JSON
+        // 用户数据优先从 API，localStorage 兜底（用户隔离）
         if (apiUserData) {
             this._state.user = apiUserData;
-        } else if (userData) {
-            this._state.user = userData;
         } else {
-            this._state.user = this._getDefaultUser();
+            const uid = localStorage.getItem('campus_rpg_user') ? JSON.parse(localStorage.getItem('campus_rpg_user')).id : 'guest';
+            const userKey = `campus_rpg_user_data_${uid}`;
+            try {
+                const saved = JSON.parse(localStorage.getItem(userKey) || 'null');
+                if (saved?.user) {
+                    this._state.user = saved;
+                } else {
+                    this._state.user = this._getDefaultUser();
+                }
+            } catch {
+                this._state.user = this._getDefaultUser();
+            }
         }
 
         // 初始化探索数据
@@ -106,19 +120,82 @@ const StateManager = {
 
         this._state.tasks = taskData?.tasks || this._getDefaultTasks();
         this._state.achievements = achievementData || this._getDefaultAchievements();
-        this._state.locations = locationData?.locations || [];
+
+        // 地点数据：优先使用 campus_pois.json（24 个 POI），向后兼容 fallback
+        const locations = campusPoiData?.pois || oldLocationData?.locations || [];
+        this._state.locations = locations;
+        if (campusPoiData?.pois) {
+            console.log(`[StateManager] 加载 ${campusPoiData.pois.length} 个 POI（campus_pois.json）`);
+        } else if (oldLocationData?.locations) {
+            console.warn(`[StateManager] 使用旧版 ${oldLocationData.locations.length} 个地点（locations.json），建议迁移到 campus_pois.json`);
+        }
+
         this._state.exploration = this._state.user.exploration || this._state.exploration;
+
+        // 旧版地点 ID 迁移（discovered_locations 中的旧 ID 映射到新 POI ID）
+        // 旧: dorm/canteen/teaching_building/sports_field/garden/cafe/lab/bookstore/library
+        // 新: dorm_qianyuan/canteen_west/teaching_complex/athletics_field/lake/study_cafe/lab_building/bookstore/library
+        const ID_MIGRATION_MAP = {
+            'dorm':              'dorm_qianyuan',
+            'canteen':           'canteen_west',
+            'teaching_building': 'teaching_complex',
+            'sports_field':     'athletics_field',
+            'garden':           'lake',
+            'cafe':             'study_cafe',
+            'lab':              'lab_building',
+            // library, bookstore, south_gate 等 ID 未改变
+        };
+        if (campusPoiData?.pois) {
+            const discovered = this._state.exploration?.discovered_locations || [];
+            const migrated = [];
+            let migratedCount = 0;
+            discovered.forEach(id => {
+                if (ID_MIGRATION_MAP[id] && !discovered.includes(ID_MIGRATION_MAP[id])) {
+                    migrated.push(ID_MIGRATION_MAP[id]);
+                    migratedCount++;
+                }
+            });
+            if (migratedCount > 0) {
+                console.log(`[StateManager] 迁移 ${migratedCount} 个旧版地点ID:`, discovered.filter(id => ID_MIGRATION_MAP[id]).join(', '), '→', migrated.join(', '));
+                // 添加新 ID 但保留旧 ID（向后兼容，后端会根据实际 ID 判断）
+                const merged = [...new Set([...discovered, ...migrated])];
+                this._state.exploration.discovered_locations = merged;
+                if (this._state.user.exploration) {
+                    this._state.user.exploration.discovered_locations = merged;
+                }
+            }
+        }
 
         // 默认数据兜底
         if (!this._state.user.role) {
             this._state.user = this._getDefaultUser();
         }
 
+        // IndexedDB 兜底：localStorage 失败或为空时，从 IndexedDB 恢复任务数据
+        if (this._state.tasks && this._state.tasks.length === 0) {
+            try {
+                const offlineTasks = await OfflineStorage.loadTasks();
+                if (offlineTasks && offlineTasks.length > 0) {
+                    this._state.tasks = offlineTasks;
+                }
+            } catch {}
+        }
+
+        // IndexedDB 兜底：从加密存储恢复用户状态（API 和 localStorage 都失败时）
+        if (!this._state.user?.user) {
+            try {
+                const offlineState = await OfflineStorage.loadUserState();
+                if (offlineState?.user) {
+                    this._state.user = offlineState;
+                }
+            } catch {}
+        }
+
         return this._state;
     },
 
     /**
-     * 保存用户数据到后端
+     * 保存用户数据到后端（同时备份到 localStorage）
      */
     async saveUser() {
         try {
@@ -127,10 +204,22 @@ const StateManager = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(this._state.user)
             });
-            return res.ok;
-        } catch {
-            return false;
-        }
+            if (res.ok) return true;
+        } catch {}
+        // 后端失败，保存到 localStorage（用户隔离）
+        const uid = localStorage.getItem('campus_rpg_user') ? JSON.parse(localStorage.getItem('campus_rpg_user')).id : 'guest';
+        const userKey = `campus_rpg_user_data_${uid}`;
+        try {
+            localStorage.setItem(userKey, JSON.stringify(this._state.user));
+        } catch {}
+
+        // IndexedDB 加密备份（容量更大，安全性更高，作为双重保险）
+        try {
+            await OfflineStorage.saveUserState(this._state.user);
+            await OfflineStorage.saveTasks(this._state.tasks || []);
+        } catch {}
+
+        return false;
     },
 
     /**
@@ -176,7 +265,8 @@ const StateManager = {
      */
     getExplorationProgress() {
         const discovered = this._state.exploration?.discovered_locations?.length || 0;
-        const total = this._state.locations.length;
+        // 优先使用 ExplorationMap 的 POI 数据计算总数（24个），fallback 到 StateManager.locations
+        const total = (window.ExplorationMap?.campusPOIs?.length) || this._state.locations.length;
         return { discovered, total, percentage: total > 0 ? Math.round((discovered / total) * 100) : 0 };
     },
 
@@ -186,15 +276,30 @@ const StateManager = {
         return {
             user: {
                 name: '同学',
-                school: '合肥财经大学·物联网应用技术',
+                school: '合肥财经大学',
                 grade: '大一',
+                major: '物联网应用技术',
                 goals: ['过四级', '不挂科', '学完高数'],
                 apps: { timetable: 'WakeUp课程表', campus: '学习通' },
                 interest: '动漫',
                 lazy_level: 2,
                 party_size: 2,
                 long_term_goals: [],
-                short_term_plans: []
+                short_term_plans: [],
+                // ===== 大学生成长画像字段 =====
+                // 学业画像
+                current_courses: [],          // 当前课程列表，如 ["高等数学", "大学英语"]
+                weak_subjects: [],            // 薄弱科目，如 ["线性代数", "大学物理"]
+                target_gpa: 3.5,              // 目标GPA，取值范围 0.0-4.0
+                // 自律画像
+                daily_routine: 'regular',     // 作息类型：early_bird/night_owl/regular/irregular
+                task_completion_rate: 0,      // 历史任务完成率，单位：百分比(0-100)
+                avg_study_duration: 0,        // 平均学习时长，单位：分钟/天
+                // 兴趣画像
+                interests: [],                // 兴趣方向列表，如 ["动漫", "音乐", "运动"]
+                campus_preferences: [],        // 偏好校园场景列表，如 ["图书馆", "食堂", "操场"]
+                // 成长阶段
+                current_stage: '新生适应期'    // 成长阶段枚举：新生适应期/学业成长期/实习准备期/毕业冲刺期
             },
             role: { level: 1, experience: 0, experience_needed: 100, gold: 50 },
             stats: { energy: 100, focus: 100, mood: 100, stress: 20 },
@@ -273,6 +378,18 @@ const StateManager = {
     /** 公开方法：获取默认成就数据 */
     getDefaultAchievements() {
         return JSON.parse(JSON.stringify(this._getDefaultAchievements()));
+    },
+
+    /** 公开方法：成长阶段常量 */
+    GROWTH_STAGES: GROWTH_STAGES,
+
+    /** 根据年级自动推断成长阶段 */
+    inferGrowthStage(grade) {
+        if (!grade) return '新生适应期';
+        if (grade.includes('大一') || grade.includes('新生')) return '新生适应期';
+        if (grade.includes('大四') || grade.includes('毕业')) return '毕业冲刺期';
+        if (grade.includes('大三')) return '实习准备期';
+        return '学业成长期';
     }
 };
 

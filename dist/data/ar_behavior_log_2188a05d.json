@@ -1,0 +1,12 @@
+[
+  {
+    "timestamp": "2026-04-13T07:14:00.968961",
+    "behavior_type": "found",
+    "marker_id": "marker_001"
+  },
+  {
+    "timestamp": "2026-04-13T07:14:01.545343",
+    "behavior_type": "lost",
+    "marker_id": "marker_001"
+  }
+]

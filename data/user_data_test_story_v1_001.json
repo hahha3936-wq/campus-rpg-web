@@ -1,0 +1,29 @@
+{
+  "user": {
+    "id": "test_story_v1_001",
+    "username": "test",
+    "grade": "大一",
+    "current_stage": "实习准备期",
+    "main_story_progress": {
+      "stage": "实习准备期",
+      "completed_chapters": [
+        "story_fresh_1",
+        "story_fresh_2",
+        "story_fresh_3",
+        "story_fresh_4",
+        "story_fresh_5",
+        "story_academic_1",
+        "story_academic_2",
+        "story_academic_3",
+        "story_academic_4",
+        "story_academic_5"
+      ],
+      "current_task": "story_career_1"
+    }
+  },
+  "role": {
+    "gold": 1245,
+    "experience": 2210,
+    "skill_points": 120
+  }
+}

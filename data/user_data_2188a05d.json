@@ -74,5 +74,136 @@
     "exploration_streak": 0,
     "hidden_events_found": []
   },
-  "last_updated": "2026-04-11 19:45:37"
+  "last_updated": "2026-04-11 19:45:37",
+  "recommended_tasks": [
+    {
+      "name": "动漫鉴赏入门",
+      "description": "观看一部经典动漫作品并记录3个让你印象深刻的场景，培养审美和表达能力。",
+      "category": "main",
+      "difficulty": "medium",
+      "reward": {
+        "experience": 30,
+        "gold": 20,
+        "skill_points": 5
+      },
+      "deadline": "2026-04-25",
+      "tags": [
+        "动漫",
+        "审美",
+        "记录",
+        "休闲"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "选择一部想看的经典动漫（如《千与千寻》、《进击的巨人》第一季）"
+        },
+        {
+          "id": 2,
+          "name": "完整观看至少一集或一部电影"
+        },
+        {
+          "id": 3,
+          "name": "用笔记或手机备忘录记录3个印象深刻的情节或画面"
+        }
+      ]
+    },
+    {
+      "name": "专业初探：物联网是什么",
+      "description": "通过搜索或观看一个科普视频，初步了解物联网（IoT）的基本概念和应用场景。",
+      "category": "main",
+      "difficulty": "medium",
+      "reward": {
+        "experience": 40,
+        "gold": 25,
+        "skill_points": 10
+      },
+      "deadline": "2026-04-22",
+      "tags": [
+        "物联网",
+        "专业学习",
+        "科普",
+        "大一"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "在B站、知乎或搜索引擎查找“物联网 科普”相关内容"
+        },
+        {
+          "id": 2,
+          "name": "观看一个10-20分钟的科普视频或阅读一篇入门文章"
+        },
+        {
+          "id": 3,
+          "name": "用几句话总结物联网是什么以及一个你感兴趣的应用例子"
+        }
+      ]
+    },
+    {
+      "name": "校园漫步与发现",
+      "description": "花30分钟在校园里散步，观察并记录下3个你之前没注意到的地点或设施。",
+      "category": "side",
+      "difficulty": "medium",
+      "reward": {
+        "experience": 20,
+        "gold": 15,
+        "skill_points": 5
+      },
+      "deadline": "2026-04-20",
+      "tags": [
+        "探索",
+        "校园",
+        "观察",
+        "放松"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "选择一个空闲的下午或傍晚"
+        },
+        {
+          "id": 2,
+          "name": "在校园内随意漫步30分钟，不走日常固定路线"
+        },
+        {
+          "id": 3,
+          "name": "拍照或记下3个新发现（如图书馆角落、海报、小花园等）"
+        }
+      ]
+    },
+    {
+      "name": "每日兴趣速记",
+      "description": "连续3天，每天用1分钟记录一件与动漫相关的小事或想法，培养微习惯。",
+      "category": "daily",
+      "difficulty": "medium",
+      "reward": {
+        "experience": 15,
+        "gold": 10,
+        "skill_points": 3
+      },
+      "deadline": "2026-04-21",
+      "tags": [
+        "日常",
+        "动漫",
+        "记录",
+        "习惯"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": 1,
+          "name": "第一天：记录今天看到或想到的任何动漫相关内容（哪怕只是一个画面）"
+        },
+        {
+          "id": 2,
+          "name": "第二天：记录一件与昨天不同的动漫小事"
+        },
+        {
+          "id": 3,
+          "name": "第三天：简单总结这三天记录的感受"
+        }
+      ]
+    }
+  ],
+  "recommended_at": "2026-04-18 11:02:48"
 }

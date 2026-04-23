@@ -227,7 +227,7 @@ function _onPomodoroComplete(completed) {
 function showPomodoroModal() {
     const modalEl = document.getElementById('pomodoroModal');
     const body = document.getElementById('pomodoro-modal-body');
-    const modal = bootstrap?.Modal?.getOrCreateInstance?.(modalEl);
+    const modal = bootstrap?.Modal?.getOrCreateInstance(modalEl);
 
     body.innerHTML = _buildPomodoroBody();
     _bindPomodoroEvents();
@@ -248,3 +248,4 @@ window.PomodoroManager = {
     show: showPomodoroModal,
     getState: () => PomodoroState
 };
+window.showPomodoroModal = showPomodoroModal;

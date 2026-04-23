@@ -11,6 +11,29 @@ const NotificationService = {
     _containerId: 'notification-container',
 
     /**
+     * 转义 HTML 特殊字符
+     * @param {string} str - 待转义字符串
+     * @returns {string} 转义后的字符串
+     */
+    _escapeHtml(str) {
+        return String(str || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    },
+
+    /**
+     * 转义用于 HTML 属性的字符串
+     * @param {string} str - 待转义字符串
+     * @returns {string} 转义后的字符串
+     */
+    _escapeAttr(str) {
+        return String(str || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    },
+
+    /**
      * 显示通知 toast
      * @param {string} message - 通知文本
      * @param {string} type - 类型：success | error | warning | info
@@ -30,7 +53,7 @@ const NotificationService = {
         notification.className = `notification ${type}`;
         notification.innerHTML = `
             <span class="notification-icon">${icons[type] || icons.info}</span>
-            <span class="notification-text">${message}</span>
+            <span class="notification-text">${this._escapeHtml(message)}</span>
         `;
 
         container.appendChild(notification);
@@ -53,6 +76,29 @@ window.NotificationService = NotificationService;
 window.showNotification = (msg, type, duration) => NotificationService.show(msg, type, duration);
 
 const Components = {
+    /**
+     * 转义 HTML 特殊字符
+     * @param {string} str - 待转义字符串
+     * @returns {string} 转义后的字符串
+     */
+    _escapeHtml(str) {
+        return String(str || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    },
+
+    /**
+     * 转义用于 HTML 属性的字符串
+     * @param {string} str - 待转义字符串
+     * @returns {string} 转义后的字符串
+     */
+    _escapeAttr(str) {
+        return String(str || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    },
+
     // ============================================
     // 任务卡片组件
     // ============================================
@@ -73,28 +119,33 @@ const Components = {
             'pending': '待开始',
             'locked': '🔒 锁定'
         };
-        
+
+        // 安全地构建 onclick 属性
+        const taskClickAttr = onTaskClick
+            ? `data-task-id="${this._escapeAttr(task.id)}" data-onclick="${onTaskClick.name || 'onTaskClick'}"`
+            : '';
+
         return `
-            <div class="task-card ${task.category}" ${onTaskClick ? `onclick="${onTaskClick}('${task.id}')"` : ''}>
+            <div class="task-card ${task.category || ''}" ${taskClickAttr}>
                 <div class="task-card-header">
                     <div class="task-card-title">
                         <span>${task.category_icon || '📋'}</span>
-                        <h4>${task.name}</h4>
-                        <span class="task-category-badge badge-${task.category}">${task.category_name || ''}</span>
+                        <h4>${this._escapeHtml(task.name)}</h4>
+                        <span class="task-category-badge badge-${task.category || 'default'}">${this._escapeHtml(task.category_name || '')}</span>
                     </div>
-                    <span class="task-status status-${task.status}">
+                    <span class="task-status status-${task.status || 'pending'}">
                         ${statusLabels[task.status] || task.status}
                     </span>
                 </div>
-                <p class="task-description">${task.description || ''}</p>
+                <p class="task-description">${this._escapeHtml(task.description || '')}</p>
                 
                 <div class="task-progress-section">
                     <div class="task-progress-header">
                         <span>进度</span>
-                        <span>${task.progress}%</span>
+                        <span>${Number(task.progress || 0)}%</span>
                     </div>
                     <div class="task-progress-bar">
-                        <div class="task-progress-fill ${task.category}" style="width: ${task.progress}%"></div>
+                        <div class="task-progress-fill ${task.category || ''}" style="width: ${Math.min(100, Math.max(0, Number(task.progress || 0)))}%"></div>
                     </div>
                 </div>
                 
@@ -103,8 +154,8 @@ const Components = {
                         ${task.subtasks.map(sub => `
                             <div class="subtask-item">
                                 <div class="subtask-checkbox ${sub.status === 'completed' ? 'completed' : ''}" 
-                                     ${onSubtaskClick ? `onclick="${onSubtaskClick}('${task.id}', '${sub.id}', event)"` : ''}></div>
-                                <span class="subtask-text ${sub.status === 'completed' ? 'completed' : ''}">${sub.name}</span>
+                                     ${onSubtaskClick ? `data-subtask-id="${this._escapeAttr(sub.id)}" data-task-id="${this._escapeAttr(task.id)}"` : ''}></div>
+                                <span class="subtask-text ${sub.status === 'completed' ? 'completed' : ''}">${this._escapeHtml(sub.name)}</span>
                                 ${sub.experience ? `<span class="subtask-reward">+${sub.experience}经验</span>` : ''}
                             </div>
                         `).join('')}
@@ -113,11 +164,11 @@ const Components = {
                 
                 <div class="task-footer">
                     <div class="task-rewards">
-                        ${task.reward?.experience ? `<span class="task-reward-item exp">⭐ +${task.reward.experience}</span>` : ''}
-                        ${task.reward?.gold ? `<span class="task-reward-item gold">💰 +${task.reward.gold}</span>` : ''}
-                        ${task.reward?.skill_points ? `<span class="task-reward-item skill">📈 +${task.reward.skill_points}技能点</span>` : ''}
+                        ${task.reward?.experience ? `<span class="task-reward-item exp">⭐ +${Number(task.reward.experience)}</span>` : ''}
+                        ${task.reward?.gold ? `<span class="task-reward-item gold">💰 +${Number(task.reward.gold)}</span>` : ''}
+                        ${task.reward?.skill_points ? `<span class="task-reward-item skill">📈 +${Number(task.reward.skill_points)}技能点</span>` : ''}
                     </div>
-                    ${task.deadline ? `<div class="task-deadline">📅 ${task.deadline}</div>` : ''}
+                    ${task.deadline ? `<div class="task-deadline">📅 ${this._escapeHtml(task.deadline)}</div>` : ''}
                 </div>
             </div>
         `;
@@ -145,29 +196,33 @@ const Components = {
     achievementCard(achievement) {
         const statusClass = achievement.status === 'unlocked' ? 'unlocked' : 
                            achievement.status === 'in_progress' ? 'in_progress' : 'locked';
+
+        const total = achievement.total > 0 ? achievement.total : 1;
+        const progress = Math.max(0, achievement.progress || 0);
+        const pct = Math.min(100, (progress / total) * 100);
         
         return `
             <div class="achievement-card ${statusClass}">
                 <div class="achievement-icon">${achievement.icon || '🏆'}</div>
                 <div class="achievement-info">
-                    <div class="achievement-name">${achievement.name}</div>
-                    <div class="achievement-desc">${achievement.desc || ''}</div>
+                    <div class="achievement-name">${this._escapeHtml(achievement.name)}</div>
+                    <div class="achievement-desc">${this._escapeHtml(achievement.desc || '')}</div>
                     
                     ${achievement.status === 'in_progress' ? `
                         <div class="achievement-progress">
                             <div class="achievement-progress-bar">
-                                <div class="achievement-progress-fill" style="width: ${(achievement.progress / achievement.total) * 100}%"></div>
+                                <div class="achievement-progress-fill" style="width: ${pct}%"></div>
                             </div>
-                            <div class="achievement-progress-text">进度: ${achievement.progress}/${achievement.total}</div>
+                            <div class="achievement-progress-text">进度: ${progress}/${total}</div>
                         </div>
                     ` : ''}
                     
                     ${achievement.status === 'locked' && achievement.hint ? `
-                        <div class="achievement-hint">💡 ${achievement.hint}</div>
+                        <div class="achievement-hint">💡 ${this._escapeHtml(achievement.hint)}</div>
                     ` : ''}
                     
                     ${achievement.status === 'unlocked' && achievement.date ? `
-                        <div class="achievement-date">✅ ${achievement.date}</div>
+                        <div class="achievement-date">✅ ${this._escapeHtml(achievement.date)}</div>
                     ` : ''}
                 </div>
             </div>
@@ -295,11 +350,12 @@ const Components = {
      * 生成物品卡片HTML
      */
     inventoryItem(item, onUse = null) {
+        const clickAttr = onUse ? `data-item-name="${this._escapeAttr(item.name)}"` : '';
         return `
-            <div class="inventory-item" ${onUse ? `onclick="${onUse}('${item.name}')"` : ''}>
+            <div class="inventory-item" ${clickAttr}>
                 <div class="inventory-icon">${item.icon || '📦'}</div>
-                <div class="inventory-name">${item.name}</div>
-                <div class="inventory-quantity">x${item.quantity}</div>
+                <div class="inventory-name">${this._escapeHtml(item.name)}</div>
+                <div class="inventory-quantity">x${Number(item.quantity) || 0}</div>
             </div>
         `;
     },
@@ -336,9 +392,9 @@ const Components = {
     eventCard(event) {
         return `
             <div class="event-modal-content">
-                <div class="event-icon animate-bounce">${event.icon}</div>
-                <div class="event-title">${event.title}</div>
-                <div class="event-description">${event.description}</div>
+                <div class="event-icon animate-bounce">${event.icon || '🎲'}</div>
+                <div class="event-title">${this._escapeHtml(event.title)}</div>
+                <div class="event-description">${this._escapeHtml(event.description || '')}</div>
                 <div class="event-rewards">
                     ${event.rewards?.experience ? `<span class="event-reward-item"><span>⭐</span> +${event.rewards.experience}</span>` : ''}
                     ${event.rewards?.gold ? `<span class="event-reward-item"><span>💰</span> +${event.rewards.gold}</span>` : ''}
@@ -346,7 +402,7 @@ const Components = {
                     ${event.rewards?.focus ? `<span class="event-reward-item"><span>🎯</span> +${event.rewards.focus}</span>` : ''}
                     ${event.rewards?.mood ? `<span class="event-reward-item"><span>😊</span> +${event.rewards.mood}</span>` : ''}
                 </div>
-                <div class="event-effect">✨ ${event.effect}</div>
+                <div class="event-effect">✨ ${this._escapeHtml(event.effect || '')}</div>
             </div>
         `;
     },
@@ -387,12 +443,13 @@ const Components = {
      * 生成每日推荐任务项HTML
      */
     dailyTaskItem(task, onClick = null) {
+        const clickAttr = onClick ? `data-task-id="${this._escapeAttr(task.id)}"` : '';
         return `
-            <div class="daily-task-item" ${onClick ? `onclick="${onClick}('${task.id}')"` : ''}>
+            <div class="daily-task-item" ${clickAttr}>
                 <div class="task-priority priority-${task.priority || 'medium'}"></div>
                 <div class="task-info">
-                    <div class="task-name">${task.category_icon || '📋'} ${task.name}</div>
-                    <div class="task-meta">${task.category_name || ''} | 进度: ${task.progress}%</div>
+                    <div class="task-name">${task.category_icon || '📋'} ${this._escapeHtml(task.name)}</div>
+                    <div class="task-meta">${this._escapeHtml(task.category_name || '')} | 进度: ${task.progress || 0}%</div>
                 </div>
                 <div class="task-reward">
                     ${task.reward?.experience ? `<span class="reward-badge">⭐ +${task.reward.experience}</span>` : ''}

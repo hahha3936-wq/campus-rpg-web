@@ -1,0 +1,372 @@
+{
+  "achievements": {
+    "学业成就": [
+      {
+        "id": "ach_1",
+        "name": "初入校园",
+        "desc": "成功开启大学生活RPG",
+        "status": "unlocked",
+        "date": "2026-03-31",
+        "icon": "🎓",
+        "reward": {
+          "experience": 50,
+          "gold": 20
+        }
+      },
+      {
+        "id": "ach_2",
+        "name": "学习起步",
+        "desc": "完成第一次学习任务",
+        "status": "unlocked",
+        "date": "2026-03-31",
+        "icon": "📚",
+        "reward": {
+          "experience": 30,
+          "gold": 10
+        }
+      },
+      {
+        "id": "ach_3",
+        "name": "英语入门",
+        "desc": "完成10个英语单词学习",
+        "status": "in_progress",
+        "progress": 3,
+        "total": 10,
+        "icon": "🔤",
+        "reward": {
+          "experience": 40,
+          "gold": 15
+        }
+      },
+      {
+        "id": "ach_4",
+        "name": "数学基础",
+        "desc": "完成5道数学题",
+        "status": "not_started",
+        "progress": 0,
+        "total": 5,
+        "icon": "🧮",
+        "reward": {
+          "experience": 50,
+          "gold": 20
+        }
+      },
+      {
+        "id": "ach_5",
+        "name": "四级预备",
+        "desc": "开始四级备考计划",
+        "status": "in_progress",
+        "progress": 1,
+        "total": 5,
+        "icon": "🎯",
+        "reward": {
+          "experience": 80,
+          "gold": 40
+        }
+      },
+      {
+        "id": "ach_6",
+        "name": "不挂科保障",
+        "desc": "连续3天完成学习任务",
+        "status": "not_started",
+        "progress": 0,
+        "total": 3,
+        "icon": "🛡️",
+        "reward": {
+          "experience": 100,
+          "gold": 50
+        }
+      },
+      {
+        "id": "ach_7",
+        "name": "高数入门",
+        "desc": "完成高数第1章学习",
+        "status": "in_progress",
+        "progress": 0,
+        "total": 3,
+        "icon": "📐",
+        "reward": {
+          "experience": 60,
+          "gold": 30
+        }
+      },
+      {
+        "id": "ach_8",
+        "name": "课堂全勤",
+        "desc": "连续一周按时上课",
+        "status": "not_started",
+        "progress": 0,
+        "total": 7,
+        "icon": "⏰",
+        "reward": {
+          "experience": 150,
+          "gold": 80
+        }
+      },
+      {
+        "id": "ach_9",
+        "name": "作业达人",
+        "desc": "按时完成所有作业",
+        "status": "not_started",
+        "progress": 0,
+        "total": 5,
+        "icon": "✏️",
+        "reward": {
+          "experience": 100,
+          "gold": 50
+        }
+      },
+      {
+        "id": "ach_10",
+        "name": "考试通关",
+        "desc": "通过第一次考试",
+        "status": "locked",
+        "progress": 0,
+        "total": 1,
+        "icon": "✅",
+        "reward": {
+          "experience": 200,
+          "gold": 100,
+          "title": "学霸"
+        }
+      }
+    ],
+    "探索成就": [
+      {
+        "id": "ach_11",
+        "name": "初次探索",
+        "desc": "探索第一个校园地点",
+        "status": "unlocked",
+        "progress": 1,
+        "total": 1,
+        "icon": "🗺️",
+        "reward": {
+          "experience": 30,
+          "gold": 10
+        },
+        "date": "2026-04-09"
+      },
+      {
+        "id": "ach_12",
+        "name": "足迹遍布",
+        "desc": "探索10个不同地点",
+        "status": "not_started",
+        "progress": 0,
+        "total": 10,
+        "icon": "👣",
+        "reward": {
+          "experience": 80,
+          "gold": 30
+        }
+      },
+      {
+        "id": "ach_13",
+        "name": "彩蛋猎人",
+        "desc": "发现3个隐藏事件",
+        "status": "in_progress",
+        "progress": 1,
+        "total": 3,
+        "icon": "🥚",
+        "reward": {
+          "experience": 100,
+          "gold": 50
+        }
+      },
+      {
+        "id": "ach_14",
+        "name": "深夜探险家",
+        "desc": "22:00-06:00期间探索校园",
+        "status": "locked",
+        "progress": 0,
+        "total": 1,
+        "icon": "🌙",
+        "hint": "夜晚的校园别有一番风味...",
+        "reward": {
+          "experience": 50,
+          "gold": 25
+        }
+      },
+      {
+        "id": "ach_15",
+        "name": "图书馆常客",
+        "desc": "探索图书馆并激活知识光环",
+        "status": "not_started",
+        "progress": 0,
+        "total": 1,
+        "icon": "📚",
+        "reward": {
+          "experience": 60,
+          "gold": 30
+        }
+      },
+      {
+        "id": "ach_16",
+        "name": "校园大师",
+        "desc": "探索全部校园地点",
+        "status": "locked",
+        "progress": 0,
+        "total": 9,
+        "icon": "🏆",
+        "hint": "走遍校园的每个角落",
+        "reward": {
+          "experience": 300,
+          "gold": 100,
+          "title": "校园征服者"
+        }
+      },
+      {
+        "id": "ach_17",
+        "name": "美食家",
+        "desc": "探索所有餐饮地点",
+        "status": "not_started",
+        "progress": 0,
+        "total": 1,
+        "icon": "🍜",
+        "reward": {
+          "experience": 50,
+          "gold": 20
+        }
+      }
+    ],
+    "社交成就": [
+      {
+        "id": "ach_18",
+        "name": "宿舍联机",
+        "desc": "与室友建立联机关系",
+        "status": "unlocked",
+        "date": "2026-03-31",
+        "icon": "👥",
+        "reward": {
+          "experience": 30,
+          "gold": 15
+        }
+      },
+      {
+        "id": "ach_19",
+        "name": "NPC初识",
+        "desc": "与2个NPC建立关系",
+        "status": "unlocked",
+        "date": "2026-04-01",
+        "icon": "🎭",
+        "reward": {
+          "experience": 40,
+          "gold": 20
+        }
+      },
+      {
+        "id": "ach_20",
+        "name": "鸣人好感",
+        "desc": "鸣人老师好感度达到20",
+        "status": "in_progress",
+        "progress": 5,
+        "total": 20,
+        "icon": "🔥",
+        "reward": {
+          "experience": 60,
+          "gold": 30
+        }
+      },
+      {
+        "id": "ach_21",
+        "name": "佐助认可",
+        "desc": "佐助助教好感度达到25",
+        "status": "not_started",
+        "progress": 0,
+        "total": 25,
+        "icon": "⚡",
+        "reward": {
+          "experience": 80,
+          "gold": 40
+        }
+      },
+      {
+        "id": "ach_22",
+        "name": "同学交流",
+        "desc": "与5位同学交流",
+        "status": "not_started",
+        "progress": 0,
+        "total": 5,
+        "icon": "💬",
+        "reward": {
+          "experience": 50,
+          "gold": 25
+        }
+      },
+      {
+        "id": "ach_23",
+        "name": "社交达人",
+        "desc": "完成10次社交互动",
+        "status": "locked",
+        "progress": 0,
+        "total": 10,
+        "icon": "🌟",
+        "reward": {
+          "experience": 150,
+          "gold": 75,
+          "title": "社交达人"
+        }
+      }
+    ],
+    "隐藏成就": [
+      {
+        "id": "ach_24",
+        "name": "摆烂大师",
+        "desc": "连续摆烂3天不被指责",
+        "status": "locked",
+        "icon": "😴",
+        "hint": "摆烂也是游戏的一部分",
+        "reward": {
+          "experience": 100,
+          "gold": 50
+        }
+      },
+      {
+        "id": "ach_25",
+        "name": "深夜学习者",
+        "desc": "凌晨2点后学习",
+        "status": "locked",
+        "icon": "🌃",
+        "hint": "注意休息更重要",
+        "reward": {
+          "experience": 80,
+          "gold": 40
+        }
+      },
+      {
+        "id": "ach_26",
+        "name": "动漫联动",
+        "desc": "发现所有动漫彩蛋",
+        "status": "locked",
+        "icon": "🎬",
+        "hint": "与动漫兴趣相关",
+        "reward": {
+          "experience": 200,
+          "gold": 100,
+          "title": "动漫通"
+        }
+      },
+      {
+        "id": "ach_night_explorer",
+        "name": "夜猫子",
+        "desc": "深夜探索校园",
+        "status": "not_started",
+        "progress": 0,
+        "total": 1,
+        "icon": "🦉",
+        "hint": "深夜探索有什么特别的呢...",
+        "reward": {
+          "experience": 50,
+          "gold": 30
+        }
+      }
+    ]
+  },
+  "statistics": {
+    "total_achievements": 26,
+    "unlocked": 6,
+    "in_progress": 6,
+    "not_started": 12,
+    "hidden": 3
+  },
+  "last_updated": "2026-04-11 16:08:54"
+}

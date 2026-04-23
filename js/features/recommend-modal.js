@@ -33,7 +33,7 @@ const RecommendModal = {
             <div class="recommend-content" id="recommend-content" style="display:none;"></div>
         `;
 
-        this._bsModal = new bootstrap.Modal(modal);
+        this._bsModal = bootstrap.Modal.getOrCreateInstance(modal);
         this._bsModal.show();
 
         await this._fetchRecommendations();
@@ -85,6 +85,9 @@ const RecommendModal = {
 
             const data = await resp.json();
 
+            // 保存难度调整信息到 modal 实例
+            this._difficultyInfo = data.difficulty_info || null;
+
             loading.style.display = 'none';
             content.style.display = 'block';
 
@@ -124,12 +127,42 @@ const RecommendModal = {
         const content = document.getElementById('recommend-modal-body');
         const difficultyColors = { easy: '#4ade80', medium: '#f59e0b', hard: '#ef4444' };
         const categoryLabels = { main: '🎯 主线', side: '📋 支线', daily: '📅 日常', hidden: '🔍 隐藏' };
+        const difficultyLabelMap = { 1: '🌱 简单', 2: '⭐ 简单', 3: '⭐⭐ 中等', 4: '⭐⭐⭐ 较难', 5: '🔥 困难' };
+        const aiDifficultyMap = { easy: '🌱 简单', medium: '⭐⭐ 中等', hard: '🔥 困难' };
 
-        content.innerHTML = `
+        // 构建头部：先判断 difficulty_info 中返回的 adjusted_difficulty 还是 ai_difficulty
+        let headerHtml = `
             <div class="recommend-header">
                 <div class="recommend-header-icon">✨</div>
                 <div class="recommend-header-title">根据你的目标，为你推荐以下任务：</div>
             </div>
+        `;
+
+        // 如果有难度调整信息，显示提示
+        const diffInfo = this._difficultyInfo;
+        if (diffInfo) {
+            // 优先使用 adjusted_difficulty（1-5），否则使用 ai_difficulty（easy/medium/hard）
+            const levelText = diffInfo.adjusted_difficulty
+                ? difficultyLabelMap[diffInfo.adjusted_difficulty] || `Lv.${diffInfo.adjusted_difficulty}`
+                : (diffInfo.ai_difficulty ? aiDifficultyMap[diffInfo.ai_difficulty] || diffInfo.ai_difficulty : '');
+            headerHtml = `
+            <div class="difficulty-adjustment-notice">
+                <div class="difficulty-adjustment-icon">📊</div>
+                <div class="difficulty-adjustment-content">
+                    <div class="difficulty-adjustment-title">难度已根据你的表现调整</div>
+                    <div class="difficulty-adjustment-message">${diffInfo.message || ''}</div>
+                    ${levelText ? `<div class="difficulty-adjustment-level">当前难度: ${levelText}</div>` : ''}
+                </div>
+            </div>
+            <div class="recommend-header">
+                <div class="recommend-header-icon">✨</div>
+                <div class="recommend-header-title">根据你的目标，为你推荐以下任务：</div>
+            </div>
+            `;
+        }
+
+        content.innerHTML = `
+            ${headerHtml}
             <div class="recommend-tasks" id="recommend-tasks">
                 ${tasks.map((task, idx) => `
                     <div class="recommend-task-card" data-idx="${idx}">

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的角色 - 校园RPG</title>
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="校园RPG角色详情">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/chat-widget.css">
+    <link rel="stylesheet" href="css/profile-modal.css">
+    <link rel="stylesheet" href="css/profile-page.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <span class="brand-icon">🎮</span><span class="brand-text">校园RPG</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="user-stats-mini me-3">
+                    <span class="stat-mini"><span class="stat-icon">💰</span><span id="gold-display-nav">--</span></span>
+                    <span class="stat-mini"><span class="stat-icon">⭐</span>Lv.<span id="level-display-nav">--</span></span>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#settingsModal">⚙️</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content" style="padding-top: 70px; padding-bottom: 80px;">
+        <div class="container">
+            <div class="page-header">
+                <div class="container">
+                    <h1>👤 我的角色</h1>
+                    <div class="subtitle">校园冒险者的档案</div>
+                </div>
+            </div>
+
+            <!-- 角色头像区 -->
+            <div class="role-avatar-section" id="role-avatar-section">
+                <div class="role-avatar-lg" id="role-avatar">--</div>
+                <div class="role-name-lg" id="role-name">加载中...</div>
+                <div class="role-title-lg" id="role-title">--</div>
+            </div>
+
+            <!-- 数值属性 -->
+            <div class="stats-grid" id="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div><div class="stat-label">金币</div>
+                    <div class="stat-value" id="stat-gold">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div><div class="stat-label">等级</div>
+                    <div class="stat-value" id="stat-level">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div><div class="stat-label">能量</div>
+                    <div class="stat-value" id="stat-energy">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div><div class="stat-label">专注</div>
+                    <div class="stat-value" id="stat-focus">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div><div class="stat-label">连续签到</div>
+                    <div class="stat-value" id="stat-streak">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🗺️</div><div class="stat-label">已探索</div>
+                    <div class="stat-value" id="stat-explored">--</div>
+                </div>
+            </div>
+
+            <!-- 经验条 -->
+            <div class="progress-bar-section">
+                <div class="progress-row">
+                    <div class="progress-label">
+                        <span>⭐ 经验值</span>
+                        <span id="exp-text">-- / --</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill-bar exp-fill" id="exp-bar" style="width:0%"></div>
+                    </div>
+                </div>
+                <div class="progress-row">
+                    <div class="progress-label">
+                        <span>⚡ 能量值</span>
+                        <span id="energy-text">-- / --</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill-bar energy-fill" id="energy-bar" style="width:0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="profile-load-hint" class="profile-hint" style="display:none;"></div>
+
+            <div class="profile-action-row">
+                <button type="button" class="btn btn-primary flex-grow-1" id="btn-open-profile-editor"><span class="btn-label">👤 编辑资料与目标</span></button>
+                <button type="button" class="btn btn-outline-primary flex-grow-1" id="btn-ai-recommend"><span class="btn-label">🪄 AI 推荐任务</span></button>
+            </div>
+
+            <div class="section-title">🎯 长期目标</div>
+            <div class="profile-preview-list" id="profile-goals-preview">
+                <div style="text-align:center;padding:1rem;opacity:0.5">加载中...</div>
+            </div>
+
+            <div class="section-title">📅 短期计划</div>
+            <div class="profile-preview-list" id="profile-plans-preview">
+                <div style="text-align:center;padding:1rem;opacity:0.5">加载中...</div>
+            </div>
+
+            <!-- NPC 好感度 -->
+            <div class="section-title">🤝 NPC 好感度</div>
+            <div id="npc-relations">
+                <div style="text-align:center;padding:2rem;opacity:0.5">加载中...</div>
+            </div>
+            <a class="view-more-btn" href="npc.html">🌟 查看全部 NPC 详情 →</a>
+
+            <!-- 背包预览 -->
+            <div class="section-title">🎒 背包预览</div>
+            <div class="inv-grid" id="inventory-grid">
+                <div style="text-align:center;padding:2rem;opacity:0.5;grid-column:1/-1">加载中...</div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a class="nav-btn" href="index.html"><span class="nav-icon" aria-hidden="true">🏠</span><span class="nav-text">主页</span></a>
+        <a class="nav-btn" href="tasks.html"><span class="nav-icon" aria-hidden="true">📋</span><span class="nav-text">任务</span></a>
+        <a class="nav-btn" href="achievements.html"><span class="nav-icon" aria-hidden="true">🏆</span><span class="nav-text">成就</span></a>
+        <a class="nav-btn active" href="profile.html"><span class="nav-icon" aria-hidden="true">👤</span><span class="nav-text">我的</span></a>
+        <a class="nav-btn nav-btn-game" href="game.html"><span class="nav-icon" aria-hidden="true">🌾</span><span class="nav-text">农场</span></a>
+    </nav>
+
+    <div class="modal fade" id="settingsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">⚙️ 设置</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="settings-modal-body">
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span>🎵 音效</span>
+                            <input type="checkbox" id="sound-toggle" checked>
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span>🌙 夜间模式</span>
+                            <input type="checkbox" id="darkmode-toggle">
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span>✨ 动画效果</span>
+                            <input type="checkbox" id="animation-toggle" checked>
+                        </label>
+                    </div>
+                    <div class="settings-divider"></div>
+                    <button type="button" class="btn btn-outline-primary w-100 mb-2" onclick="PlanManager.openProfileEditor()">
+                        👤 个人资料与目标计划
+                    </button>
+                    <div class="settings-divider"></div>
+                    <button type="button" class="btn btn-outline-danger w-100" onclick="resetData()">
+                        🔄 重置数据
+                    </button>
+                </div>
+                <div class="modal-footer" id="settings-modal-footer" style="display:none;">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="PlanManager.saveAndClose()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification-container" id="notification-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api-base.js"></script>
+    <script src="js/init.js"></script>
+    <script src="js/game/ar/ar-main.js" defer></script>
+    <script src="js/core/event-bus.js"></script>
+    <script src="js/core/state-manager.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/features/plan-manager.js"></script>
+    <script src="js/features/recommend-modal.js"></script>
+    <script>
+    (function () {
+        'use strict';
+
+        var defaultSettingsBodyHtml = '';
+
+        function resetData() {
+            if (confirm('确定要重置所有数据吗？此操作不可撤销！')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+        window.resetData = resetData;
+
+        function escapeHtml(s) {
+            if (s == null || s === '') return '';
+            var d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        function renderGoalsPreview(goals) {
+            var el = document.getElementById('profile-goals-preview');
+            if (!el) return;
+            if (!goals || !goals.length) {
+                el.innerHTML = '<div class="profile-preview-card"><div class="pps">暂无长期目标，点击「编辑资料与目标」添加</div></div>';
+                return;
+            }
+            el.innerHTML = goals.slice(0, 5).map(function (g) {
+                return '<div class="profile-preview-card"><div class="ppt">' + escapeHtml(g.title || '未命名') + '</div>' +
+                    '<div class="pps">' + escapeHtml((g.target_date ? '截止 ' + g.target_date + ' · ' : '') + '进度 ' + (g.progress || 0) + '%') + '</div></div>';
+            }).join('');
+        }
+
+        function renderPlansPreview(plans) {
+            var el = document.getElementById('profile-plans-preview');
+            if (!el) return;
+            if (!plans || !plans.length) {
+                el.innerHTML = '<div class="profile-preview-card"><div class="pps">暂无短期计划</div></div>';
+                return;
+            }
+            el.innerHTML = plans.slice(0, 5).map(function (p) {
+                return '<div class="profile-preview-card"><div class="ppt">' + escapeHtml(p.title || '未命名') + '</div>' +
+                    '<div class="pps">' + escapeHtml((p.deadline ? '截止 ' + p.deadline + ' · ' : '') + (p.status || 'pending')) + '</div></div>';
+            }).join('');
+        }
+
+        function showLoadHint(text) {
+            var h = document.getElementById('profile-load-hint');
+            if (!h) return;
+            h.style.display = text ? 'block' : 'none';
+            h.textContent = text || '';
+        }
+
+        async function fetchUserBundle() {
+            var data = await API.getUser();
+            var usedFallback = false;
+            if (!data || !data.user) {
+                // 从 localStorage 读取用户隔离的数据
+                var uid = localStorage.getItem('campus_rpg_user') ? JSON.parse(localStorage.getItem('campus_rpg_user')).id : 'guest';
+                var userKey = 'campus_rpg_user_data_' + uid;
+                try {
+                    var saved = JSON.parse(localStorage.getItem(userKey) || 'null');
+                    if (saved && saved.user) {
+                        data = saved;
+                    }
+                } catch {}
+            }
+            if (!data || !data.user) {
+                data = StateManager.getDefaultUser();
+                usedFallback = true;
+            }
+            if (usedFallback && !localStorage.getItem('campus_rpg_token')) {
+                showLoadHint('未登录或接口不可用，已显示本地默认数据。前往主页登录后可同步云端档案。');
+            } else if (usedFallback) {
+                showLoadHint('已使用本地备用数据；若需同步请检查网络或重新登录。');
+            } else {
+                showLoadHint('');
+            }
+            return data;
+        }
+
+        function applyUserToDom(data) {
+            var profile = data.user || {};
+            var role = data.role || {};
+            var stats = data.stats || {};
+            var gold = role.gold != null ? role.gold : 0;
+            var level = role.level != null ? role.level : 1;
+            var energy = stats.energy != null ? stats.energy : 0;
+            var energyMax = 100;
+            var focus = stats.focus != null ? stats.focus : 0;
+            var streak = stats.current_streak != null ? stats.current_streak : 0;
+
+            document.getElementById('gold-display-nav').textContent = gold;
+            document.getElementById('level-display-nav').textContent = level;
+
+            document.getElementById('role-avatar').textContent = role.avatar || '🎮';
+            document.getElementById('role-name').textContent = profile.name || '校园冒险者';
+            document.getElementById('role-title').textContent = role.title || (profile.grade ? profile.grade + ' · 冒险者' : '新生');
+
+            document.getElementById('stat-gold').textContent = gold;
+            document.getElementById('stat-level').textContent = level;
+            document.getElementById('stat-energy').textContent = energy + '/' + energyMax;
+            document.getElementById('stat-focus').textContent = focus;
+            document.getElementById('stat-streak').textContent = streak;
+
+            var exp = role.experience != null ? role.experience : 0;
+            var expNeeded = role.experience_needed != null ? role.experience_needed : Math.max(100, level * 100);
+            document.getElementById('exp-text').textContent = exp + '/' + expNeeded;
+            document.getElementById('exp-bar').style.width = Math.min(100, expNeeded ? (exp / expNeeded * 100) : 0) + '%';
+
+            document.getElementById('energy-text').textContent = energy + '/' + energyMax;
+            document.getElementById('energy-bar').style.width = Math.min(100, energy / energyMax * 100) + '%';
+
+            var npcRelations = data.npc_relationship || {};
+            var npcEls = document.getElementById('npc-relations');
+            if (Object.keys(npcRelations).length === 0) {
+                npcEls.innerHTML = '<div style="text-align:center;padding:1rem;opacity:0.5">暂无 NPC 关系数据</div>';
+            } else {
+                var npcIcons = { naruto: '🍥', sasuke: '👤' };
+                var npcNames = { naruto: '漩涡鸣人老师', sasuke: '宇智波佐助助教' };
+                npcEls.innerHTML = Object.entries(npcRelations).map(function (entry) {
+                    var id = entry[0];
+                    var npc = entry[1];
+                    var maxA = npc.max_affection || 100;
+                    var aff = npc.affection || 0;
+                    var pct = Math.round((aff / maxA) * 100);
+                    return '<div class="npc-relation-card">' +
+                        '<div class="npc-avatar-sm">' + (npcIcons[id] || '👤') + '</div>' +
+                        '<div class="npc-relation-info">' +
+                        '<div class="npc-relation-name">' + escapeHtml(npcNames[id] || id) + '</div>' +
+                        '<div class="npc-relation-title">' + escapeHtml(npc.title || '初识') + '</div>' +
+                        '<div class="npc-affection-row">' +
+                        '<div class="npc-affection-track">' +
+                        '<div class="npc-affection-fill" style="width:' + pct + '%"></div></div>' +
+                        '<div class="npc-affection-label"><span>好感度</span><span>' + aff + '/' + maxA + '</span></div>' +
+                        '</div></div></div>';
+                }).join('');
+            }
+
+            var inv = data.inventory || [];
+            var invGrid = document.getElementById('inventory-grid');
+            if (inv.length === 0) {
+                invGrid.innerHTML = '<div style="text-align:center;padding:2rem;opacity:0.5;grid-column:1/-1">背包空空如也</div>';
+            } else {
+                invGrid.innerHTML = inv.slice(0, 8).map(function (item) {
+                    var qty = item.quantity != null ? item.quantity : (item.count != null ? item.count : 1);
+                    return '<div class="inv-item">' +
+                        '<div>' + (item.icon || '📦') + '</div>' +
+                        '<div class="inv-item-name">' + escapeHtml(item.name || '物品') + '</div>' +
+                        '<div class="inv-item-count">x' + qty + '</div></div>';
+                }).join('');
+                if (inv.length > 8) {
+                    invGrid.innerHTML += '<div class="inv-item" style="opacity:0.5"><div>📦</div><div class="inv-item-name">更多</div><div class="inv-item-count">+' + (inv.length - 8) + '</div></div>';
+                }
+            }
+
+            renderGoalsPreview(profile.long_term_goals);
+            renderPlansPreview(profile.short_term_plans);
+
+            PlanManager._userData = data;
+        }
+
+        async function loadExploredCount(data) {
+            var disc = ((data.exploration && data.exploration.discovered_locations) || []).length;
+            var total = 0;
+            try {
+                var explResp = await fetch(apiUrl('/api/exploration/locations'));
+                if (explResp.ok) {
+                    var lj = await explResp.json();
+                    total = (lj.locations || []).length;
+                }
+            } catch (e) { /* ignore */ }
+            document.getElementById('stat-explored').textContent = total ? (disc + '/' + total) : String(disc);
+        }
+
+        async function loadData() {
+            try {
+                var data = await fetchUserBundle();
+                applyUserToDom(data);
+                await loadExploredCount(data);
+            } catch (e) {
+                console.warn('角色数据加载失败:', e);
+                document.getElementById('role-name').textContent = '加载失败';
+                document.getElementById('role-title').textContent = '请刷新或返回主页重试';
+                showLoadHint('数据加载异常，请检查网络或登录状态。');
+                renderGoalsPreview([]);
+                renderPlansPreview([]);
+                document.getElementById('npc-relations').innerHTML = '<div style="text-align:center;padding:1rem;opacity:0.5">加载失败</div>';
+                document.getElementById('inventory-grid').innerHTML = '<div style="text-align:center;padding:2rem;opacity:0.5;grid-column:1/-1">加载失败</div>';
+            }
+        }
+
+        var settingsBody = document.getElementById('settings-modal-body');
+        if (settingsBody) defaultSettingsBodyHtml = settingsBody.innerHTML;
+
+        document.getElementById('btn-open-profile-editor').addEventListener('click', async function () {
+            await PlanManager.openProfileEditor();
+            var el = document.getElementById('settingsModal');
+            if (el && typeof bootstrap !== 'undefined') {
+                var inst = bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el);
+                inst.show();
+            }
+        });
+
+        document.getElementById('btn-ai-recommend').addEventListener('click', function () {
+            if (typeof RecommendModal !== 'undefined') RecommendModal.open();
+        });
+
+        var settingsModalEl = document.getElementById('settingsModal');
+        if (settingsModalEl) {
+            settingsModalEl.addEventListener('hidden.bs.modal', function () {
+                var body = document.getElementById('settings-modal-body');
+                if (body && defaultSettingsBodyHtml) body.innerHTML = defaultSettingsBodyHtml;
+                loadData();
+            });
+        }
+
+        loadData();
+    })();
+    </script>
+</body>
+</html>

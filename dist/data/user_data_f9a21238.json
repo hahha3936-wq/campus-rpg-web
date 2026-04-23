@@ -1,0 +1,100 @@
+{
+  "user": {
+    "name": "???",
+    "school": "??????",
+    "grade": "???",
+    "goals": [
+      "过四级",
+      "不挂科",
+      "学完高数"
+    ],
+    "apps": {
+      "timetable": "WakeUp课程表",
+      "campus": "学习通"
+    },
+    "interest": "???",
+    "lazy_level": 3,
+    "party_size": 2,
+    "long_term_goals": [
+      {
+        "id": "lt_new",
+        "description": "????????????CET-6???",
+        "tags": "??? ???",
+        "progress": 0,
+        "target_date": "2026-12-31",
+        "title": "?????????",
+        "status": "active"
+      }
+    ],
+    "short_term_plans": [
+      {
+        "id": "st_new",
+        "estimated_hours": 5,
+        "description": "???Python?????????",
+        "linked_long_term": "lt_new",
+        "deadline": "2026-04-17",
+        "status": "pending",
+        "title": "???Python???",
+        "priority": "high",
+        "tasks": ""
+      }
+    ]
+  },
+  "role": {
+    "level": 1,
+    "experience": 0,
+    "experience_needed": 100,
+    "gold": 50
+  },
+  "stats": {
+    "energy": 100,
+    "focus": 100,
+    "mood": 100,
+    "stress": 20,
+    "total_tasks_completed": 0,
+    "total_achievements_unlocked": 5,
+    "days_active": 1,
+    "current_streak": 1
+  },
+  "npc_relationship": {
+    "naruto": {
+      "affection": 20,
+      "max_affection": 100,
+      "title": "热血导师"
+    },
+    "sasuke": {
+      "affection": 10,
+      "max_affection": 100,
+      "title": "傲娇助教"
+    }
+  },
+  "buffs": [
+    {
+      "name": "动漫联动",
+      "description": "学习效率+15%",
+      "duration": "今日有效",
+      "icon": "🎬"
+    }
+  ],
+  "inventory": [
+    {
+      "name": "经验药水",
+      "description": "使用后获得20点经验",
+      "quantity": 3,
+      "icon": "🧪"
+    },
+    {
+      "name": "能量饮料",
+      "description": "恢复30点能量",
+      "quantity": 2,
+      "icon": "🥤"
+    }
+  ],
+  "exploration": {
+    "discovered_locations": [],
+    "current_location": "dorm",
+    "exploration_streak": 0,
+    "hidden_events_found": []
+  },
+  "last_updated": "2026-04-10 19:58:52"
+}

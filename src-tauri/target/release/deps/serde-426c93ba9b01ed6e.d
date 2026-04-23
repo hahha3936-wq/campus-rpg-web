@@ -1,0 +1,14 @@
+C:\Users\hahha\Desktop\.openclaw\campus-rpg-web\src-tauri\target\release\deps\serde-426c93ba9b01ed6e.d: C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\Users\hahha\Desktop\.openclaw\campus-rpg-web\src-tauri\target\release\build\serde-e63531b5e3bb2643\out/private.rs
+
+C:\Users\hahha\Desktop\.openclaw\campus-rpg-web\src-tauri\target\release\deps\libserde-426c93ba9b01ed6e.rlib: C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\Users\hahha\Desktop\.openclaw\campus-rpg-web\src-tauri\target\release\build\serde-e63531b5e3bb2643\out/private.rs
+
+C:\Users\hahha\Desktop\.openclaw\campus-rpg-web\src-tauri\target\release\deps\libserde-426c93ba9b01ed6e.rmeta: C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\Users\hahha\Desktop\.openclaw\campus-rpg-web\src-tauri\target\release\build\serde-e63531b5e3bb2643\out/private.rs
+
+C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs:
+C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs:
+C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs:
+C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs:
+C:\Users\hahha\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs:
+C:\Users\hahha\Desktop\.openclaw\campus-rpg-web\src-tauri\target\release\build\serde-e63531b5e3bb2643\out/private.rs:
+
+# env-dep:OUT_DIR=C:\\Users\\hahha\\Desktop\\.openclaw\\campus-rpg-web\\src-tauri\\target\\release\\build\\serde-e63531b5e3bb2643\\out

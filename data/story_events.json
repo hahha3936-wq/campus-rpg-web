@@ -1,0 +1,581 @@
+{
+  "meta": {
+    "version": "1.0",
+    "total_events": 30,
+    "description": "校园RPG剧情随机事件库 - 与主线剧情联动的随机事件和彩蛋"
+  },
+  "event_categories": {
+    "random": { "name": "随机事件", "weight": 40, "description": "日常随机触发的事件" },
+    "time": { "name": "时间彩蛋", "weight": 20, "description": "特定时间段触发的事件" },
+    "exploration": { "name": "探索彩蛋", "weight": 15, "description": "探索地图特定位置触发的事件" },
+    "npc": { "name": "NPC彩蛋", "weight": 15, "description": "NPC互动触发的特殊事件" },
+    "achievement": { "name": "成就彩蛋", "weight": 10, "description": "达成特定成就时触发的事件" }
+  },
+  "events": [
+    {
+      "event_id": "evt_random_001",
+      "name": "校园猫出现",
+      "category": "random",
+      "description": "一只橘猫慵懒地躺在图书馆门口，看到你后喵了一声。",
+      "trigger_chance": 0.08,
+      "trigger_conditions": { "location": "library", "stage_any": true },
+      "story_related": true,
+      "effects": {
+        "mood": 5,
+        "stress": -3,
+        "reward": { "type": "item", "id": "猫粮", "description": "校园猫的好感度道具" }
+      },
+      "dialogue": {
+        "text": "喵~ 你也在图书馆学习吗？这里的猫都很幸福的！",
+        "speaker": "校园橘猫"
+      },
+      "cooldown_days": 7,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_random_002",
+      "name": "社团招新",
+      "category": "random",
+      "description": "路过食堂门口，被热情的社团学长学姐拦住招新。",
+      "trigger_chance": 0.10,
+      "trigger_conditions": { "stage": "新生适应期", "task_complete": "story_fresh_5" },
+      "story_related": true,
+      "effects": {
+        "social": 5,
+        "gold": -20,
+        "reward": { "type": "item", "id": "社团传单", "description": "了解社团信息的传单" },
+        "unlock": { "type": "npc", "id": "club_president" }
+      },
+      "dialogue": {
+        "text": "同学，加入我们社团吧！这里有最有趣的活动和最热心的学长学姐！",
+        "speaker": "社团招新学长"
+      },
+      "cooldown_days": 14,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_random_003",
+      "name": "突然下雨",
+      "category": "random",
+      "description": "原本晴朗的天空突然乌云密布，下起了小雨。你匆忙躲进最近的教学楼。",
+      "trigger_chance": 0.06,
+      "trigger_conditions": { "stage_any": true },
+      "story_related": false,
+      "effects": {
+        "stress": -2,
+        "mood": 3,
+        "buff": { "name": "雨中漫步", "effect": "雨中寻找避雨处，发现隐藏角落", "duration_hours": 2 }
+      },
+      "dialogue": {
+        "text": "下雨了！快找地方躲躲...不过，雨后的校园也很美呢。",
+        "speaker": "路过的同学"
+      },
+      "cooldown_days": 10,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_random_004",
+      "name": "图书馆占座",
+      "category": "random",
+      "description": "你发现常去的图书馆座位被人用书本占了，但旁边的位置空着。",
+      "trigger_chance": 0.12,
+      "trigger_conditions": { "location": "library", "stage_any": true },
+      "story_related": false,
+      "effects": {
+        "choice": true,
+        "choices": [
+          { "option": "换座位", "effect": { "focus": 5, "mood": 2 } },
+          { "option": "礼貌提醒", "effect": { "social": 3, "focus": -2 } },
+          { "option": "假装没看到", "effect": { "mood": -5, "stress": 3 } }
+        ]
+      },
+      "dialogue": null,
+      "cooldown_days": 5,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_random_005",
+      "name": "校园歌手",
+      "category": "random",
+      "description": "操场的角落里，有人在弹吉他唱歌。动人的旋律飘荡在校园中。",
+      "trigger_chance": 0.07,
+      "trigger_conditions": { "location": "sports", "time": "afternoon" },
+      "story_related": false,
+      "effects": {
+        "mood": 8,
+        "stress": -5,
+        "reward": { "type": "buff", "name": "音乐治愈", "effect": "心情恢复+20%", "duration_hours": 3 }
+      },
+      "dialogue": {
+        "text": "这首歌是献给所有在校园里努力的人们的。希望你能喜欢。",
+        "speaker": "校园歌手"
+      },
+      "cooldown_days": 14,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_time_001",
+      "name": "早自习奇迹",
+      "category": "time",
+      "description": "清晨7:00，你比往常更早来到教室。窗外的阳光洒进教室，一切都很美好。",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "time_range": ["07:00", "08:00"], "stage_any": true },
+      "story_related": true,
+      "effects": {
+        "focus": 10,
+        "mood": 5,
+        "experience": 20,
+        "buff": { "name": "早起好心情", "effect": "早自习效率+25%", "duration_hours": 2 }
+      },
+      "dialogue": {
+        "text": "早起的鸟儿有虫吃！清晨的学习效率是最高的，好好利用这段时间吧！",
+        "speaker": "鸣人老师"
+      },
+      "cooldown_days": 1,
+      "story_clue": "clue_career_006"
+    },
+    {
+      "event_id": "evt_time_002",
+      "name": "深夜食堂特供",
+      "category": "time",
+      "description": "22:00后的食堂，食堂阿姨神秘地招手：「孩子，来这边，有好吃的给你留着。」",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "time_range": ["22:00", "23:59"], "stage": "新生适应期" },
+      "story_related": true,
+      "effects": {
+        "energy": 30,
+        "mood": 10,
+        "stress": -10,
+        "reward": { "type": "item", "id": "深夜特供便当", "description": "食堂阿姨的爱心便当" }
+      },
+      "dialogue": {
+        "text": "学习辛苦了，阿姨给你留了份夜宵。吃饱了才有力气继续努力啊！",
+        "speaker": "食堂阿姨"
+      },
+      "cooldown_days": 3,
+      "story_clue": "clue_fresh_007"
+    },
+    {
+      "event_id": "evt_time_003",
+      "name": "考试周紧张",
+      "category": "time",
+      "description": "考试周来临，图书馆座无虚席。你感受到了紧张的学习氛围。",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "time_period": "exam_week", "stage_any": true },
+      "story_related": true,
+      "effects": {
+        "stress": 10,
+        "focus": 5,
+        "reward": { "type": "buff", "name": "考试周加成", "effect": "学习效率+15%，但压力+10%", "duration_days": 7 }
+      },
+      "dialogue": {
+        "text": "考试周是最考验意志力的时候。坚持下去，你一定能行的！",
+        "speaker": "佐助助教"
+      },
+      "cooldown_days": 7,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_time_004",
+      "name": "毕业季不舍",
+      "category": "time",
+      "description": "校园里开始出现穿着学士服拍照的毕业生。毕业的季节到了。",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "time_period": "graduation_season", "stage": "毕业冲刺期" },
+      "story_related": true,
+      "effects": {
+        "mood": 15,
+        "stress": -5,
+        "experience": 50,
+        "reward": { "type": "clue", "id": "clue_grad_008" }
+      },
+      "dialogue": {
+        "text": "转眼就要毕业了...四年过得真快。希望你毕业后，也能常回来看看。",
+        "speaker": "鸣人老师"
+      },
+      "cooldown_days": 30,
+      "story_clue": "clue_grad_008"
+    },
+    {
+      "event_id": "evt_time_005",
+      "name": "开学季新鲜",
+      "category": "time",
+      "description": "新学期开始，校园里充满了新生的面孔。一切都是新的开始。",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "time_period": "semester_start", "stage_any": true },
+      "story_related": true,
+      "effects": {
+        "mood": 12,
+        "focus": 8,
+        "gold": 50,
+        "reward": { "type": "buff", "name": "新学期新气象", "effect": "所有任务效率+10%", "duration_days": 14 }
+      },
+      "dialogue": {
+        "text": "新学期新气象！新的学期，新的机会，新的成长。好好规划这一学期吧！",
+        "speaker": "鸣人老师"
+      },
+      "cooldown_days": 30,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_time_006",
+      "name": "中秋月光",
+      "category": "time",
+      "description": "中秋节的夜晚，月光洒满校园。你想起了远方的家人。",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "time_period": "mid_autumn", "location": "outdoor" },
+      "story_related": false,
+      "effects": {
+        "mood": 15,
+        "stress": -8,
+        "reward": { "type": "item", "id": "月饼", "description": "校园发的中秋月饼" }
+      },
+      "dialogue": {
+        "text": "海上生明月，天涯共此时。虽然不能回家，但校园里的月光一样美。",
+        "speaker": "路过的同学"
+      },
+      "cooldown_days": 365,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_explore_001",
+      "name": "隐藏涂鸦发现",
+      "category": "exploration",
+      "description": "在校园的偏僻角落，你发现了一处神秘涂鸦。上面画着奇怪的符号。",
+      "trigger_chance": 0.15,
+      "trigger_conditions": { "poi_type": "corner", "stage": "新生适应期" },
+      "story_related": true,
+      "effects": {
+        "reward": { "type": "clue", "id": "clue_fresh_002" },
+        "achievement_check": "ach_graffiti_hunter"
+      },
+      "dialogue": {
+        "text": "这是谁留下的涂鸦？符号看起来像是某种密码...也许值得研究一下。",
+        "speaker": null
+      },
+      "cooldown_days": 30,
+      "story_clue": "clue_fresh_002"
+    },
+    {
+      "event_id": "evt_explore_002",
+      "name": "操场地下通道",
+      "category": "exploration",
+      "description": "在操场跑道的一角，你发现地面有些松动。用力踩下去...下面居然有空间！",
+      "trigger_chance": 0.08,
+      "trigger_conditions": { "poi_id": "sports_field_corner", "stage": "学业成长期" },
+      "story_related": true,
+      "effects": {
+        "reward": { "type": "clue", "id": "clue_academic_007" },
+        "experience": 80,
+        "unlock": { "type": "hidden_scene", "id": "scene_underground_passage" }
+      },
+      "dialogue": {
+        "text": "这里居然有一个隐藏的空间！看起来像是以前的防空洞改造的...里面有些什么东西？",
+        "speaker": null
+      },
+      "cooldown_days": 60,
+      "story_clue": "clue_academic_007"
+    },
+    {
+      "event_id": "evt_explore_003",
+      "name": "图书馆密室",
+      "category": "exploration",
+      "description": "图书馆二楼的那扇锁着的门，居然自己开了一条缝。",
+      "trigger_chance": 0.05,
+      "trigger_conditions": { "poi_id": "library_2f", "stage": "学业成长期" },
+      "story_related": true,
+      "effects": {
+        "reward": { "type": "clue", "id": "clue_academic_005" },
+        "experience": 100,
+        "unlock": { "type": "hidden_scene", "id": "scene_library_2f" }
+      },
+      "dialogue": {
+        "text": "这扇门平时都是锁着的...今天是例外吗？里面似乎有微弱的光芒透出来...",
+        "speaker": null
+      },
+      "cooldown_days": 60,
+      "story_clue": "clue_academic_005"
+    },
+    {
+      "event_id": "evt_explore_004",
+      "name": "教学楼天台",
+      "category": "exploration",
+      "description": "教学楼的楼梯尽头，有一扇平时不开放的门。今天它居然开着。",
+      "trigger_chance": 0.06,
+      "trigger_conditions": { "poi_id": "teaching_abc_top", "stage_any": true },
+      "story_related": false,
+      "effects": {
+        "mood": 15,
+        "focus": 5,
+        "reward": { "type": "buff", "name": "天台风景", "effect": "从这里可以看到整个校园，心情大好", "duration_hours": 1 }
+      },
+      "dialogue": {
+        "text": "哇...从这可以看到整个校园。每一个建筑、每一条路，都是我成长的见证。",
+        "speaker": null
+      },
+      "cooldown_days": 30,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_npc_001",
+      "name": "鸣人老师的鼓励",
+      "category": "npc",
+      "description": "在校园偶遇鸣人老师，他看到你后露出了灿烂的笑容。",
+      "trigger_chance": 0.20,
+      "trigger_conditions": { "npc_id": "naruto", "stage_any": true },
+      "story_related": true,
+      "effects": {
+        "mood": 10,
+        "stress": -5,
+        "focus": 3
+      },
+      "dialogue": {
+        "text": "哟！看到你在校园里努力的样子，老师真的很开心！继续保持这份热情，你一定能成为很厉害的人！",
+        "speaker": "鸣人老师"
+      },
+      "cooldown_days": 3,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_npc_002",
+      "name": "佐助的认可",
+      "category": "npc",
+      "description": "佐助助教难得主动找你谈话，眼神里似乎有几分认可。",
+      "trigger_chance": 0.12,
+      "trigger_conditions": { "npc_id": "sasuke", "npc_affection_min": 2 },
+      "story_related": true,
+      "effects": {
+        "focus": 8,
+        "stress": -3,
+        "reward": { "type": "clue", "id": "clue_academic_001" }
+      },
+      "dialogue": {
+        "text": "...你的努力，我看到了。这本笔记借给你看。别弄丢了，也别告诉别人。",
+        "speaker": "佐助助教"
+      },
+      "cooldown_days": 7,
+      "story_clue": "clue_academic_001"
+    },
+    {
+      "event_id": "evt_npc_003",
+      "name": "NPC集体祝福",
+      "category": "npc",
+      "description": "完成重要里程碑后，所有NPC似乎都在为你庆祝。",
+      "trigger_chance": 0.30,
+      "trigger_conditions": { "achievement_type": "chapter_complete", "stage_any": true },
+      "story_related": true,
+      "effects": {
+        "mood": 20,
+        "experience": 100,
+        "gold": 50,
+        "buff": { "name": "众人祝福", "effect": "全属性+5%", "duration_days": 7 }
+      },
+      "dialogue": {
+        "text": "恭喜你完成了这一章节！所有的NPC都在为你喝彩！继续加油！",
+        "speaker": "鸣人老师"
+      },
+      "cooldown_days": 30,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_ach_001",
+      "name": "成就彩蛋：连续签到",
+      "category": "achievement",
+      "description": "连续签到7天，解锁了隐藏成就！系统给你发了一个特别奖励。",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "achievement_id": "ach_signin_7" },
+      "story_related": false,
+      "effects": {
+        "gold": 100,
+        "experience": 80,
+        "reward": { "type": "item", "id": "连续签到徽章", "description": "纪念连续签到7天的特别徽章" }
+      },
+      "dialogue": {
+        "text": "哇！连续签到7天！这份坚持真的很了不起！这是给你的特别奖励！",
+        "speaker": "系统提示"
+      },
+      "cooldown_days": 0,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_ach_002",
+      "name": "成就彩蛋：彩蛋猎人",
+      "category": "achievement",
+      "description": "发现了3个隐藏事件，解锁「彩蛋猎人」成就！",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "achievement_id": "ach_13" },
+      "story_related": true,
+      "effects": {
+        "gold": 150,
+        "experience": 120,
+        "reward": { "type": "item", "id": "彩蛋探测器", "description": "可以探测附近隐藏彩蛋的道具" }
+      },
+      "dialogue": {
+        "text": "彩蛋猎人！你的探索精神真的很强！这个探测器可以帮助你找到更多隐藏的秘密！",
+        "speaker": "系统提示"
+      },
+      "cooldown_days": 0,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_ach_003",
+      "name": "成就彩蛋：校园探索家",
+      "category": "achievement",
+      "description": "校园探索度达到100%！你发现了校园的所有秘密！",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "achievement_id": "ach_exploration_master" },
+      "story_related": true,
+      "effects": {
+        "gold": 300,
+        "experience": 200,
+        "reward": { "type": "title", "id": "校园探索家" },
+        "unlock": { "type": "hidden_task", "id": "hidden_grad_001" }
+      },
+      "dialogue": {
+        "text": "太厉害了！校园探索度100%！你已经成为了真正的校园探索家！最后一个秘密宝藏在等着你...",
+        "speaker": "系统提示"
+      },
+      "cooldown_days": 0,
+      "story_clue": "clue_grad_005"
+    },
+    {
+      "event_id": "evt_ach_004",
+      "name": "成就彩蛋：完美答辩",
+      "category": "achievement",
+      "description": "毕设答辩获得优秀评级！这是大学四年最好的总结。",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "achievement_id": "ach_grad_3" },
+      "story_related": true,
+      "effects": {
+        "gold": 500,
+        "experience": 300,
+        "reward": { "type": "item", "id": "优秀毕设证书", "description": "大学四年最珍贵的荣誉" }
+      },
+      "dialogue": {
+        "text": "优秀毕设！这是你四年努力的最好证明。校园RPG向你致敬！",
+        "speaker": "系统提示"
+      },
+      "cooldown_days": 0,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_festival_001",
+      "name": "除夕夜",
+      "category": "time",
+      "description": "除夕夜，校园里张灯结彩。虽然很多同学回家了，但留下来的同学聚在一起守岁。",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "time_period": "new_year_eve", "location_any": true },
+      "story_related": false,
+      "effects": {
+        "mood": 25,
+        "stress": -15,
+        "reward": { "type": "item", "id": "新年红包", "description": "校园发放的新年红包" }
+      },
+      "dialogue": {
+        "text": "新年快乐！虽然不能回家，但和同学们一起守岁，也是很特别的回忆呢！",
+        "speaker": "留守的同学"
+      },
+      "cooldown_days": 365,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_festival_002",
+      "name": "双十一特惠",
+      "category": "time",
+      "description": "双十一购物节，校园快递站堆满了包裹。原来大家都趁机买买买。",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "time_period": "nov_11" },
+      "story_related": false,
+      "effects": {
+        "gold": -50,
+        "mood": 8,
+        "reward": { "type": "buff", "name": "购物节加成", "effect": "商店物品九折", "duration_days": 3 }
+      },
+      "dialogue": {
+        "text": "双十一的战绩如何？别光顾着购物，记得也要学习哦！",
+        "speaker": "鸣人老师"
+      },
+      "cooldown_days": 365,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_festival_003",
+      "name": "毕业典礼彩排",
+      "category": "time",
+      "description": "毕业典礼前夕，毕业生们在大礼堂进行彩排。一切都在为那个重要的日子做准备。",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "time_period": "graduation_rehearsal", "stage": "毕业冲刺期" },
+      "story_related": true,
+      "effects": {
+        "mood": 15,
+        "experience": 80,
+        "unlock": { "type": "ar_scene", "id": "scene_graduation_ceremony" }
+      },
+      "dialogue": {
+        "text": "这是我们在校园的最后一个重要活动了。好好珍惜，好好告别。",
+        "speaker": "一起彩排的同学"
+      },
+      "cooldown_days": 7,
+      "story_clue": null
+    },
+    {
+      "event_id": "evt_special_001",
+      "name": "AR时间胶囊开启",
+      "category": "time",
+      "description": "你曾经埋下的时间胶囊，到了约定的时间。在AR中重新扫描那个位置，你看到了过去的自己。",
+      "trigger_chance": 1.0,
+      "trigger_conditions": { "time_capsule_due": true },
+      "story_related": true,
+      "effects": {
+        "mood": 30,
+        "stress": -20,
+        "reward": { "type": "item", "id": "时间胶囊回忆", "description": "来自过去的信息" }
+      },
+      "dialogue": {
+        "text": "亲爱的未来自己：现在的我还有一些迷茫，但我相信未来一定会更好。你做到了吗？",
+        "speaker": "大一时的你"
+      },
+      "cooldown_days": 0,
+      "story_clue": "clue_grad_008"
+    },
+    {
+      "event_id": "evt_special_002",
+      "name": "神秘学长现身",
+      "category": "random",
+      "description": "一个毕业多年的神秘学长突然出现在校园。他说他在寻找「继承者」。",
+      "trigger_chance": 0.03,
+      "trigger_conditions": { "stage": "毕业冲刺期", "level_min": 15 },
+      "story_related": true,
+      "effects": {
+        "mood": 10,
+        "reward": { "type": "clue", "id": "clue_grad_007" },
+        "experience": 150
+      },
+      "dialogue": {
+        "text": "我曾是这所学园的冒险者，如今回来寻找继承者。你...愿意接过传承的火炬吗？",
+        "speaker": "神秘学长"
+      },
+      "cooldown_days": 90,
+      "story_clue": "clue_grad_007"
+    },
+    {
+      "event_id": "evt_special_003",
+      "name": "流星许愿",
+      "category": "time",
+      "description": "一颗流星划过夜空。传说对着流星许愿，愿望就能实现。",
+      "trigger_chance": 0.05,
+      "trigger_conditions": { "time": "night_clear", "location": "outdoor" },
+      "story_related": false,
+      "effects": {
+        "mood": 20,
+        "buff": { "name": "流星祝福", "effect": "接下来的一周，幸运值大幅提升", "duration_days": 7 }
+      },
+      "dialogue": {
+        "text": "快许愿！...希望所有人的努力都能得到回报。",
+        "speaker": "一起看流星的同学"
+      },
+      "cooldown_days": 365,
+      "story_clue": null
+    }
+  ]
+}

@@ -1,0 +1,217 @@
+{
+  "meta": {
+    "version": "1.0",
+    "total_hidden_tasks": 8,
+    "description": "校园RPG隐藏任务库 - 每个篇章2个，共8个，含触发条件和奖励"
+  },
+  "hidden_tasks": [
+    {
+      "task_id": "hidden_fresh_001",
+      "name": "校园角落的神秘涂鸦",
+      "stage": "新生适应期",
+      "chapter": 1,
+      "description": "校园的某个角落藏着前人留下的神秘涂鸦。据说，找到所有涂鸦的冒险者，会获得特殊的力量。",
+      "detail": "在校园地图的西北角，有一堵不起眼的墙。仔细观察墙面，你会发现一些奇特的符号——那是学长学姐们留下的「涂鸦密语」。用手机拍下来，看看能不能解读出什么。",
+      "trigger_type": "map_click",
+      "trigger_location": { "zone": "scenic", "poi_id": null, "description": "校园西北角的隐蔽角落" },
+      "trigger_condition": "exploration_progress >= 30",
+      "difficulty": "easy",
+      "rewards": {
+        "experience": 60,
+        "gold": 35,
+        "item": "涂鸦碎片",
+        "clues": ["clue_fresh_002"]
+      },
+      "completion_condition": {
+        "type": "exploration",
+        "poi_id": "scenic_corner"
+      },
+      "npc_related": null,
+      "achievement_unlock": "ach_graffiti_hunter",
+      "unlock_text": "你发现了隐藏任务「校园角落的神秘涂鸦」！校园西北角似乎藏着什么秘密..."
+    },
+    {
+      "task_id": "hidden_fresh_002",
+      "name": "深夜的食堂",
+      "stage": "新生适应期",
+      "chapter": 1,
+      "description": "深夜22:00后，食堂的某个窗口会亮起温暖的灯光。传说这是给那些特别努力的冒险者准备的特别餐点。",
+      "detail": "在晚上22:00之后访问食堂，你会发现有一个窗口还在营业。食堂阿姨神秘地说：「这个窗口的饭，是给那些特别努力的孩子的...」吃完这顿饭，你会发现自己的精力恢复速度加快了。",
+      "trigger_type": "time",
+      "trigger_time": { "start": "22:00", "end": "23:59" },
+      "trigger_condition": "level >= 2",
+      "difficulty": "easy",
+      "rewards": {
+        "experience": 50,
+        "gold": 30,
+        "buff": { "name": "深夜补给", "effect": "精力恢复+20%", "duration_days": 7 },
+        "clues": ["clue_fresh_007"],
+        "npc_unlock": "canteen_aunt"
+      },
+      "completion_condition": {
+        "type": "visit",
+        "location": "canteen",
+        "time": "night"
+      },
+      "npc_related": "canteen_aunt",
+      "achievement_unlock": "ach_night_owl",
+      "unlock_text": "隐藏任务「深夜的食堂」已解锁！22:00后去食堂看看吧..."
+    },
+    {
+      "task_id": "hidden_academic_001",
+      "name": "实验室的神秘配方",
+      "stage": "学业成长期",
+      "chapter": 2,
+      "description": "实验室的某个角落，藏着一张被遗忘的配方残页。据说这是某位学长留下的「学习秘方」。",
+      "detail": "在实验室的设备架后面，有一张泛黄的纸片。上面写着一些奇怪的符号和数字...仔细研究后，你发现这是一种高效学习的方法论。将它应用到你的日常学习中，可以大幅提升学习效率。",
+      "trigger_type": "ar_scan",
+      "trigger_poi": "teaching_complex",
+      "trigger_condition": "task_complete(story_academic_3) AND ar_scan_count >= 5",
+      "difficulty": "medium",
+      "rewards": {
+        "experience": 100,
+        "gold": 60,
+        "buff": { "name": "实验室加成", "effect": "学习任务经验+15%", "duration_days": 14 },
+        "clues": ["clue_academic_002"]
+      },
+      "completion_condition": {
+        "type": "ar_scan",
+        "poi_id": "teaching_complex"
+      },
+      "npc_related": null,
+      "achievement_unlock": "ach_lab_explorer",
+      "unlock_text": "隐藏任务「实验室的神秘配方」已解锁！用AR扫描教学楼的实验室设备..."
+    },
+    {
+      "task_id": "hidden_academic_002",
+      "name": "学长的秘密笔记",
+      "stage": "学业成长期",
+      "chapter": 2,
+      "description": "佐助助教的书桌抽屉里，藏着一本他从不示人的笔记本。据说里面记录了他大学四年的所有学习心得。",
+      "detail": "与佐助助教建立深厚友谊后（好感度Lv.3），他终于愿意把笔记本借给你看。里面有大量高效学习的方法、考试技巧、时间管理策略...这些都是他在大学四年积累的宝贵经验。",
+      "trigger_type": "npc_affection",
+      "trigger_npc": "sasuke",
+      "trigger_condition": "npc_affection >= 3",
+      "difficulty": "medium",
+      "rewards": {
+        "experience": 120,
+        "gold": 80,
+        "item": "学霸笔记",
+        "buff": { "name": "学霸笔记", "effect": "所有任务效率+10%", "duration_days": 30 },
+        "clues": ["clue_academic_001"]
+      },
+      "completion_condition": {
+        "type": "npc_interaction",
+        "npc_id": "sasuke",
+        "interaction_count": 10
+      },
+      "npc_related": "sasuke",
+      "achievement_unlock": "ach_sasuke_friend",
+      "unlock_text": "隐藏任务「学长的秘密笔记」已解锁！与佐助助教建立深厚友谊（好感度Lv.3）..."
+    },
+    {
+      "task_id": "hidden_career_001",
+      "name": "职场前辈的秘密",
+      "stage": "实习准备期",
+      "chapter": 3,
+      "description": "在实习过程中，你遇到了一位神秘的职场前辈。他说：「年轻人，你身上有一种特殊的力量...」",
+      "detail": "与职场NPC建立深厚信任后（好感度Lv.3），他会告诉你一个关于这所学园的古老秘密：「这所校园，不是一般的地方。它是连接现实与理想的桥梁。你的使命，是把在这里学到的一切，带到更远的地方。」",
+      "trigger_type": "npc_affection",
+      "trigger_npc": "career_mentor",
+      "trigger_condition": "task_complete(story_career_1) AND npc_affection >= 3",
+      "difficulty": "medium",
+      "rewards": {
+        "experience": 150,
+        "gold": 100,
+        "item": "职场锦囊",
+        "buff": { "name": "前辈指引", "effect": "实习任务效率+20%", "duration_days": 21 },
+        "clues": ["clue_career_002"]
+      },
+      "completion_condition": {
+        "type": "npc_interaction",
+        "npc_id": "career_mentor",
+        "interaction_count": 8
+      },
+      "npc_related": "career_mentor",
+      "achievement_unlock": "ach_career_mentor_friend",
+      "unlock_text": "隐藏任务「职场前辈的秘密」已解锁！与职场前辈建立深厚信任（好感度Lv.3）..."
+    },
+    {
+      "task_id": "hidden_career_002",
+      "name": "深夜的自习室",
+      "stage": "实习准备期",
+      "chapter": 3,
+      "description": "23:00后的自习室，总有一盏灯为你而亮。在那里学习，总会有意外的收获。",
+      "detail": "在晚上23:00之后访问自习室，你会发现有几个学生还在努力学习。这里有一种特殊的氛围，让你的专注力大幅提升。更重要的是，你可能会遇到同样在深夜学习的同学，收获一段珍贵的友谊。",
+      "trigger_type": "time",
+      "trigger_time": { "start": "23:00", "end": "23:59" },
+      "trigger_condition": "task_count >= 20 AND level >= 5",
+      "difficulty": "medium",
+      "rewards": {
+        "experience": 130,
+        "gold": 70,
+        "buff": { "name": "深夜专注", "effect": "自习效率+30%", "duration_days": 7 },
+        "clues": ["clue_career_006"]
+      },
+      "completion_condition": {
+        "type": "visit",
+        "location": "library_study_room",
+        "time": "night"
+      },
+      "npc_related": null,
+      "achievement_unlock": "ach_night_student",
+      "unlock_text": "隐藏任务「深夜的自习室」已解锁！23:00后去自习室看看吧..."
+    },
+    {
+      "task_id": "hidden_grad_001",
+      "name": "校园的秘密宝藏",
+      "stage": "毕业冲刺期",
+      "chapter": 4,
+      "description": "当你的校园探索度达到100%，所有的秘密都会汇聚成一个终极发现——校园的「秘密宝藏」。",
+      "detail": "探索校园的每一个角落，你会发现越来越多的线索。当你集齐所有的探索成就，站在校园的中央——操场的中心——你会发现脚下的土地发出温暖的光芒。在那里，你将发现这所校园最珍贵的宝藏：四年来你自己的成长与收获。",
+      "trigger_type": "exploration_full",
+      "trigger_condition": "exploration_progress >= 100",
+      "difficulty": "hard",
+      "rewards": {
+        "experience": 400,
+        "gold": 250,
+        "item": "校园之心",
+        "title": "校园探索家",
+        "clues": ["clue_grad_005"]
+      },
+      "completion_condition": {
+        "type": "exploration",
+        "poi_id": "sports_field",
+        "exploration_rate": 100
+      },
+      "npc_related": null,
+      "achievement_unlock": "ach_exploration_master",
+      "unlock_text": "隐藏任务「校园的秘密宝藏」已解锁！校园探索度达到100%后，在操场中央触发..."
+    },
+    {
+      "task_id": "hidden_grad_002",
+      "name": "所有NPC的告别",
+      "stage": "毕业冲刺期",
+      "chapter": 4,
+      "description": "在离开之前，与每一位帮助过你的NPC好好告别。他们的祝福，是你最珍贵的毕业礼物。",
+      "detail": "大学四年，你遇到了很多帮助过你的人：鸣人老师、佐助助教、食堂阿姨、图书馆管理员...在毕业前，与他们每一个人进行最后的对话。他们的寄语、祝福、回忆...将成为你人生中最宝贵的财富。",
+      "trigger_type": "npc_all_max",
+      "trigger_condition": "all_npc_affection >= 5",
+      "difficulty": "hard",
+      "rewards": {
+        "experience": 350,
+        "gold": 200,
+        "item": "NPC祝福集",
+        "buff": { "name": "众人祝福", "effect": "所有属性+10%", "duration_permanent": true },
+        "clues": ["clue_grad_006"]
+      },
+      "completion_condition": {
+        "type": "npc_farewell",
+        "npc_ids": ["naruto", "sasuke", "canteen_aunt", "library_keeper", "career_mentor"]
+      },
+      "npc_related": "all",
+      "achievement_unlock": "ach_beloved",
+      "unlock_text": "隐藏任务「所有NPC的告别」已解锁！与所有NPC告别，将获得最珍贵的毕业祝福..."
+    }
+  ]
+}

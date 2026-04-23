@@ -1,0 +1,160 @@
+{
+  "user": {
+    "name": "11111",
+    "school": "合肥财经大学·物联网应用技术",
+    "grade": "大一",
+    "goals": [
+      "过四级",
+      "不挂科",
+      "学完高数"
+    ],
+    "apps": {
+      "campus": "学习通",
+      "timetable": "WakeUp课程表"
+    },
+    "interest": "动漫",
+    "lazy_level": 2,
+    "party_size": 2
+  },
+  "role": {
+    "level": 1,
+    "experience": 0,
+    "experience_needed": 100,
+    "gold": 50
+  },
+  "stats": {
+    "energy": 100,
+    "focus": 100,
+    "mood": 100,
+    "stress": 20,
+    "total_tasks_completed": 0,
+    "total_achievements_unlocked": 5,
+    "days_active": 1,
+    "current_streak": 1
+  },
+  "npc_relationship": {
+    "naruto": {
+      "affection": 20,
+      "max_affection": 100,
+      "title": "热血导师"
+    },
+    "sasuke": {
+      "affection": 10,
+      "max_affection": 100,
+      "title": "傲娇助教"
+    }
+  },
+  "buffs": [
+    {
+      "name": "动漫联动",
+      "description": "学习效率+15%",
+      "duration": "今日有效",
+      "icon": "🎬"
+    }
+  ],
+  "inventory": [
+    {
+      "name": "经验药水",
+      "description": "使用后获得20点经验",
+      "quantity": 3,
+      "icon": "🧪"
+    },
+    {
+      "name": "能量饮料",
+      "description": "恢复30点能量",
+      "quantity": 2,
+      "icon": "🥤"
+    }
+  ],
+  "exploration": {
+    "discovered_locations": [],
+    "current_location": "dorm",
+    "exploration_streak": 0,
+    "hidden_events_found": []
+  },
+  "last_updated": "2026-04-10 20:32:38",
+  "recommended_tasks": [
+    {
+      "name": "专业初探",
+      "description": "了解物联网应用技术专业的核心课程和未来发展方向，为大一学习建立初步认知框架。",
+      "category": "main",
+      "difficulty": "easy",
+      "reward": {
+        "experience": 30,
+        "gold": 20,
+        "skill_points": 5
+      },
+      "deadline": "2026-04-18",
+      "tags": [
+        "专业认知",
+        "学业规划",
+        "物联网"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": "1.1",
+          "name": "浏览学校官网专业介绍页面"
+        },
+        {
+          "id": "1.2",
+          "name": "向学长学姐或辅导员咨询专业情况"
+        }
+      ]
+    },
+    {
+      "name": "兴趣联结",
+      "description": "寻找动漫兴趣与物联网专业之间的潜在联系点，激发学习动力。",
+      "category": "side",
+      "difficulty": "easy",
+      "reward": {
+        "experience": 25,
+        "gold": 15,
+        "skill_points": 3
+      },
+      "deadline": "2026-04-20",
+      "tags": [
+        "兴趣探索",
+        "跨领域",
+        "动漫"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": "2.1",
+          "name": "思考或搜索动漫中出现的科技元素（如智能设备）"
+        },
+        {
+          "id": "2.2",
+          "name": "记录一个将动漫创意与物联网结合的简单想法"
+        }
+      ]
+    },
+    {
+      "name": "校园探索",
+      "description": "熟悉合肥财经大学的主要学习与生活场所，快速适应大学生活环境。",
+      "category": "daily",
+      "difficulty": "easy",
+      "reward": {
+        "experience": 20,
+        "gold": 10,
+        "skill_points": 2
+      },
+      "deadline": "2026-04-15",
+      "tags": [
+        "环境适应",
+        "校园生活",
+        "新生任务"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": "3.1",
+          "name": "找到并参观图书馆、教学楼和食堂"
+        },
+        {
+          "id": "3.2",
+          "name": "规划一条从宿舍到常去地点的最佳路线"
+        }
+      ]
+    }
+  ],
+  "recommended_at": "2026-04-11 01:18:09"
+}

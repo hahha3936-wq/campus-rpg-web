@@ -125,22 +125,24 @@ var ARIntegration = (function () {
 
         // 种子 / 道具
         if (reward.seed && typeof AppState !== 'undefined') {
-            var inv = AppState.inventory || [];
+            var inv = (AppState.user && AppState.user.inventory) || [];
             var existing = inv.find(function (i) { return i.name === reward.seed; });
             if (existing) {
                 existing.quantity = (existing.quantity || 1) + 1;
             } else {
                 inv.push({ name: reward.seed, type: 'seed', quantity: 1 });
             }
-            AppState.inventory = inv;
+            if (!AppState.user) AppState.user = {};
+            AppState.user.inventory = inv;
             document.dispatchEvent(new CustomEvent('ar-reward-applied', { detail: { type: 'seed', item: reward.seed } }));
         }
 
         // 稀有道具
         if (reward.rareItem && typeof AppState !== 'undefined') {
-            var inv = AppState.inventory || [];
+            var inv = (AppState.user && AppState.user.inventory) || [];
             inv.push({ name: reward.rareItem, type: 'rare', quantity: 1 });
-            AppState.inventory = inv;
+            if (!AppState.user) AppState.user = {};
+            AppState.user.inventory = inv;
             document.dispatchEvent(new CustomEvent('ar-reward-applied', { detail: { type: 'rare', item: reward.rareItem } }));
         }
 
@@ -227,14 +229,15 @@ var ARIntegration = (function () {
      */
     function addFarmItem(itemName, quantity) {
         if (typeof AppState === 'undefined') return;
-        var inv = AppState.inventory || [];
+        var inv = (AppState.user && AppState.user.inventory) || [];
         var existing = inv.find(function (i) { return i.name === itemName; });
         if (existing) {
             existing.quantity = (existing.quantity || 1) + (quantity || 1);
         } else {
             inv.push({ name: itemName, type: 'seed', quantity: quantity || 1 });
         }
-        AppState.inventory = inv;
+        if (!AppState.user) AppState.user = {};
+        AppState.user.inventory = inv;
         document.dispatchEvent(new CustomEvent('ar-farm-item-added', { detail: { item: itemName, quantity: quantity } }));
     }
 

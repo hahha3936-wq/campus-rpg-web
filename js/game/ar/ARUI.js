@@ -15,6 +15,9 @@ var ARUI = (function () {
     var _panel = null;         // 当前交互面板
     var _errorModal = null;    // 错误提示框
     var _initialized = false;
+    var _lostRetryCount = 0;    // 标记丢失重试次数
+    var _lostRetryTimer = null; // 重试计时器
+    var _lostRetryMax = 3;     // 最大重试次数
 
     // ============================================
     // DB32 像素风格 CSS（动态注入）
@@ -115,6 +118,38 @@ var ARUI = (function () {
             '#ar-overlay {',
             '  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;',
             '  background: rgba(0,0,0,0.5); z-index: 10001; pointer-events: none;',
+            '}',
+            '',
+            '/* AR 底部提示条（识别状态专用，统一 showARHint 使用） */',
+            '#ar-hint-bar {',
+            '  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);',
+            '  z-index: 10002; pointer-events: none;',
+            '  max-width: 90vw; min-width: 200px;',
+            '  padding: 8px 20px; font-size: 11px; font-family: monospace;',
+            '  text-align: center; white-space: nowrap;',
+            '  image-rendering: pixelated;',
+            '  box-shadow: 4px 4px 0 rgba(0,0,0,0.5);',
+            '  animation: hintBarIn 0.2s ease;',
+            '}',
+            '#ar-hint-bar.scanning {',
+            '  background: rgba(41,173,255,0.9); color: #FFF1E8; border: 2px solid #FFF1E8;',
+            '}',
+            '#ar-hint-bar.success {',
+            '  background: rgba(0,135,81,0.95); color: #A7F070; border: 2px solid #A7F070;',
+            '}',
+            '#ar-hint-bar.retrying {',
+            '  background: rgba(126,37,83,0.95); color: #FFCCAA; border: 2px solid #FF77A8;',
+            '}',
+            '#ar-hint-bar.lost {',
+            '  background: rgba(255,0,77,0.9); color: #FFF1E8; border: 2px solid #FF77A8;',
+            '}',
+            '#ar-hint-bar.cooldown {',
+            '  background: rgba(93,39,93,0.95); color: #FFCD75; border: 2px solid #B13E53;',
+            '}',
+            '#ar-hint-bar::before { content: attr(data-prefix); margin-right: 6px; }',
+            '@keyframes hintBarIn {',
+            '  from { opacity: 0; transform: translateX(-50%) translateY(10px); }',
+            '  to   { opacity: 1; transform: translateX(-50%) translateY(0); }',
             '}'
         ].join('\n');
         document.head.appendChild(style);
@@ -180,6 +215,50 @@ var ARUI = (function () {
     function showScanTip(msg) {
         var tip = document.getElementById('ar-scan-tip');
         if (tip) tip.textContent = msg || '📷 对准校园标记扫描解锁惊喜';
+    }
+
+    // ============================================
+    // 统一识别状态提示条
+    // type: scanning | success | retrying | lost | cooldown
+    // duration: 自动消失时间(ms)，0 表示不自动消失
+    // ============================================
+    var _PREFIX_MAP = {
+        scanning: '📷',
+        success:  '🎉',
+        retrying: '🔄',
+        lost:     '❌',
+        cooldown: '⏰'
+    };
+
+    function showARHint(type, msg, duration) {
+        var bar = document.getElementById('ar-hint-bar');
+        if (!bar) {
+            bar = document.createElement('div');
+            bar.id = 'ar-hint-bar';
+            document.body.appendChild(bar);
+        }
+        // 清除所有类型 class
+        ['scanning', 'success', 'retrying', 'lost', 'cooldown'].forEach(function (c) {
+            bar.classList.remove(c);
+        });
+        bar.classList.add(type);
+        bar.setAttribute('data-prefix', _PREFIX_MAP[type] || '');
+        bar.textContent = msg;
+
+        if (duration > 0) {
+            clearTimeout(bar._hideTimer);
+            bar._hideTimer = setTimeout(function () {
+                bar.style.opacity = '0';
+                setTimeout(function () { bar.style.opacity = ''; }, 200);
+            }, duration);
+        }
+    }
+
+    function hideARHint() {
+        var bar = document.getElementById('ar-hint-bar');
+        if (bar && bar.parentNode) {
+            bar.parentNode.removeChild(bar);
+        }
     }
 
     // ============================================
@@ -263,16 +342,13 @@ var ARUI = (function () {
     // 显示冷却提示
     // ============================================
     function showCooldownTip(markerName, remaining) {
-        var hint = document.getElementById('ar-hint-tip');
-        if (hint) {
+        // 冷却时间超过 6 小时（约 21600 秒）视为"今天已解锁"场景
+        if (remaining > 21600) {
+            showARHint('cooldown', '该标记今日已解锁，明天再来吧', 4000);
+        } else {
             var mins = Math.floor(remaining / 60);
             var secs = remaining % 60;
-            hint.textContent = '⏰ ' + markerName + ' 冷却中 (' + mins + '分' + secs + '秒)';
-            hint.style.display = 'block';
-            hint.style.borderColor = '#FFA300';
-            setTimeout(function () {
-                if (hint) hint.style.display = 'none';
-            }, 3000);
+            showARHint('cooldown', markerName + ' 冷却中 (' + mins + '分' + secs + '秒)', 3000);
         }
     }
 
@@ -285,9 +361,12 @@ var ARUI = (function () {
             showError(env.msg, true);
             return;
         }
+        // 记录AR开启时间，用于识别耗时统计
+        ARUI._arStartTime = Date.now();
         var ok = await ARCore.openAR();
         if (!ok) return;
         showInternalUI();
+        showARHint('scanning', '请对准校园标记，保持画面稳定', 0);
         _setupAREvents();
     }
 
@@ -310,10 +389,14 @@ var ARUI = (function () {
     // 返回按钮点击
     // ============================================
     function _onBackClick() {
+        _lostRetryCount = 0;
+        clearTimeout(_lostRetryTimer);
+        _lostRetryTimer = null;
         ARCore.closeAR();
         hideInternalUI();
         hideContentPanel();
         hideError();
+        hideARHint();
         _teardownAREvents();
     }
 
@@ -350,11 +433,33 @@ var ARUI = (function () {
 
     function _onMarkerFound(e) {
         var marker = e.detail.marker;
+        // 重置丢失重试计数
+        _lostRetryCount = 0;
+        clearTimeout(_lostRetryTimer);
+        _lostRetryTimer = null;
+        // 显示识别成功提示，2秒后自动消失
+        showARHint('success', '识别成功！解锁AR内容', 2000);
         showScanTip('✅ 发现: ' + marker.name + ' - 点击领取奖励！');
         ARContentManager.onMarkerFound(marker);
+
+        // 埋点：AR识别成功（使用AR开启时间作为识别起点）
+        if (typeof BehaviorTrack !== 'undefined') {
+            var startTime = ARUI._arStartTime || Date.now();
+            BehaviorTrack.trackARMarkerFound(marker.id, Date.now() - startTime);
+        }
     }
 
     function _onMarkerLost(e) {
+        _lostRetryCount++;
+        if (_lostRetryCount <= _lostRetryMax) {
+            showARHint('retrying', '标记丢失，正在重试 (' + _lostRetryCount + '/' + _lostRetryMax + ')', 2500);
+            clearTimeout(_lostRetryTimer);
+            _lostRetryTimer = setTimeout(function () {
+                _lostRetryCount = Math.min(_lostRetryCount, _lostRetryMax);
+            }, 5000);
+        } else {
+            showARHint('lost', '请移动到光线充足的地方重试', 0);
+        }
         ARContentManager.onMarkerLost(e.detail.markerId);
     }
 
@@ -416,10 +521,14 @@ var ARUI = (function () {
     }
 
     function destroy() {
+        clearTimeout(_lostRetryTimer);
+        _lostRetryCount = 0;
         if (_btnAR && _btnAR.parentNode) _btnAR.parentNode.removeChild(_btnAR);
         if (_arContainer && _arContainer.parentNode) _arContainer.parentNode.removeChild(_arContainer);
         if (_panel && _panel.parentNode) _panel.parentNode.removeChild(_panel);
         if (_errorModal && _errorModal.parentNode) _errorModal.parentNode.removeChild(_errorModal);
+        var hintBar = document.getElementById('ar-hint-bar');
+        if (hintBar && hintBar.parentNode) hintBar.parentNode.removeChild(hintBar);
         _btnAR = null;
         _arContainer = null;
         _panel = null;
@@ -439,6 +548,8 @@ var ARUI = (function () {
         hideError: hideError,
         showScanTip: showScanTip,
         showCooldownTip: showCooldownTip,
+        showARHint: showARHint,
+        hideARHint: hideARHint,
         showInternalUI: showInternalUI,
         hideInternalUI: hideInternalUI
     };

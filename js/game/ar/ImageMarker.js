@@ -95,10 +95,33 @@ var ImageMarker = (function () {
         markers.forEach(function (m) {
             if (!_states[m.id]) _states[m.id] = { lastTriggerTime: 0, unlocked: false };
         });
+
+        // IndexedDB 兜底：localStorage 为空时从加密存储恢复
+        if (Object.keys(_states).length === 0 && typeof OfflineStorage !== 'undefined') {
+            OfflineStorage.loadARRecords().then(function (records) {
+                if (records && records.length > 0) {
+                    records.forEach(function (r) {
+                        _states[r.marker_id] = {
+                            lastTriggerTime: r.unlockedAt ? new Date(r.unlockedAt).getTime() : 0,
+                            unlocked: true
+                        };
+                    });
+                }
+            }).catch(function () {});
+        }
     }
 
     function _saveStates() {
         try { localStorage.setItem('ar_marker_states', JSON.stringify(_states)); } catch (e) {}
+
+        // IndexedDB 加密备份（离线可用）
+        if (typeof OfflineStorage !== 'undefined') {
+            Object.entries(_states).forEach(function (_a) {
+                var markerId = _a[0];
+                var data = _a[1];
+                OfflineStorage.saveARRecord(markerId, data).catch(function () {});
+            });
+        }
     }
 
     // ============================================

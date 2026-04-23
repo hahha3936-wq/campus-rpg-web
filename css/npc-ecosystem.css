@@ -1,0 +1,716 @@
+/**
+ * 校园RPG - NPC生态系统专用样式
+ * 像素风格UI，100%与项目现有风格统一
+ */
+
+/* ============================================
+   CSS变量（与项目现有变量保持一致）
+   ============================================ */
+:root {
+    /* NPC主题色 */
+    --npc-mentor: #667eea;
+    --npc-senior: #10b981;
+    --npc-campus: #8b5cf6;
+    --npc-club: #ec4899;
+    --npc-custom: #fbbf24;
+    --npc-default: #667eea;
+}
+
+/* ============================================
+   NPC生态系统整体容器
+   ============================================ */
+
+/* ============================================
+   NPC卡片样式
+   ============================================ */
+.npc-eco-card {
+    background: var(--bg-card, #1a1a2e);
+    border: 2px solid var(--border-color, #3a3a5a);
+    border-radius: 8px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.npc-eco-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.npc-eco-card.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.npc-eco-card.locked:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* NPC头像 */
+.npc-eco-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 10px;
+    border: 2px solid;
+}
+
+/* NPC卡片内信息 */
+.npc-eco-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+.npc-eco-title {
+    font-size: 10px;
+    color: #888;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.npc-eco-category {
+    font-size: 9px;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+/* 好感度指示 */
+.npc-eco-affection {
+    margin-top: 8px;
+}
+
+.npc-eco-affection-bar {
+    height: 4px;
+    background: #2a2a4a;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.npc-eco-affection-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+.npc-eco-affection-text {
+    font-size: 10px;
+    color: #888;
+    margin-top: 4px;
+}
+
+/* ============================================
+   NPC解锁蒙层
+   ============================================ */
+.npc-eco-locked-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 26, 46, 0.8);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+}
+
+.npc-eco-lock-icon {
+    font-size: 20px;
+    margin-bottom: 6px;
+    filter: grayscale(1);
+    opacity: 0.5;
+}
+
+.npc-eco-unlock-hint {
+    font-size: 10px;
+    color: #5D275D;
+    text-align: center;
+    padding: 0 8px;
+}
+
+/* ============================================
+   NPC详情对话界面
+   ============================================ */
+.npc-eco-detail-header {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(102, 126, 234, 0.1));
+    border-bottom: 2px solid rgba(102, 126, 234, 0.4);
+    padding: 20px;
+    text-align: center;
+}
+
+.npc-eco-detail-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 12px;
+    border: 3px solid;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+}
+
+.npc-eco-detail-name {
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.npc-eco-detail-title {
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+/* 好感度条 */
+.npc-eco-affection-panel {
+    background: #1a1a2e;
+    border-radius: 8px;
+    padding: 12px;
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+.npc-eco-affection-track {
+    height: 10px;
+    background: #2a2a4a;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.npc-eco-affection-progress {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.5s ease;
+}
+
+/* ============================================
+   对话气泡
+   ============================================ */
+.npc-eco-chat-bubble {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.npc-eco-chat-bubble.ai {
+    background: #252545;
+    border: 1px solid rgba(102, 126, 234, 0.4);
+    color: #e0e0e0;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+.npc-eco-chat-bubble.user {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.npc-eco-chat-bubble.loading {
+    color: #888;
+    font-style: italic;
+}
+
+/* ============================================
+   快捷回复按钮
+   ============================================ */
+.npc-eco-quick-btn {
+    padding: 5px 12px;
+    background: #252545;
+    border: 1px solid #3a3a5a;
+    border-radius: 16px;
+    color: #888;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.npc-eco-quick-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+/* ============================================
+   消息输入框
+   ============================================ */
+.npc-eco-msg-input {
+    flex: 1;
+    padding: 10px 14px;
+    background: #252545;
+    border: 2px solid #3a3a5a;
+    border-radius: 24px;
+    color: #fff;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.npc-eco-msg-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.npc-eco-msg-input::placeholder {
+    color: #5a5a8a;
+}
+
+/* ============================================
+   发送按钮
+   ============================================ */
+.npc-eco-send-btn {
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 24px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.npc-eco-send-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.npc-eco-send-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ============================================
+   NPC分类Tab
+   ============================================ */
+.npc-eco-cat-tab {
+    padding: 6px 12px;
+    background: transparent;
+    border: 2px solid rgba(102, 126, 234, 0.4);
+    border-radius: 20px;
+    color: #667eea;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+}
+
+.npc-eco-cat-tab.active {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: #667eea;
+}
+
+.npc-eco-cat-tab:hover:not(.active) {
+    border-color: rgba(102, 126, 234, 0.8);
+}
+
+/* ============================================
+   NPC分类颜色
+   ============================================ */
+.npc-cat-mentor { color: var(--npc-mentor); }
+.npc-cat-senior { color: var(--npc-senior); }
+.npc-cat-campus { color: var(--npc-campus); }
+.npc-cat-club { color: var(--npc-club); }
+.npc-cat-custom { color: var(--npc-custom); }
+
+.npc-border-mentor { border-color: var(--npc-mentor); }
+.npc-border-senior { border-color: var(--npc-senior); }
+.npc-border-campus { border-color: var(--npc-campus); }
+.npc-border-club { border-color: var(--npc-club); }
+.npc-border-custom { border-color: var(--npc-custom); }
+
+.npc-bg-mentor { background: rgba(102, 126, 234, 0.1); }
+.npc-bg-senior { background: rgba(16, 185, 129, 0.1); }
+.npc-bg-campus { background: rgba(139, 92, 246, 0.1); }
+.npc-bg-club { background: rgba(236, 72, 153, 0.1); }
+.npc-bg-custom { background: rgba(251, 191, 36, 0.1); }
+
+/* ============================================
+   好感度等级标签
+   ============================================ */
+.npc-rank-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.npc-rank-badge.lv0 { background: rgba(136, 136, 136, 0.2); color: #888; }
+.npc-rank-badge.lv1 { background: rgba(102, 126, 234, 0.2); color: #667eea; }
+.npc-rank-badge.lv2 { background: rgba(102, 126, 234, 0.3); color: #667eea; }
+.npc-rank-badge.lv3 { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.npc-rank-badge.lv4 { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+.npc-rank-badge.lv5 { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+
+/* ============================================
+   NPC任务卡片
+   ============================================ */
+.npc-eco-task-card {
+    background: #252545;
+    border: 1px solid #3a3a5a;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 10px;
+}
+
+.npc-eco-task-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.npc-eco-task-icon {
+    font-size: 20px;
+}
+
+.npc-eco-task-name {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.npc-eco-task-diff {
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+}
+
+.npc-eco-task-diff.easy { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.npc-eco-task-diff.medium { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+.npc-eco-task-diff.hard { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+.npc-eco-task-desc {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.npc-eco-task-reward {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 11px;
+    color: #888;
+}
+
+.npc-eco-task-btn {
+    width: 100%;
+    padding: 8px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 16px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.npc-eco-task-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* ============================================
+   彩蛋弹窗样式
+   ============================================ */
+.npc-eco-egg-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 13000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.8);
+    animation: fadeIn 0.3s ease;
+}
+
+.npc-eco-egg-modal {
+    max-width: 90vw;
+    background: #1a1a2e;
+    border: 3px solid;
+    box-shadow: 0 0 30px;
+    border-radius: 12px;
+    padding: 24px;
+    animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.npc-eco-egg-icon {
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.npc-eco-egg-title {
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.npc-eco-egg-message {
+    background: #252545;
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 13px;
+    color: #e0e0e0;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.npc-eco-egg-reward {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 16px;
+}
+
+.npc-eco-egg-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ============================================
+   等级提升动画
+   ============================================ */
+.npc-eco-levelup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 13000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    animation: fadeIn 0.3s ease;
+}
+
+.npc-eco-levelup-modal {
+    background: linear-gradient(135deg, #2d1b4e, #1a1a2e);
+    border: 3px solid #fbbf24;
+    box-shadow: 0 0 40px rgba(251, 191, 36, 0.3);
+    border-radius: 16px;
+    padding: 30px 40px;
+    text-align: center;
+    animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.npc-eco-levelup-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.npc-eco-levelup-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #fbbf24;
+    margin-bottom: 8px;
+}
+
+.npc-eco-levelup-info {
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.npc-eco-levelup-desc {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 16px;
+}
+
+/* ============================================
+   动画关键帧
+   ============================================ */
+@keyframes npcEcosystemFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes npcEcosystemSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes npcEcosystemScaleIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes npcEcosystemPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+/* ============================================
+   深色模式适配
+   ============================================ */
+body.dark-mode .npc-eco-card {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .npc-eco-chat-bubble.ai {
+    background: rgba(37, 37, 69, 0.8);
+    border-color: rgba(102, 126, 234, 0.4);
+}
+
+body.dark-mode .npc-eco-msg-input {
+    background: rgba(37, 37, 69, 0.8);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary);
+}
+
+body.dark-mode .npc-eco-msg-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+body.dark-mode .npc-eco-quick-btn {
+    background: rgba(37, 37, 69, 0.8);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .npc-eco-quick-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+body.dark-mode .npc-eco-task-card {
+    background: rgba(37, 37, 69, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   响应式适配
+   ============================================ */
+@media (max-width: 576px) {
+    .npc-eco-card {
+        padding: 12px;
+    }
+    
+    .npc-eco-avatar {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+    
+    .npc-eco-name {
+        font-size: 12px;
+    }
+    
+    .npc-eco-detail-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+    }
+    
+    .npc-eco-detail-name {
+        font-size: 16px;
+    }
+    
+    .npc-eco-chat-bubble {
+        max-width: 88%;
+        font-size: 12px;
+    }
+    
+    .npc-eco-send-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+}
+
+@media (min-width: 768px) {
+    .npc-eco-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+}
+
+/* ============================================
+   进度条样式
+   ============================================ */
+.npc-eco-progress-bar {
+    height: 8px;
+    background: #2a2a4a;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.npc-eco-progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+/* ============================================
+   空状态样式
+   ============================================ */
+.npc-eco-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #5a5a8a;
+}
+
+.npc-eco-empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.npc-eco-empty-text {
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.npc-eco-empty-hint {
+    font-size: 12px;
+    color: #3a3a5a;
+}
+
+/* ============================================
+   滚动条样式
+   ============================================ */
+.npc-eco-scroll::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+.npc-eco-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.npc-eco-scroll::-webkit-scrollbar-thumb {
+    background: #3a3a5a;
+    border-radius: 2px;
+}
+
+.npc-eco-scroll::-webkit-scrollbar-thumb:hover {
+    background: #4a4a6a;
+}

@@ -12,14 +12,18 @@ const CampusNavigation = {
     // 高德地图 Web API Key（运行时从后端配置注入）
     API_KEY: '',
 
-    // 学校中心点（WGS84）
-    SCHOOL_CENTER: { lng: 117.2870, lat: 31.8835 },
+    // 学校中心点（WGS84）— 合肥财经职业学院（方兴大道998号）
+    SCHOOL_CENTER: { lng: 117.1706, lat: 31.7587 },
 
     // 校园边界（用于判断是否在校内）
+    // 注意：原始坐标为 WGS-84，GPS 返回的 WGS-84 坐标可直接用此判断
+    // 若要对 GCJ-02 坐标判断，需先将 bounds 也转换为 GCJ-02
     CAMPUS_BOUNDS: {
-        north: 31.8860, south: 31.8815,
-        west: 117.2825, east: 117.2910
+        north: 31.7615, south: 31.7555,
+        west: 117.1680, east: 117.1740
     },
+    // GCJ-02 坐标系下的校园边界（由 WGS-84 bounds 转换而来）
+    CAMPUS_BOUNDS_GCJ: null,
 
     // 用户当前位置（GPS）
     _userPosition: null,
@@ -32,7 +36,106 @@ const CampusNavigation = {
     _gcoord: null,
 
     // ============================================
-    // 初始化：从后端加载 API Key
+    // 校园 Wi-Fi 热点位置数据（用于辅助定位校准）
+    // ============================================
+    CAMPUS_WIFI_HOTSPOTS: [
+        { ssid: 'STU', lat: 31.8835, lng: 117.2860, area: '教学楼A区' },
+        { ssid: 'TEA', lat: 31.8840, lng: 117.2870, area: '教学楼B区' },
+        { ssid: 'LIB', lat: 31.8850, lng: 117.2855, area: '图书馆' },
+        { ssid: 'CANTEEN', lat: 31.8825, lng: 117.2880, area: '食堂' },
+        { ssid: 'DORM', lat: 31.8818, lng: 117.2900, area: '宿舍区' },
+        { ssid: 'SPORT', lat: 31.8845, lng: 117.2830, area: '体育场' },
+        { ssid: 'CAMPUS', lat: 31.8835, lng: 117.2870, area: '校园中心' },
+        // 可以添加更多 SSID 和对应位置
+    ],
+
+    /**
+     * 根据 Wi-Fi SSID 辅助定位校准
+     * @returns {Object|null} 校准后的位置信息
+     */
+    getWifiLocation() {
+        // 浏览器无法直接获取 Wi-Fi SSID，这是系统级 API
+        // 这里提供一个接口，实际使用需要 Native App 或扩展
+        // 暂时返回 null，后续可以通过其他方式实现
+        return null;
+    },
+
+    /**
+     * 获取校园 Wi-Fi 热点校准位置
+     * @param {string} ssid - Wi-Fi 名称
+     * @returns {Object|null} 热点位置
+     */
+    getHotspotBySSID(ssid) {
+        if (!ssid) return null;
+        return this.CAMPUS_WIFI_HOTSPOTS.find(h =>
+            ssid.includes(h.ssid) || h.ssid.includes(ssid)
+        ) || null;
+    },
+
+    /**
+     * 根据精度返回等级描述
+     * @param {number} accuracy - 精度（米）
+     * @returns {Object} {level, color, text}
+     */
+    getAccuracyLevel(accuracy) {
+        if (!accuracy || accuracy <= 10) {
+            return { level: 'excellent', color: '#22c55e', text: '非常高' };
+        } else if (accuracy <= 50) {
+            return { level: 'good', color: '#84cc16', text: '高' };
+        } else if (accuracy <= 100) {
+            return { level: 'medium', color: '#eab308', text: '中等' };
+        } else if (accuracy <= 200) {
+            return { level: 'low', color: '#f97316', text: '较低' };
+        } else {
+            return { level: 'poor', color: '#ef4444', text: '差（可能在校外）' };
+        }
+    },
+
+    /**
+     * 计算两点之间的距离（米）
+     */
+    distanceTo(lat1, lng1, lat2, lng2) {
+        const R = 6371000; // 地球半径（米）
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    },
+
+    /**
+     * 尝试使用 Wi-Fi 热点校准 GPS 位置
+     * @param {Object} gpsPos - GPS 位置 {lng, lat, accuracy}
+     * @returns {Object} 校准后的位置
+     */
+    calibrateWithWifi(gpsPos) {
+        const wifiInfo = this.getWifiLocation();
+        if (!wifiInfo) return gpsPos;
+
+        const hotspot = this.getHotspotBySSID(wifiInfo.ssid);
+        if (!hotspot) return gpsPos;
+
+        // 如果 Wi-Fi 信号很强，且与 GPS 位置差异不大，取加权平均
+        const dist = this.distanceTo(gpsPos.lat, gpsPos.lng, hotspot.lat, hotspot.lng);
+        if (dist < 200) {
+            // Wi-Fi 信号权重更高（室内定位通常比 GPS 准）
+            const wifiWeight = 0.7;
+            const gpsWeight = 0.3;
+            return {
+                lng: hotspot.lng * wifiWeight + gpsPos.lng * gpsWeight,
+                lat: hotspot.lat * wifiWeight + gpsPos.lat * gpsWeight,
+                accuracy: Math.min(gpsPos.accuracy, 50),
+                _calibrated: true,
+                _wifi: hotspot.area
+            };
+        }
+        return gpsPos;
+    },
+
+    // ============================================
+    // 初始化：从后端加载 API Key，并预计算 GCJ-02 坐标系的校园边界
     // ============================================
     async init() {
         if (this.API_KEY) return; // 已有 Key 不重复加载
@@ -48,6 +151,31 @@ const CampusNavigation = {
         } catch {
             console.warn('[CampusNavigation] 无法从后端获取配置，API Key 为空');
         }
+        // 预计算 GCJ-02 坐标系下的校园边界，用于对已转换的 GPS 坐标进行判断
+        this._initCampusBoundsGCJ();
+    },
+
+    // ============================================
+    // 预计算 GCJ-02 校园边界（四个角点转换后取 bounding box）
+    // ============================================
+    _initCampusBoundsGCJ() {
+        const b = this.CAMPUS_BOUNDS;
+        // 将四个角点从 WGS-84 转换到 GCJ-02
+        const corners = [
+            this.toGCJ02(b.west, b.north), // 西北
+            this.toGCJ02(b.east, b.north), // 东北
+            this.toGCJ02(b.west, b.south), // 西南
+            this.toGCJ02(b.east, b.south), // 东南
+        ];
+        const lats = corners.map(c => c.lat);
+        const lngs = corners.map(c => c.lng);
+        this.CAMPUS_BOUNDS_GCJ = {
+            north: Math.max(...lats),
+            south: Math.min(...lats),
+            west: Math.min(...lngs),
+            east: Math.max(...lngs)
+        };
+        console.log('[CampusNavigation] GCJ-02 校园边界:', this.CAMPUS_BOUNDS_GCJ);
     },
 
     // ============================================
@@ -259,38 +387,180 @@ const CampusNavigation = {
     },
 
     // ============================================
-    // 判断坐标是否在校园范围内（校内导航优化）
+    // 判断坐标是否在校园范围内
+    // @param {number|Object} lat - 纬度或包含 lat/lng 的对象（兼容两种调用方式）
+    // @param {number} [lng] - 经度（lat 为对象时省略）
+    // @param {string} [coordSystem] - 'WGS84' 或 'GCJ02'，默认根据 CampusNavigation._gcoord 判断
     // ============================================
-    isOnCampus(lat, lng) {
-        const b = this.CAMPUS_BOUNDS;
+    isOnCampus(lat, lng, coordSystem) {
+        // 兼容两种调用方式：isOnCampus(lat, lng) 或 isOnCampus({ lat, lng })
+        if (typeof lat === 'object' && lat !== null) {
+            lng = lat.lng;
+            lat = lat.lat;
+        }
+        // 如果未指定坐标系，默认使用 GCJ-02（因为地图显示和用户标记都用 GCJ-02）
+        // 但 GPS 返回的是 WGS-84，传入的如果是原始 GPS 坐标则应指定 'WGS84'
+        if (!coordSystem) {
+            coordSystem = this._gcoord ? 'GCJ02' : 'WGS84';
+        }
+        const b = coordSystem === 'GCJ02' ? this.CAMPUS_BOUNDS_GCJ : this.CAMPUS_BOUNDS;
+        if (!b) {
+            // bounds 尚未初始化，fallback 到宽松判断（与 WGS-84 bounds 比较）
+            const fallback = this.CAMPUS_BOUNDS;
+            return lat >= fallback.south && lat <= fallback.north && lng >= fallback.west && lng <= fallback.east;
+        }
         return lat >= b.south && lat <= b.north && lng >= b.west && lng <= b.east;
+    },
+
+    /**
+     * 判断坐标是否在校园范围内（宽松模式，考虑 GPS 精度误差）
+     * 当坐标略在校外但距离校园边界在 accuracy 米以内时，仍视为在校内
+     * @param {number|Object} lat - 纬度或 { lat, lng } 对象
+     * @param {number} [lng] - 经度
+     * @param {number} [accuracy] - GPS 精度（米），默认使用配置的精度
+     * @returns {boolean}
+     */
+    isOnCampusWithTolerance(lat, lng, accuracy) {
+        if (typeof lat === 'object' && lat !== null) {
+            accuracy = lng;
+            lng = lat.lng;
+            lat = lat.lat;
+        }
+        // 直接精确判断
+        if (this.isOnCampus(lat, lng, 'GCJ02')) return true;
+        // 宽松判断：计算到校园边界的距离（简化近似，1度纬度≈111km，1度经度≈111km*cos(lat)）
+        const campusCenter = this.CAMPUS_BOUNDS_GCJ || this.CAMPUS_BOUNDS;
+        const centerLat = (campusCenter.north + campusCenter.south) / 2;
+        const meterPerDegLat = 111000;
+        const meterPerDegLng = 111000 * Math.cos(centerLat * Math.PI / 180);
+        // 取最保守的容差（精度和50米取较大值）
+        const tolerance = Math.max(accuracy || 0, 50);
+        // 计算各方向的偏差
+        const distNorth = (lat - campusCenter.north) * meterPerDegLat;
+        const distSouth = (campusCenter.south - lat) * meterPerDegLat;
+        const distEast = (lng - campusCenter.east) * meterPerDegLng;
+        const distWest = (campusCenter.west - lng) * meterPerDegLng;
+        const maxDist = Math.max(distNorth, distSouth, distEast, distWest);
+        return maxDist > 0 && maxDist <= tolerance;
     },
 
     // ============================================
     // 用户 GPS 定位（使用 Geolocation API）
+    // 优先使用 GPS，若失败则降级到 IP 定位
     // ============================================
     getCurrentPosition() {
         return new Promise((resolve, reject) => {
             if (!navigator.geolocation) {
-                reject(new Error('浏览器不支持定位'));
+                console.warn('[CampusNavigation] 浏览器不支持定位 API');
+                // 降级到 IP 定位
+                this._getPositionByIP().then(resolve).catch(reject);
                 return;
             }
+
+            // 首次尝试：高精度 GPS 定位（户外优先）
             navigator.geolocation.getCurrentPosition(
                 pos => {
-                    // GPS 返回的坐标为 WGS-84，高德底图为 GCJ-02，需转换坐标系
                     const wgsPos = {
                         lng: pos.coords.longitude,
                         lat: pos.coords.latitude,
-                        accuracy: pos.coords.accuracy
+                        accuracy: pos.coords.accuracy,
+                        altitude: pos.coords.altitude,
+                        heading: pos.coords.heading,
+                        timestamp: pos.timestamp
                     };
-                    this._userPosition = this.toGCJ02(wgsPos.lng, wgsPos.lat);
-                    this._userPosition.accuracy = wgsPos.accuracy;
-                    this._userPosition._wgs = wgsPos; // 保留原始 WGS 坐标，外部使用 GCJ 坐标
-                    resolve(this._userPosition);
+                    console.log(`[CampusNavigation] GPS 定位成功 | WGS-84: (${wgsPos.lat.toFixed(6)}, ${wgsPos.lng.toFixed(6)}) | 精度: ${Math.round(wgsPos.accuracy)}m`);
+
+                    const gcjPos = this.toGCJ02(wgsPos.lng, wgsPos.lat);
+                    gcjPos.accuracy = wgsPos.accuracy;
+                    gcjPos._wgs = wgsPos;
+                    gcjPos._source = 'gps';
+                    // 验证转换后的坐标是否在校内
+                    const onCampus = this.isOnCampus(gcjPos.lat, gcjPos.lng, 'GCJ02');
+                    console.log(`[CampusNavigation] 坐标转换 | GCJ-02: (${gcjPos.lat.toFixed(6)}, ${gcjPos.lng.toFixed(6)}) | 校内: ${onCampus}`);
+                    this._userPosition = gcjPos;
+                    resolve(gcjPos);
                 },
-                err => reject(err),
+                err => {
+                    console.warn(`[CampusNavigation] GPS 定位失败 (code: ${err.code}): ${err.message}`);
+                    // 根据错误类型提供友好的用户提示
+                    let userHint = '';
+                    switch (err.code) {
+                        case err.PERMISSION_DENIED:
+                            userHint = '请在浏览器设置中允许定位权限后重试';
+                            break;
+                        case err.POSITION_UNAVAILABLE:
+                            userHint = '无法获取位置信息，请检查网络和 GPS 是否开启';
+                            break;
+                        case err.TIMEOUT:
+                            userHint = '定位超时，请确保在开阔区域重试';
+                            break;
+                    }
+
+                    // 降级策略 1：低精度 GPS
+                    console.log('[CampusNavigation] 尝试低精度 GPS 定位...');
+                    navigator.geolocation.getCurrentPosition(
+                        pos2 => {
+                            console.log('[CampusNavigation] 低精度 GPS 定位成功');
+                            const wgsPos = { lng: pos2.coords.longitude, lat: pos2.coords.latitude, accuracy: pos2.coords.accuracy };
+                            const gcjPos = this.toGCJ02(wgsPos.lng, wgsPos.lat);
+                            gcjPos.accuracy = wgsPos.accuracy;
+                            gcjPos._wgs = wgsPos;
+                            gcjPos._source = 'gps-low';
+                            this._userPosition = gcjPos;
+                            resolve(gcjPos);
+                        },
+                        err2 => {
+                            console.warn(`[CampusNavigation] 低精度 GPS 也失败: ${err2.message}`);
+                            // 降级策略 2：IP 定位
+                            console.log('[CampusNavigation] 降级到 IP 定位...');
+                            this._getPositionByIP().then(resolve).catch(err3 => {
+                                // 最终降级：使用学校中心点
+                                console.warn('[CampusNavigation] IP 定位失败，使用学校默认位置');
+                                if (userHint) {
+                                    showNotification('定位失败：' + userHint, 'warning');
+                                }
+                                const fallbackPos = this.toGCJ02(this.SCHOOL_CENTER.lng, this.SCHOOL_CENTER.lat);
+                                fallbackPos.accuracy = 1000;
+                                fallbackPos._source = 'fallback-campus-center';
+                                fallbackPos._hint = userHint;
+                                this._userPosition = fallbackPos;
+                                resolve(fallbackPos);
+                            });
+                        },
+                        { enableHighAccuracy: false, timeout: 15000 }
+                    );
+                },
                 { enableHighAccuracy: true, timeout: 10000 }
             );
+        });
+    },
+
+    // ============================================
+    // IP 定位（通过后端代理调用高德 IP 定位 API）
+    // ============================================
+    _getPositionByIP() {
+        return new Promise((resolve, reject) => {
+            fetch(_navApiUrl('/api/config/ip-location'), { signal: AbortSignal.timeout(5000) })
+                .then(resp => {
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                    return resp.json();
+                })
+                .then(data => {
+                    if (data.lng && data.lat) {
+                        const gcjPos = { lng: parseFloat(data.lng), lat: parseFloat(data.lat), accuracy: data.accuracy || 500 };
+                        gcjPos._source = 'ip';
+                        gcjPos._city = data.city || '';
+                        console.log(`[CampusNavigation] IP 定位成功 | (${gcjPos.lat.toFixed(6)}, ${gcjPos.lng.toFixed(6)}) | 城市: ${gcjPos._city}`);
+                        this._userPosition = gcjPos;
+                        resolve(gcjPos);
+                    } else {
+                        throw new Error('IP 定位返回数据无效');
+                    }
+                })
+                .catch(err => {
+                    console.warn('[CampusNavigation] IP 定位失败:', err.message);
+                    reject(err);
+                });
         });
     },
 

@@ -1,242 +1,1061 @@
 {
   "tasks": [
     {
-      "id": "main_1",
-      "name": "英语四级备考",
+      "id": "story_career_4",
+      "name": "行业调研",
+      "description": "深入了解目标行业和目标公司，明确职业发展方向，更新你的简历和求职策略。",
+      "detail": "通过企业调研、行业报告分析、与从业者交流，全面了解目标行业的人才需求和晋升路径，针对性地提升竞争力。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "实习准备期",
+      "ar_marker": "marker_014",
+      "ar_hint": "在创业孵化园扫描企业展示墙",
+      "deadline": null,
+      "reward": {
+        "experience": 120,
+        "gold": 70,
+        "skill_points": 12
+      },
+      "achievement_id": "ach_career_4",
+      "achievement_name": "行业分析师",
+      "subtasks": [
+        {
+          "id": "story_career_4_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_career_4_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_career_4_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
+      "id": "story_career_3",
+      "name": "毕设开题",
+      "description": "选定毕业设计/论文课题，制定研究计划，与导师建立稳定的沟通机制。",
+      "detail": "毕设是对大学四年学习成果的综合检验。开题阶段要广泛阅读文献、明确研究问题、制定详细计划，争取导师的认可。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "实习准备期",
+      "ar_marker": "marker_013",
+      "ar_hint": "在学院资料室扫描毕设指导手册",
+      "deadline": null,
+      "reward": {
+        "experience": 130,
+        "gold": 80,
+        "skill_points": 15
+      },
+      "achievement_id": "ach_career_3",
+      "achievement_name": "研究入门",
+      "subtasks": [
+        {
+          "id": "story_career_3_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_career_3_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_career_3_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
+      "id": "story_fresh_1",
+      "name": "校园初印象",
+      "description": "探索校园主要建筑，熟悉校园环境。通过AR扫描校徽，解锁你的校园地图！",
+      "detail": "踏入校园的第一步——用AR扫描校徽，开启校园地图导航功能。你将了解图书馆、食堂、教学楼和宿舍区的位置。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "新生适应期",
+      "ar_marker": "marker_001",
+      "ar_hint": "寻找校园正门的校徽，AR扫描即可解锁地图",
+      "deadline": null,
+      "reward": {
+        "experience": 80,
+        "gold": 40,
+        "skill_points": 5
+      },
+      "achievement_id": "ach_freshman_1",
+      "achievement_name": "校园探索者",
+      "subtasks": [
+        {
+          "id": "story_fresh_1_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_fresh_1_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_fresh_1_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
+      "id": "story_career_2",
+      "name": "考研 or 就业抉择",
+      "description": "站在人生的十字路口，深入分析考研、就业、出国三条路的利弊，做出适合自己的选择。",
+      "detail": "大三下学期是人生方向的关键抉择期。通过信息搜集、学长学姐访谈、自我评估，制定明确的毕业去向计划。这个选择将影响你的主线结局走向。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "实习准备期",
+      "ar_marker": "marker_012",
+      "ar_hint": "在图书馆自习室扫描考研资料区标识",
+      "deadline": null,
+      "reward": {
+        "experience": 100,
+        "gold": 50,
+        "skill_points": 10
+      },
+      "achievement_id": "ach_career_2",
+      "achievement_name": "方向探索者",
+      "subtasks": [
+        {
+          "id": "story_career_2_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_career_2_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_career_2_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
+      "id": "story_academic_5",
+      "name": "技能认证挑战",
+      "description": "考取一门与专业相关的技能证书或职业资格证书，证明你的专业能力！",
+      "detail": "证书是专业能力的量化证明。根据专业方向和职业规划，选择1-2个高含金量证书，制定备考计划并坚持执行。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "学业成长期",
+      "ar_marker": "marker_010",
+      "ar_hint": "在考试中心扫描证书展示墙",
+      "deadline": null,
+      "reward": {
+        "experience": 150,
+        "gold": 100,
+        "title": "技能认证者"
+      },
+      "achievement_id": "ach_academic_5",
+      "achievement_name": "证书收集者",
+      "subtasks": [
+        {
+          "id": "story_academic_5_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_academic_5_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_academic_5_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
+      "id": "story_academic_4",
+      "name": "英语进阶之路",
+      "description": "四六级只是起点，开始为雅思/托福或专业英语做准备，提升国际化竞争力！",
+      "detail": "英语能力在就业和深造中都至关重要。制定英语学习计划，每天坚持背单词、练听力，逐步提升到能够阅读英文文献的水平。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "学业成长期",
+      "ar_marker": "marker_009",
+      "ar_hint": "在外语学院扫描语言角标识",
+      "deadline": null,
+      "reward": {
+        "experience": 130,
+        "gold": 65,
+        "skill_points": 15
+      },
+      "achievement_id": "ach_academic_4",
+      "achievement_name": "英语达人",
+      "subtasks": [
+        {
+          "id": "story_academic_4_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_academic_4_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_academic_4_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
+      "id": "story_academic_3",
+      "name": "实验室初探",
+      "description": "走进专业实验室，感受科研氛围。争取加入导师课题组，提前接触科研工作。",
+      "detail": "实验室是大学四年最重要的成长空间之一。主动联系导师，了解课题组研究方向，争取参与科研项目的机会。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "学业成长期",
+      "ar_marker": "marker_008",
+      "ar_hint": "在实验室门口扫描实验室铭牌",
+      "deadline": null,
+      "reward": {
+        "experience": 120,
+        "gold": 70,
+        "skill_points": 12
+      },
+      "achievement_id": "ach_academic_3",
+      "achievement_name": "科研小白",
+      "subtasks": [
+        {
+          "id": "story_academic_3_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_academic_3_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_academic_3_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
+      "id": "story_academic_2",
+      "name": "竞赛初体验",
+      "description": "组队参加一场学科竞赛或创新创业大赛，体验团队协作攻关的乐趣！",
+      "detail": "竞赛是检验学习成果的最佳方式。选择一个与专业相关的比赛，组建跨学科团队，分工协作完成项目。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "学业成长期",
+      "ar_marker": "marker_007",
+      "ar_hint": "在大学生活动中心扫描竞赛海报",
+      "deadline": null,
+      "reward": {
+        "experience": 150,
+        "gold": 80,
+        "skill_points": 15
+      },
+      "achievement_id": "ach_academic_2",
+      "achievement_name": "竞赛新人",
+      "subtasks": [
+        {
+          "id": "story_academic_2_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_academic_2_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_academic_2_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
+      "id": "story_fresh_5",
+      "name": "社团初体验",
+      "description": "百团大战来临，选择你感兴趣的社团，迈出兴趣拓展的第一步！",
+      "detail": "社团是大学的第二课堂。选择1-2个真正感兴趣的社团，尝试竞选社团干部，锻炼组织协调能力。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "新生适应期",
+      "ar_marker": "marker_005",
+      "ar_hint": "在社团招新区扫描社团地图",
+      "deadline": null,
+      "reward": {
+        "experience": 100,
+        "gold": 50,
+        "title": "社团新星"
+      },
+      "achievement_id": "ach_freshman_5",
+      "achievement_name": "社团达人",
+      "subtasks": [
+        {
+          "id": "story_fresh_5_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_fresh_5_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_fresh_5_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
+      "id": "story_fresh_4",
+      "name": "室友联盟",
+      "description": "来自五湖四海的室友，是你在大学最亲密的队友。了解彼此，建立宿舍公约。",
+      "detail": "室友关系直接影响你的大学生活质量。主动沟通、互相尊重，制定合理的作息公约，为四年同居打下基础。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "新生适应期",
+      "ar_marker": "marker_004",
+      "ar_hint": "在宿舍楼下扫描宿舍公约宣传牌",
+      "deadline": null,
+      "reward": {
+        "experience": 80,
+        "gold": 40,
+        "item": "室友徽章"
+      },
+      "achievement_id": "ach_freshman_4",
+      "achievement_name": "室友联盟",
+      "subtasks": [
+        {
+          "id": "story_fresh_4_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_fresh_4_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_fresh_4_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
+      "id": "story_fresh_3",
+      "name": "军训淬炼",
+      "description": "烈日下的军训，是大一新生的第一场硬仗。坚持到底，展现你的意志力！",
+      "detail": "军训不只是体能训练，更是意志力的考验。学会在艰苦环境中保持积极心态，与同学们建立战友情谊。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "新生适应期",
+      "ar_marker": "marker_003",
+      "ar_hint": "在军训操场扫描校旗",
+      "deadline": null,
+      "reward": {
+        "experience": 120,
+        "gold": 60,
+        "skill_points": 10
+      },
+      "achievement_id": "ach_freshman_3",
+      "achievement_name": "钢铁意志",
+      "subtasks": [
+        {
+          "id": "story_fresh_3_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_fresh_3_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_fresh_3_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
+      "id": "story_fresh_2",
+      "name": "选课大战",
+      "description": "大学第一场「战斗」——选课。了解专业培养方案，制定选课策略，抢占心仪课程！",
+      "detail": "选课是大学的第一个考验。了解本专业的必修课和选修课，合理规划学分，避开热门课程的选课高峰。",
+      "category": "main_story",
+      "category_icon": "⚔",
+      "category_name": "主线剧情",
+      "status": "in_progress",
+      "priority": "high",
+      "progress": 0,
+      "story_stage": "新生适应期",
+      "ar_marker": "marker_002",
+      "ar_hint": "在教务处公告栏扫描选课海报",
+      "deadline": null,
+      "reward": {
+        "experience": 100,
+        "gold": 50,
+        "skill_points": 8
+      },
+      "achievement_id": "ach_freshman_2",
+      "achievement_name": "选课老手",
+      "subtasks": [
+        {
+          "id": "story_fresh_2_sub_1",
+          "name": "阅读任务详情",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_fresh_2_sub_2",
+          "name": "前往AR标记地点完成扫描",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        },
+        {
+          "id": "story_fresh_2_sub_3",
+          "name": "完成任务确认",
+          "status": "pending",
+          "progress": 0,
+          "experience": 0
+        }
+      ],
+      "tags": [
+        "主线剧情",
+        "主线"
+      ]
+    },
+    {
       "category": "main",
-      "category_name": "主线任务",
       "category_icon": "🎯",
+      "category_name": "主线任务",
+      "deadline": "2026-06-15",
       "description": "本学期核心目标：通过英语四级考试",
       "difficulty": "中等",
+      "id": "main_1",
+      "name": "英语四级备考",
       "priority": "high",
-      "status": "in_progress",
       "progress": 66,
       "reward": {
         "experience": 100,
         "gold": 50,
         "skill_points": 10
       },
-      "deadline": "2026-06-15",
+      "status": "in_progress",
       "subtasks": [
         {
+          "experience": 20,
           "id": "sub_1_1",
           "name": "背30个四级单词",
-          "status": "completed",
           "progress": 100,
-          "experience": 20
+          "status": "completed"
         },
         {
+          "experience": 30,
           "id": "sub_1_2",
           "name": "做1套四级真题",
-          "status": "in_progress",
           "progress": 30,
-          "experience": 30
+          "status": "in_progress"
         },
         {
+          "experience": 25,
           "id": "sub_1_3",
           "name": "听力练习30分钟",
-          "status": "pending",
           "progress": 0,
-          "experience": 25
+          "status": "pending"
         }
       ]
     },
     {
-      "id": "main_2",
-      "name": "高数第1章预习",
       "category": "main",
-      "category_name": "主线任务",
       "category_icon": "🎯",
+      "category_name": "主线任务",
+      "deadline": "2026-04-13",
       "description": "完成高数第1章预习，打好数学基础",
       "difficulty": "中等",
+      "id": "main_2",
+      "name": "高数第1章预习",
       "priority": "medium",
-      "status": "in_progress",
       "progress": 36,
       "reward": {
         "experience": 80,
         "gold": 40,
         "skill_points": 8
       },
-      "deadline": "2026-04-13",
+      "status": "in_progress",
       "subtasks": [
         {
+          "experience": 15,
           "id": "sub_2_1",
           "name": "阅读教材第1-10页",
-          "status": "completed",
           "progress": 100,
-          "experience": 15
+          "status": "completed"
         },
         {
+          "experience": 20,
           "id": "sub_2_2",
           "name": "完成课后习题1-5",
-          "status": "in_progress",
           "progress": 40,
-          "experience": 20
+          "status": "in_progress"
         },
         {
+          "experience": 10,
           "id": "sub_2_3",
           "name": "整理知识点笔记",
-          "status": "pending",
           "progress": 0,
-          "experience": 10
+          "status": "pending"
         }
       ]
     },
     {
-      "id": "side_1",
-      "name": "校园探索",
       "category": "side",
-      "category_name": "支线任务",
       "category_icon": "🗺️",
+      "category_name": "支线任务",
+      "deadline": null,
       "description": "探索校园各个角落，发现隐藏彩蛋",
       "difficulty": "低",
+      "id": "side_1",
+      "name": "校园探索",
       "priority": "medium",
-      "status": "in_progress",
       "progress": 33,
       "reward": {
         "experience": 60,
         "gold": 30,
         "item": "校园地图"
       },
-      "deadline": null,
+      "status": "in_progress",
       "subtasks": [
         {
+          "experience": 10,
           "id": "sub_3_1",
           "name": "找到食堂隐藏窗口",
-          "status": "completed",
           "progress": 100,
-          "experience": 10
+          "status": "completed"
         },
         {
+          "experience": 15,
           "id": "sub_3_2",
           "name": "探索图书馆1楼",
-          "status": "in_progress",
           "progress": 50,
-          "experience": 15
+          "status": "in_progress"
         },
         {
+          "experience": 20,
           "id": "sub_3_3",
           "name": "教学楼3楼探索",
-          "status": "pending",
           "progress": 0,
-          "experience": 20
+          "status": "pending"
         }
       ]
     },
     {
-      "id": "daily_1",
-      "name": "背10个英语单词",
       "category": "daily",
-      "category_name": "日常任务",
       "category_icon": "📝",
+      "category_name": "日常任务",
+      "deadline": "2026-04-08 23:59",
       "description": "每日英语单词学习，积累词汇量",
       "difficulty": "低",
+      "id": "daily_1",
+      "is_daily": true,
+      "name": "背10个英语单词",
       "priority": "medium",
-      "status": "in_progress",
       "progress": 50,
       "reward": {
         "experience": 20,
         "gold": 5
       },
-      "deadline": "2026-04-08 23:59",
-      "is_daily": true,
+      "status": "in_progress",
       "subtasks": [
         {
+          "experience": 10,
           "id": "sub_4_1",
           "name": "单词第1组（5个）",
-          "status": "completed",
           "progress": 100,
-          "experience": 10
+          "status": "completed"
         },
         {
+          "experience": 10,
           "id": "sub_4_2",
           "name": "单词第2组（5个）",
-          "status": "in_progress",
           "progress": 50,
-          "experience": 10
+          "status": "in_progress"
         }
       ]
     },
     {
-      "id": "daily_2",
-      "name": "去食堂吃饭",
       "category": "daily",
-      "category_name": "日常任务",
       "category_icon": "🍱",
+      "category_name": "日常任务",
+      "deadline": "2026-04-08 19:00",
       "description": "按时吃饭，保持身体健康和能量",
       "difficulty": "极低",
+      "id": "daily_2",
+      "is_daily": true,
+      "name": "去食堂吃饭",
       "priority": "high",
-      "status": "pending",
       "progress": 0,
       "reward": {
+        "energy": 20,
         "experience": 10,
-        "gold": 5,
-        "energy": 20
+        "gold": 5
       },
-      "deadline": "2026-04-08 19:00",
-      "is_daily": true,
+      "status": "pending",
       "subtasks": [
         {
+          "experience": 5,
           "id": "sub_5_1",
           "name": "选择喜欢的菜品",
-          "status": "pending",
           "progress": 0,
-          "experience": 5
+          "status": "pending"
         },
         {
+          "experience": 5,
           "id": "sub_5_2",
           "name": "享受美食时间",
-          "status": "pending",
           "progress": 0,
-          "experience": 5
+          "status": "pending"
         }
       ]
     },
     {
-      "id": "hidden_1",
-      "name": "教学楼公告栏的秘密",
       "category": "hidden",
-      "category_name": "隐藏彩蛋任务",
       "category_icon": "🔍",
+      "category_name": "隐藏彩蛋任务",
       "description": "教学楼3楼公告栏隐藏着神秘信息",
       "difficulty": "中等",
+      "id": "hidden_1",
+      "is_limited": true,
+      "name": "教学楼公告栏的秘密",
       "priority": "high",
-      "status": "locked",
       "progress": 0,
       "reward": {
+        "achievement": "探索者",
         "experience": 150,
         "gold": 100,
-        "item": "神秘卷轴",
-        "achievement": "探索者"
+        "item": "神秘卷轴"
       },
-      "trigger_condition": "今日12:00-14:00到达教学楼3楼",
+      "status": "locked",
       "time_window": {
-        "start": "12:00",
-        "end": "14:00"
+        "end": "14:00",
+        "start": "12:00"
       },
-      "is_limited": true
+      "trigger_condition": "今日12:00-14:00到达教学楼3楼"
     },
     {
-      "id": "hidden_2",
-      "name": "期末冲刺周",
       "category": "hidden",
-      "category_name": "限时副本任务",
       "category_icon": "⏰",
+      "category_name": "限时副本任务",
       "description": "期末周的专属挑战，高强度学习副本",
       "difficulty": "高",
+      "id": "hidden_2",
+      "is_limited": true,
+      "locked_until": "2026-06-01",
+      "name": "期末冲刺周",
       "priority": "high",
-      "status": "locked",
       "progress": 0,
       "reward": {
         "experience": 500,
         "gold": 200,
         "title": "期末战神"
       },
-      "trigger_condition": "期末前2周自动开启",
-      "is_limited": true,
-      "locked_until": "2026-06-01"
+      "status": "locked",
+      "trigger_condition": "期末前2周自动开启"
+    },
+    {
+      "category": "daily",
+      "category_icon": "📅",
+      "category_name": "日常任务",
+      "deadline": "2026-04-18",
+      "description": "背诵并掌握50个四级高频词汇，为英语学习打下基础。",
+      "id": "rec_1776427113526_0",
+      "name": "词汇基础巩固",
+      "priority": "medium",
+      "progress": 0,
+      "reward": {
+        "experience": 30,
+        "gold": 15
+      },
+      "status": "in_progress",
+      "subtasks": [
+        {
+          "experience": 10,
+          "id": "rec_1776427113526_0_sub_0",
+          "name": "整理高频词汇表",
+          "progress": 0,
+          "status": "pending"
+        },
+        {
+          "experience": 10,
+          "id": "rec_1776427113526_0_sub_1",
+          "name": "使用APP或卡片记忆",
+          "progress": 0,
+          "status": "pending"
+        },
+        {
+          "experience": 10,
+          "id": "rec_1776427113526_0_sub_2",
+          "name": "进行简单听写测试",
+          "progress": 0,
+          "status": "pending"
+        }
+      ],
+      "tags": [
+        "英语",
+        "词汇",
+        "基础"
+      ]
+    },
+    {
+      "category": "main",
+      "category_icon": "🎯",
+      "category_name": "主线任务",
+      "deadline": "2026-04-20",
+      "description": "完成一篇四级短篇新闻听力练习，并对照原文理解大意。",
+      "id": "rec_1776427115026_1",
+      "name": "听力入门训练",
+      "priority": "medium",
+      "progress": 0,
+      "reward": {
+        "experience": 40,
+        "gold": 20
+      },
+      "status": "in_progress",
+      "subtasks": [
+        {
+          "experience": 13,
+          "id": "rec_1776427115026_1_sub_0",
+          "name": "寻找合适的听力材料",
+          "progress": 0,
+          "status": "pending"
+        },
+        {
+          "experience": 13,
+          "id": "rec_1776427115026_1_sub_1",
+          "name": "第一遍盲听并记录关键词",
+          "progress": 0,
+          "status": "pending"
+        },
+        {
+          "experience": 13,
+          "id": "rec_1776427115026_1_sub_2",
+          "name": "对照原文精听并跟读",
+          "progress": 0,
+          "status": "pending"
+        }
+      ],
+      "tags": [
+        "英语",
+        "听力",
+        "四级"
+      ]
+    },
+    {
+      "category": "side",
+      "category_icon": "📋",
+      "category_name": "支线任务",
+      "deadline": "2026-04-22",
+      "description": "观看一集喜欢的动漫英文版（或带英文字幕），并记录5个新学到的表达。",
+      "id": "rec_1776427117026_2",
+      "name": "兴趣驱动学习",
+      "priority": "medium",
+      "progress": 0,
+      "reward": {
+        "experience": 25,
+        "gold": 25
+      },
+      "status": "in_progress",
+      "subtasks": [
+        {
+          "experience": 8,
+          "id": "rec_1776427117026_2_sub_0",
+          "name": "选择一集熟悉的动漫",
+          "progress": 0,
+          "status": "pending"
+        },
+        {
+          "experience": 8,
+          "id": "rec_1776427117026_2_sub_1",
+          "name": "观看并留意英文表达",
+          "progress": 0,
+          "status": "pending"
+        },
+        {
+          "experience": 8,
+          "id": "rec_1776427117026_2_sub_2",
+          "name": "记录并查询生词和短语",
+          "progress": 0,
+          "status": "pending"
+        }
+      ],
+      "tags": [
+        "动漫",
+        "英语",
+        "兴趣学习"
+      ]
+    },
+    {
+      "category": "daily",
+      "category_icon": "📅",
+      "category_name": "日常任务",
+      "deadline": "2026-04-19",
+      "description": "整理你的书桌或学习空间，并下载一个英语学习APP（如百词斩、可可英语）。",
+      "id": "rec_1776427118108_3",
+      "name": "学习环境构建",
+      "priority": "medium",
+      "progress": 0,
+      "reward": {
+        "experience": 20,
+        "gold": 10
+      },
+      "status": "in_progress",
+      "subtasks": [
+        {
+          "experience": 6,
+          "id": "rec_1776427118108_3_sub_0",
+          "name": "物理整理桌面",
+          "progress": 0,
+          "status": "pending"
+        },
+        {
+          "experience": 6,
+          "id": "rec_1776427118108_3_sub_1",
+          "name": "在应用商店搜索并下载APP",
+          "progress": 0,
+          "status": "pending"
+        },
+        {
+          "experience": 6,
+          "id": "rec_1776427118108_3_sub_2",
+          "name": "简单注册并浏览功能",
+          "progress": 0,
+          "status": "pending"
+        }
+      ],
+      "tags": [
+        "习惯",
+        "工具",
+        "准备"
+      ]
+    },
+    {
+      "id": "rec_1776684685095_1",
+      "name": "校园环境熟悉",
+      "description": "探索校园的一个新区域，比如图书馆或体育馆，了解其开放时间和功能。",
+      "category": "side",
+      "category_name": "支线任务",
+      "category_icon": "📋",
+      "status": "in_progress",
+      "progress": 0,
+      "reward": {
+        "experience": 25,
+        "gold": 15
+      },
+      "deadline": "2026-04-23",
+      "priority": "low",
+      "tags": [
+        "校园生活",
+        "探索",
+        "适应"
+      ],
+      "subtasks": [
+        {
+          "id": "rec_1776684685095_1_sub_0",
+          "name": "确定要探索的区域（5分钟）",
+          "status": "pending",
+          "progress": 0,
+          "experience": 8
+        },
+        {
+          "id": "rec_1776684685095_1_sub_1",
+          "name": "实地走访并拍照记录（25分钟）",
+          "status": "pending",
+          "progress": 0,
+          "experience": 8
+        },
+        {
+          "id": "rec_1776684685095_1_sub_2",
+          "name": "整理信息笔记（10分钟）",
+          "status": "pending",
+          "progress": 0,
+          "experience": 8
+        }
+      ]
     }
   ],
-  "daily_reset_time": "00:00",
-  "last_updated": "2026-04-08"
+  "last_updated": "2026-04-23 11:28:15"
 }

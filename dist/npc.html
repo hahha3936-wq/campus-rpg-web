@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPC 角色 - 校园RPG</title>
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="校园RPG NPC角色详情">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/chat-widget.css">
+    <link rel="stylesheet" href="css/profile-modal.css">
+    <link rel="stylesheet" href="css/npc-page.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <span class="brand-icon">🎮</span><span class="brand-text">校园RPG</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="user-stats-mini me-3">
+                    <span class="stat-mini"><span class="stat-icon">💰</span><span id="gold-display-nav">--</span></span>
+                    <span class="stat-mini"><span class="stat-icon">⭐</span>Lv.<span id="level-display-nav">--</span></span>
+                </div>
+                <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#settingsModal">⚙️</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content" style="padding-top: 70px; padding-bottom: 80px;">
+        <div class="container" style="max-width: 600px;">
+            <div style="padding: 1rem 0 0.5rem; font-size: 0.85rem; opacity: 0.6;">校园RPG / NPC</div>
+            <h1 style="font-weight: 900; margin-bottom: 1.5rem; font-size: 1.75rem;">🌟 NPC 角色</h1>
+
+            <!-- NPC 选择 -->
+            <div class="npc-selector">
+                <div class="npc-tab-btn active" data-npc="naruto" onclick="switchNPC('naruto')">
+                    <span class="npc-tab-icon">🍥</span>
+                    <div class="npc-tab-name">漩涡鸣人</div>
+                    <div class="npc-tab-title">热血导师</div>
+                </div>
+                <div class="npc-tab-btn" data-npc="sasuke" onclick="switchNPC('sasuke')">
+                    <span class="npc-tab-icon">👤</span>
+                    <div class="npc-tab-name">宇智波佐助</div>
+                    <div class="npc-tab-title">傲娇助教</div>
+                </div>
+            </div>
+
+            <!-- NPC 详情卡 -->
+            <div class="npc-detail-card" id="npc-detail-card">
+                <div class="npc-header naruto" id="npc-header">
+                    <div class="npc-detail-avatar" id="npc-avatar">🍥</div>
+                    <div class="npc-detail-name" id="npc-name">漩涡鸣人老师</div>
+                    <div class="npc-detail-title" id="npc-title">热血导师</div>
+                </div>
+
+                <div class="affection-section">
+                    <div class="affection-title">好感度</div>
+                    <div class="affection-bar-wrap">
+                        <div class="affection-track">
+                            <div class="affection-fill" id="affection-fill" style="width:20%"></div>
+                        </div>
+                        <div class="affection-value" id="affection-value">20/100</div>
+                    </div>
+                    <div class="affection-rank" id="affection-rank">
+                        <span class="rank-pip active">初识</span>
+                        <span class="rank-pip">信赖</span>
+                        <span class="rank-pip">挚友</span>
+                    </div>
+                </div>
+
+                <div class="npc-bio">
+                    <div class="npc-bio-title">角色介绍</div>
+                    <div class="npc-bio-text" id="npc-bio">
+                        漩涡鸣人是你的热血导师，总是充满干劲。他相信每个人都有自己的成长节奏，
+                        会用忍者的故事来激励你在学业上前进。作为曾经的"吊车尾"，他最懂得
+                        如何帮助被看轻的学生找到自己的道路。
+                    </div>
+                </div>
+
+                <div class="dialogue-section">
+                    <div class="dialogue-section-title">💬 对话历史 <span id="npc-typing-indicator" aria-hidden="true" style="display:none;font-size:0.8rem;opacity:0.7;">typing...</span></div>
+                    <div id="dialogue-history">
+                        <div class="dialogue-bubble ai">今天的任务加油哦！🔥</div>
+                    </div>
+                </div>
+
+                <div class="dialogue-input-area" id="dialogue-input-area">
+                    <input type="text"
+                           id="npc-message-input"
+                           class="npc-message-input"
+                           placeholder="输入日语或中文与NPC对话，NPC会日语回复+中文翻译..."
+                           autocomplete="off">
+                    <button class="npc-send-btn" id="npc-send-btn" onclick="sendUserMessage()">
+                        发送
+                    </button>
+                </div>
+
+                <div class="npc-actions">
+                    <button class="npc-action-btn primary" onclick="triggerDialogue()">
+                        💬 与我对话
+                    </button>
+                    <button class="npc-action-btn secondary" onclick="sendGift()">
+                        🎁 赠送礼物
+                    </button>
+                </div>
+
+                <div class="npc-quests">
+                    <div class="dialogue-section-title">📋 专属任务</div>
+                    <div id="npc-quests">
+                        <div class="quest-item">
+                            <span class="quest-icon">📚</span>
+                            <span class="quest-name">完成第一次学习任务</span>
+                            <span class="quest-reward">+5好感</span>
+                        </div>
+                        <div class="quest-item">
+                            <span class="quest-icon">🔥</span>
+                            <span class="quest-name">连续签到7天</span>
+                            <span class="quest-reward">+15好感</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a class="nav-btn" href="index.html"><span class="nav-icon" aria-hidden="true">🏠</span><span class="nav-text">主页</span></a>
+        <a class="nav-btn" href="tasks.html"><span class="nav-icon" aria-hidden="true">📋</span><span class="nav-text">任务</span></a>
+        <a class="nav-btn" href="achievements.html"><span class="nav-icon" aria-hidden="true">🏆</span><span class="nav-text">成就</span></a>
+        <a class="nav-btn" href="profile.html"><span class="nav-icon" aria-hidden="true">👤</span><span class="nav-text">我的</span></a>
+        <a class="nav-btn nav-btn-game" href="game.html"><span class="nav-icon" aria-hidden="true">🌾</span><span class="nav-text">农场</span></a>
+    </nav>
+
+    <div class="notification-container" id="notification-container"></div>
+
+    <!-- 设置弹窗 -->
+    <div class="modal fade" id="settingsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">⚙️ 设置</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="settings-modal-body">
+                    <div class="settings-group">
+                        <label class="settings-label"><span>🎵 音效</span><input type="checkbox" id="sound-toggle" checked></label>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label"><span>🌙 夜间模式</span><input type="checkbox" id="darkmode-toggle"></label>
+                    </div>
+                    <hr>
+                    <div style="text-align:center;opacity:0.7;font-size:0.85rem">🎮 校园RPG v1.0.0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="lib/gcoord/gcoord.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api-base.js"></script>
+    <script src="js/init.js"></script>
+    <script src="js/game/ar/ar-main.js" defer></script>
+    <script src="js/core/event-bus.js"></script>
+    <script src="js/core/state-manager.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/features/npc-manager.js"></script>
+    <script>
+    (function() {
+        'use strict';
+        var soundToggle = document.getElementById('sound-toggle');
+        var darkToggle = document.getElementById('darkmode-toggle');
+        if (soundToggle) soundToggle.addEventListener('change', function() {
+            localStorage.setItem('campusRPG_sound', soundToggle.checked ? '1' : '0');
+        });
+        if (darkToggle) darkToggle.addEventListener('change', function() {
+            document.body.classList.toggle('dark-mode', darkToggle.checked);
+            localStorage.setItem('campusRPG_dark', darkToggle.checked ? '1' : '0');
+        });
+    })();
+    </script>
+    <script>
+    (async function() {
+        'use strict';
+
+        // 页面加载时初始化 NPCManager
+        await NPCManager.init();
+
+        // 暴露全局函数供 HTML onclick 调用
+        window.switchNPC    = (id) => NPCManager.switchNpc(id);
+        window.triggerDialogue = () => NPCManager.triggerDialogue();
+        window.sendGift     = () => NPCManager.sendGift();
+        window.showFullHistory = () => NPCManager.showFullHistory();
+        window.sendUserMessage = () => NPCManager.sendUserMessage();
+
+        // 回车发送消息（Enter发送，Shift+Enter换行）
+        const input = document.getElementById('npc-message-input');
+        if (input) {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    NPCManager.sendUserMessage();
+                }
+            });
+        }
+    })();
+    </script>
+</body>
+</html>

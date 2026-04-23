@@ -2,7 +2,7 @@
  * 校园RPG Service Worker
  * 提供离线缓存支持
  */
-const CACHE_NAME = 'campus-rpg-v8';
+const CACHE_NAME = 'campus-rpg-v9';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

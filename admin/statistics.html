@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园RPG - 数据统计</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #f56565;
+            --info: #4299e1;
+            --bg: #f0f2f8;
+            --card-bg: #ffffff;
+            --text: #1a1a2e;
+            --text-muted: #718096;
+            --border: rgba(0,0,0,0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* 登录页 */
+        .login-overlay {
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 360px;
+            max-width: 90vw;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .login-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-card p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .login-card input:focus {
+            border-color: var(--primary);
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .login-card button:hover { opacity: 0.9; }
+
+        .login-error {
+            color: var(--danger);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* 统计页面 */
+        .stats-page { display: none; }
+
+        .stats-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stats-header h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 0.4rem 1rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+
+        /* 刷新按钮 */
+        .refresh-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+
+        .btn-refresh {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.25rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-refresh:hover { opacity: 0.9; }
+        .btn-refresh:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* 指标卡片 */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+        }
+
+        .metric-card:hover { transform: translateY(-2px); }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .metric-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .metric-primary .metric-value { color: var(--primary); }
+        .metric-success .metric-value { color: var(--success); }
+        .metric-warning .metric-value { color: var(--warning); }
+        .metric-info .metric-value { color: var(--info); }
+
+        /* 图表区域 */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+        }
+
+        .chart-card h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .chart-wrap {
+            position: relative;
+            height: 220px;
+        }
+
+        /* 日志表格 */
+        .log-section {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+        }
+
+        .log-section h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .log-table th {
+            text-align: left;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-muted);
+            border-bottom: 2px solid var(--border);
+            font-weight: 600;
+        }
+
+        .log-table td {
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .log-table tr:last-child td { border-bottom: none; }
+
+        .event-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .event-task { background: rgba(102,126,234,0.1); color: #667eea; }
+        .event-ar { background: rgba(72,187,120,0.1); color: #48bb78; }
+        .event-login { background: rgba(237,137,54,0.1); color: #ed8936; }
+        .event-default { background: rgba(113,128,150,0.1); color: #718096; }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .pagination button {
+            padding: 0.3rem 0.75rem;
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+        .pagination button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        /* 加载态 */
+        .loading-mask {
+            position: fixed; inset: 0;
+            background: rgba(240,242,248,0.8);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 100;
+        }
+
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid rgba(102,126,234,0.2);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        /* 错误提示 */
+        .error-banner {
+            background: rgba(245,101,101,0.1);
+            border: 1px solid rgba(245,101,101,0.3);
+            color: var(--danger);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            display: none;
+        }
+
+        /* 事件类型标签 */
+        .event-type-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+
+        .event-type-tag {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background: var(--bg);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .charts-grid { grid-template-columns: 1fr; }
+            .container { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 登录页 -->
+<div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+        <h2>校园RPG 数据统计</h2>
+        <p>请输入管理员密码访问</p>
+        <input type="password" id="adminPassword" placeholder="请输入密码" onkeydown="if(event.key==='Enter')doLogin()">
+        <button onclick="doLogin()">登 入</button>
+        <div class="login-error" id="loginError">密码错误，请重试</div>
+    </div>
+</div>
+
+<!-- 统计页面 -->
+<div class="stats-page" id="statsPage">
+    <div class="stats-header">
+        <h1>校园RPG - 效果数据统计</h1>
+        <button class="logout-btn" onclick="doLogout()">退出登录</button>
+    </div>
+
+    <div class="container">
+        <div class="error-banner" id="errorBanner"></div>
+
+        <div class="refresh-row">
+            <button class="btn-refresh" id="refreshBtn" onclick="loadAll()">
+                <span>&#8635;</span> 刷新数据
+            </button>
+        </div>
+
+        <!-- 核心指标卡片 -->
+        <div class="metrics-grid" id="metricsGrid">
+            <div class="metric-card metric-primary">
+                <div class="metric-label">任务完成率</div>
+                <div class="metric-value" id="metricRate">--</div>
+                <div class="metric-sub">7日活跃用户</div>
+            </div>
+            <div class="metric-card metric-success">
+                <div class="metric-label">AR累计解锁</div>
+                <div class="metric-value" id="metricAR">--</div>
+                <div class="metric-sub">近30日: <span id="metricARMonth">--</span></div>
+            </div>
+            <div class="metric-card metric-warning">
+                <div class="metric-label">7日留存率</div>
+                <div class="metric-value" id="metricRetention">--</div>
+                <div class="metric-sub">对比上周</div>
+            </div>
+            <div class="metric-card metric-info">
+                <div class="metric-label">平均完成时长</div>
+                <div class="metric-value" id="metricDuration">--</div>
+                <div class="metric-sub">秒/任务</div>
+            </div>
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>近7日任务完成趋势</h3>
+                <div class="chart-wrap">
+                    <canvas id="taskChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>近7日登录用户趋势</h3>
+                <div class="chart-wrap">
+                    <canvas id="loginChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>各事件类型分布（近30日）</h3>
+                <div class="chart-wrap">
+                    <canvas id="eventChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>总事件数</h3>
+                <div class="chart-wrap" style="display:flex;align-items:center;justify-content:center;">
+                    <div style="text-align:center;">
+                        <div id="totalEvents" style="font-size:3rem;font-weight:700;color:var(--primary);">--</div>
+                        <div style="color:var(--text-muted);font-size:0.875rem;">全部埋点事件</div>
+                        <div style="margin-top:0.5rem;font-size:0.8rem;">
+                            活跃用户: <strong id="activeUsers">--</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最新日志 -->
+        <div class="log-section">
+            <h3>最新埋点日志</h3>
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>用户ID</th>
+                        <th>事件类型</th>
+                        <th>详情</th>
+                    </tr>
+                </thead>
+                <tbody id="logTableBody">
+                    <tr><td colspan="4" class="empty-state">加载中...</td></tr>
+                </tbody>
+            </table>
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 全局加载遮罩 -->
+<div class="loading-mask" id="loadingMask" style="display:none;">
+    <div class="spinner"></div>
+</div>
+
+<script>
+// ==================== 配置 ====================
+const ADMIN_PASSWORD = 'admin123';
+const API_BASE = window.location.protocol + '//' + window.location.host;
+let _token = null;
+let _charts = {};
+let _page = 0;
+const PAGE_SIZE = 20;
+
+// ==================== 工具函数 ====================
+function req(path, options = {}) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (_token) headers['Authorization'] = `Bearer ${_token}`;
+    return fetch(`${API_BASE}${path}`, { ...options, headers });
+}
+
+function showError(msg) {
+    const el = document.getElementById('errorBanner');
+    el.textContent = msg;
+    el.style.display = 'block';
+}
+
+function clearError() {
+    document.getElementById('errorBanner').style.display = 'none';
+}
+
+function showLoading() { document.getElementById('loadingMask').style.display = 'flex'; }
+function hideLoading() { document.getElementById('loadingMask').style.display = 'none'; }
+
+function formatTime(iso) {
+    if (!iso) return '--';
+    const d = new Date(iso);
+    return `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+}
+
+function shortId(id) {
+    if (!id) return '--';
+    return id.length > 8 ? id.slice(0, 8) + '...' : id;
+}
+
+// ==================== 登录登出 ====================
+function doLogin() {
+    const pwd = document.getElementById('adminPassword').value;
+    if (pwd !== ADMIN_PASSWORD) {
+        document.getElementById('loginError').style.display = 'block';
+        return;
+    }
+    // 简单token：密码+时间戳的base64
+    _token = btoa(pwd + ':' + Date.now());
+    localStorage.setItem('admin_token', _token);
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('statsPage').style.display = 'block';
+    loadAll();
+}
+
+function doLogout() {
+    localStorage.removeItem('admin_token');
+    _token = null;
+    document.getElementById('statsPage').style.display = 'none';
+    document.getElementById('loginOverlay').style.display = 'flex';
+}
+
+// ==================== 数据加载 ====================
+async function loadAll() {
+    clearError();
+    const btn = document.getElementById('refreshBtn');
+    btn.disabled = true;
+
+    showLoading();
+    try {
+        await Promise.all([loadStatistics(), loadLogs()]);
+    } catch (e) {
+        showError('加载数据失败: ' + e.message);
+    } finally {
+        hideLoading();
+        btn.disabled = false;
+    }
+}
+
+async function loadStatistics() {
+    try {
+        const resp = await req('/api/behavior/statistics');
+        if (!resp.ok) {
+            const body = await resp.json().catch(() => ({}));
+            throw new Error(body.error || `HTTP ${resp.status}`);
+        }
+        const body = await resp.json();
+        renderMetrics(body.statistics || {});
+        renderCharts(body.statistics || {});
+    } catch (e) {
+        if (e.message.includes('无权限') || e.message.includes('403')) {
+            throw new Error('您没有管理员权限，无法查看统计数据');
+        }
+        throw e;
+    }
+}
+
+async function loadLogs() {
+    const resp = await req(`/api/behavior/logs?limit=${PAGE_SIZE}&offset=${_page * PAGE_SIZE}`);
+    if (!resp.ok) return;
+    const body = await resp.json();
+    renderLogTable(body.logs || []);
+    renderPagination(body.total || 0);
+}
+
+// ==================== 渲染指标 ====================
+function renderMetrics(stats) {
+    document.getElementById('metricRate').textContent = (stats.task_completion_rate ?? '--') + '%';
+    document.getElementById('metricAR').textContent = stats.ar_total_unlocks ?? 0;
+    document.getElementById('metricARMonth').textContent = stats.ar_monthly_unlocks ?? 0;
+    document.getElementById('metricRetention').textContent = (stats.retention_rate_7d ?? '--') + '%';
+    document.getElementById('metricDuration').textContent = (stats.avg_completion_duration_seconds ?? '--') + 's';
+    document.getElementById('totalEvents').textContent = (stats.total_events ?? 0).toLocaleString();
+    document.getElementById('activeUsers').textContent = stats.active_users_7d ?? 0;
+}
+
+// ==================== 渲染图表 ====================
+const CHART_COLORS = [
+    '#667eea', '#48bb78', '#ed8936', '#f56565', '#4299e1', '#9f7aea', '#38b2ac', '#ecc94b'
+];
+
+function renderCharts(stats) {
+    // 任务完成趋势
+    const taskLabels = (stats.daily_task_completions || []).map(d => d.date.slice(5));
+    const taskData = (stats.daily_task_completions || []).map(d => d.count);
+
+    if (_charts.task) _charts.task.destroy();
+    _charts.task = new Chart(document.getElementById('taskChart'), {
+        type: 'line',
+        data: {
+            labels: taskLabels,
+            datasets: [{
+                label: '任务完成数',
+                data: taskData,
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102,126,234,0.1)',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#667eea',
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // 登录趋势
+    const loginLabels = (stats.daily_logins || []).map(d => d.date.slice(5));
+    const loginData = (stats.daily_logins || []).map(d => d.count);
+
+    if (_charts.login) _charts.login.destroy();
+    _charts.login = new Chart(document.getElementById('loginChart'), {
+        type: 'bar',
+        data: {
+            labels: loginLabels,
+            datasets: [{
+                label: '登录用户数',
+                data: loginData,
+                backgroundColor: 'rgba(72,187,120,0.7)',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // 事件分布
+    const events = stats.event_distribution || [];
+    if (_charts.event) _charts.event.destroy();
+    _charts.event = new Chart(document.getElementById('eventChart'), {
+        type: 'doughnut',
+        data: {
+            labels: events.map(e => e.event_type),
+            datasets: [{
+                data: events.map(e => e.count),
+                backgroundColor: CHART_COLORS.slice(0, events.length)
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { font: { size: 11 }, padding: 10 }
+                }
+            }
+        }
+    });
+}
+
+// ==================== 渲染日志表格 ====================
+function getEventClass(type) {
+    if (type === 'task_completion') return 'event-task';
+    if (type === 'ar_marker_found') return 'event-ar';
+    if (type === 'user_login') return 'event-login';
+    return 'event-default';
+}
+
+function renderLogTable(logs) {
+    const tbody = document.getElementById('logTableBody');
+    if (!logs || logs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">暂无数据</td></tr>';
+        return;
+    }
+    tbody.innerHTML = logs.map(log => {
+        const data = log.event_data || {};
+        let detail = '';
+        if (log.event_type === 'task_completion') {
+            detail = `任务: ${shortId(data.task_id)} | 类型: ${data.task_type || '--'} | 耗时: ${data.duration_seconds || 0}s`;
+        } else if (log.event_type === 'ar_marker_found') {
+            detail = `标记: ${data.marker_id || '--'} | 识别: ${data.recognition_duration_ms || 0}ms`;
+        } else if (log.event_type === 'user_login') {
+            detail = `设备: ${(data.device || {}).platform || '--'}`;
+        } else {
+            detail = JSON.stringify(data).slice(0, 60);
+        }
+        return `
+            <tr>
+                <td>${formatTime(log.timestamp)}</td>
+                <td><code>${shortId(log.user_id)}</code></td>
+                <td><span class="event-badge ${getEventClass(log.event_type)}">${log.event_type}</span></td>
+                <td style="max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${detail}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function renderPagination(total) {
+    const totalPages = Math.ceil(total / PAGE_SIZE);
+    const pagination = document.getElementById('pagination');
+    if (totalPages <= 1) { pagination.innerHTML = ''; return; }
+
+    let html = `<button ${_page === 0 ? 'disabled' : ''} onclick="goPage(${_page - 1})">上一页</button>`;
+    html += `<span style="padding:0 0.5rem;font-size:0.8rem;">第 ${_page + 1}/${totalPages} 页</span>`;
+    html += `<button ${_page >= totalPages - 1 ? 'disabled' : ''} onclick="goPage(${_page + 1})">下一页</button>`;
+    pagination.innerHTML = html;
+}
+
+async function goPage(p) {
+    _page = p;
+    showLoading();
+    await loadLogs();
+    hideLoading();
+}
+
+// ==================== 初始化 ====================
+(function init() {
+    const saved = localStorage.getItem('admin_token');
+    if (saved) {
+        _token = saved;
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('statsPage').style.display = 'block';
+        loadAll();
+    }
+})();
+</script>
+</body>
+</html>

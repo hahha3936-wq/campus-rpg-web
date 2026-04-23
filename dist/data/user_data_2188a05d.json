@@ -1,0 +1,159 @@
+{
+  "user": {
+    "name": "123123",
+    "school": "合肥财经大学·物联网应用技术",
+    "grade": "大一",
+    "goals": [
+      "过四级",
+      "不挂科",
+      "学完高数"
+    ],
+    "apps": {
+      "timetable": "WakeUp课程表",
+      "campus": "学习通"
+    },
+    "interest": "动漫",
+    "lazy_level": 2,
+    "party_size": 2,
+    "long_term_goals": [],
+    "short_term_plans": []
+  },
+  "role": {
+    "level": 1,
+    "experience": 0,
+    "experience_needed": 100,
+    "gold": 50
+  },
+  "stats": {
+    "energy": 100,
+    "focus": 100,
+    "mood": 100,
+    "stress": 20,
+    "total_tasks_completed": 0,
+    "total_achievements_unlocked": 5,
+    "days_active": 1,
+    "current_streak": 1
+  },
+  "npc_relationship": {
+    "naruto": {
+      "affection": 20,
+      "max_affection": 100,
+      "title": "热血导师"
+    },
+    "sasuke": {
+      "affection": 10,
+      "max_affection": 100,
+      "title": "傲娇助教"
+    }
+  },
+  "buffs": [
+    {
+      "name": "动漫联动",
+      "description": "学习效率+15%",
+      "duration": "今日有效",
+      "icon": "🎬"
+    }
+  ],
+  "inventory": [
+    {
+      "name": "经验药水",
+      "description": "使用后获得20点经验",
+      "quantity": 3,
+      "icon": "🧪"
+    },
+    {
+      "name": "能量饮料",
+      "description": "恢复30点能量",
+      "quantity": 2,
+      "icon": "🥤"
+    }
+  ],
+  "exploration": {
+    "discovered_locations": [],
+    "current_location": "dorm",
+    "exploration_streak": 0,
+    "hidden_events_found": []
+  },
+  "last_updated": "2026-04-11 19:45:37",
+  "recommended_tasks": [
+    {
+      "name": "探索专业领域",
+      "description": "花30分钟了解物联网应用技术专业的核心课程和未来发展方向，为后续学习建立基础认知。",
+      "category": "main",
+      "difficulty": "easy",
+      "reward": {
+        "experience": 30,
+        "gold": 15,
+        "skill_points": 1
+      },
+      "deadline": "2026-04-15",
+      "tags": [
+        "专业认知",
+        "学习规划"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": "1",
+          "name": "浏览学校官网专业介绍页面"
+        },
+        {
+          "id": "2",
+          "name": "搜索一篇物联网行业概述文章阅读"
+        }
+      ]
+    },
+    {
+      "name": "动漫兴趣入门",
+      "description": "选择一部你感兴趣但未看过的动漫，观看第一集并简单记录你的第一印象。",
+      "category": "side",
+      "difficulty": "easy",
+      "reward": {
+        "experience": 20,
+        "gold": 10,
+        "skill_points": 1
+      },
+      "deadline": "2026-04-14",
+      "tags": [
+        "兴趣培养",
+        "休闲娱乐"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": "1",
+          "name": "在动漫平台挑选一部新番"
+        },
+        {
+          "id": "2",
+          "name": "观看第一集并写下简短感想"
+        }
+      ]
+    },
+    {
+      "name": "校园环境初探",
+      "description": "在校园里散步15-20分钟，熟悉教学楼、图书馆和食堂的大致位置。",
+      "category": "daily",
+      "difficulty": "easy",
+      "reward": {
+        "experience": 15,
+        "gold": 5,
+        "skill_points": 0
+      },
+      "deadline": "2026-04-13",
+      "tags": [
+        "环境适应",
+        "校园生活"
+      ],
+      "suggested_subtasks": [
+        {
+          "id": "1",
+          "name": "规划一条包含主要建筑的散步路线"
+        },
+        {
+          "id": "2",
+          "name": "完成散步并确认方位"
+        }
+      ]
+    }
+  ],
+  "recommended_at": "2026-04-13 09:53:28"
+}

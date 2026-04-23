@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 校园RPG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="auth-particles" id="authParticles"></div>
+
+    <div class="auth-container">
+        <div class="auth-card" id="authCard">
+
+            <!-- Logo -->
+            <div class="auth-logo">
+                <span class="auth-logo-icon">🎮</span>
+                <span class="auth-logo-title">校园RPG</span>
+                <span class="auth-logo-subtitle">校园RPG · 游戏化学习系统</span>
+            </div>
+
+            <!-- 切换标签 -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">登录</button>
+                <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">注册</button>
+            </div>
+
+            <!-- 错误提示 -->
+            <div class="auth-error" id="authError" style="display:none;">
+                <span class="auth-error-icon">⚠️</span>
+                <span id="authErrorText"></span>
+            </div>
+
+            <!-- 登录表单 -->
+            <form class="auth-form active" id="formLogin" onsubmit="handleLogin(event)">
+                <div class="auth-field">
+                    <label class="auth-label" for="loginUsername">用户名</label>
+                    <div class="auth-input-wrapper">
+                        <input type="text" id="loginUsername" class="auth-input" placeholder="输入用户名" autocomplete="username" required minlength="3">
+                        <span class="auth-input-icon">👤</span>
+                    </div>
+                </div>
+                <div class="auth-field">
+                    <label class="auth-label" for="loginPassword">密码</label>
+                    <div class="auth-input-wrapper">
+                        <input type="password" id="loginPassword" class="auth-input" placeholder="输入密码" autocomplete="current-password" required minlength="6">
+                        <span class="auth-input-icon">🔒</span>
+                        <button type="button" class="auth-toggle-password" onclick="togglePassword('loginPassword', this)">👁️</button>
+                    </div>
+                </div>
+                <button type="submit" class="auth-submit" id="loginSubmit">
+                    登录冒险 🎮
+                </button>
+            </form>
+
+            <!-- 注册表单 -->
+            <form class="auth-form" id="formRegister" onsubmit="handleRegister(event)">
+                <div class="auth-field">
+                    <label class="auth-label" for="regUsername">用户名</label>
+                    <div class="auth-input-wrapper">
+                        <input type="text" id="regUsername" class="auth-input" placeholder="设置用户名（3-20字符）" autocomplete="username" required minlength="3" maxlength="20">
+                        <span class="auth-input-icon">👤</span>
+                    </div>
+                </div>
+                <div class="auth-field">
+                    <label class="auth-label" for="regNickname">昵称</label>
+                    <div class="auth-input-wrapper">
+                        <input type="text" id="regNickname" class="auth-input" placeholder="你的冒险者昵称" autocomplete="nickname" maxlength="20">
+                        <span class="auth-input-icon">✨</span>
+                    </div>
+                </div>
+                <div class="auth-field">
+                    <label class="auth-label" for="regPassword">密码</label>
+                    <div class="auth-input-wrapper">
+                        <input type="password" id="regPassword" class="auth-input" placeholder="设置密码（至少6字符）" autocomplete="new-password" required minlength="6">
+                        <span class="auth-input-icon">🔒</span>
+                        <button type="button" class="auth-toggle-password" onclick="togglePassword('regPassword', this)">👁️</button>
+                    </div>
+                </div>
+
+                <!-- 角色选择 -->
+                <div class="auth-role-section">
+                    <span class="auth-role-label">选择你的初始角色定位</span>
+                    <div class="auth-role-options">
+                        <label class="auth-role-option">
+                            <input type="radio" name="regRole" value="study" checked>
+                            <div class="auth-role-card">
+                                <span class="auth-role-icon">📚</span>
+                                <span class="auth-role-name">学霸型</span>
+                            </div>
+                        </label>
+                        <label class="auth-role-option">
+                            <input type="radio" name="regRole" value="social">
+                            <div class="auth-role-card">
+                                <span class="auth-role-icon">🤝</span>
+                                <span class="auth-role-name">社交型</span>
+                            </div>
+                        </label>
+                        <label class="auth-role-option">
+                            <input type="radio" name="regRole" value="explorer">
+                            <div class="auth-role-card">
+                                <span class="auth-role-icon">🗺️</span>
+                                <span class="auth-role-name">探索型</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-submit" id="regSubmit">
+                    创建角色 ✨
+                </button>
+            </form>
+
+            <!-- 底部 -->
+            <div class="auth-footer">
+                <a href="index.html">返回首页</a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 加载遮罩 -->
+    <div class="auth-loading" id="authLoading" style="display:none;">
+        <div class="auth-spinner"></div>
+        <span class="auth-loading-text">正在验证身份...</span>
+    </div>
+
+    <script src="js/api-base.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // ============================================
+        // 初始化
+        // ============================================
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 已登录则直接跳转首页
+            if (Auth.isLoggedIn()) {
+                const valid = await Auth.tryRestoreSession();
+                if (valid) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+            }
+            // 生成粒子
+            createParticles();
+        });
+
+        // ============================================
+        // Tab 切换
+        // ============================================
+        function switchTab(tab) {
+            const formLogin = document.getElementById('formLogin');
+            const formRegister = document.getElementById('formRegister');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+            const errorBox = document.getElementById('authError');
+
+            errorBox.style.display = 'none';
+
+            if (tab === 'login') {
+                formLogin.classList.add('active');
+                formRegister.classList.remove('active');
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+            } else {
+                formLogin.classList.remove('active');
+                formRegister.classList.add('active');
+                tabLogin.classList.remove('active');
+                tabRegister.classList.add('active');
+            }
+        }
+
+        // ============================================
+        // 登录
+        // ============================================
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorBox = document.getElementById('authError');
+            const errorText = document.getElementById('authErrorText');
+            const submitBtn = document.getElementById('loginSubmit');
+
+            if (!username || !password) {
+                showError('请输入用户名和密码');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '登录中...';
+            errorBox.style.display = 'none';
+
+            try {
+                await Auth.login(username, password);
+                showSuccess('登录成功！正在进入游戏...');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } catch (err) {
+                showError(err.message || '登录失败，请检查用户名和密码');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '登录冒险 🎮';
+            }
+        }
+
+        // ============================================
+        // 注册
+        // ============================================
+        async function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value.trim();
+            const nickname = document.getElementById('regNickname').value.trim() || username;
+            const password = document.getElementById('regPassword').value;
+            const errorBox = document.getElementById('authError');
+            const errorText = document.getElementById('authErrorText');
+            const submitBtn = document.getElementById('regSubmit');
+
+            if (!username || username.length < 3) {
+                showError('用户名至少需要3个字符');
+                return;
+            }
+            if (password.length < 6) {
+                showError('密码至少需要6个字符');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '创建角色中...';
+            errorBox.style.display = 'none';
+
+            try {
+                await Auth.register(username, password, nickname);
+                showSuccess('角色创建成功！正在进入游戏...');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } catch (err) {
+                showError(err.message || '注册失败，请重试');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '创建角色 ✨';
+            }
+        }
+
+        // ============================================
+        // 辅助函数
+        // ============================================
+        function showError(msg) {
+            const errorBox = document.getElementById('authError');
+            const errorText = document.getElementById('authErrorText');
+            errorText.textContent = msg;
+            errorBox.style.display = 'flex';
+        }
+
+        function showSuccess(msg) {
+            const card = document.getElementById('authCard');
+            card.innerHTML = `
+                <div class="auth-success-overlay">
+                    <span class="auth-success-icon">🎉</span>
+                    <span class="auth-success-text">${msg}</span>
+                    <span class="auth-success-sub">即将跳转...</span>
+                </div>
+            `;
+        }
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+            }
+        }
+
+        function createParticles() {
+            const container = document.getElementById('authParticles');
+            const colors = ['#667eea', '#764ba2', '#f093fb', '#4ade80'];
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement('div');
+                p.className = 'auth-particle';
+                const size = Math.random() * 6 + 2;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                p.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${Math.random() * 100}%;
+                    background: ${color};
+                    animation-duration: ${Math.random() * 10 + 8}s;
+                    animation-delay: ${Math.random() * 5}s;
+                `;
+                container.appendChild(p);
+            }
+        }
+    </script>
+</body>
+</html>

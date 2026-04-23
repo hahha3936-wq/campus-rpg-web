@@ -107,35 +107,117 @@ const RANDOM_EVENTS = [
 // 初始化
 // ============================================
 document.addEventListener('DOMContentLoaded', async () => {
+    // 确保 bootstrap Modal 可用（必须等待 bootstrap 完全加载后再执行任何弹窗）
+    if (typeof bootstrap === 'undefined' || typeof bootstrap.Modal === 'undefined') {
+        console.warn('[app.js] bootstrap.Modal 未就绪，等待...');
+        await new Promise(resolve => {
+            var checkTimer = setInterval(function() {
+                if (typeof bootstrap !== 'undefined' && typeof bootstrap.Modal !== 'undefined') {
+                    clearInterval(checkTimer);
+                    resolve();
+                }
+            }, 50);
+            setTimeout(function() { clearInterval(checkTimer); resolve(); }, 5000);
+        });
+    }
+
+    // 初始化事件监听（必须在所有 await 之前执行，确保按钮立即可响应）
     try {
-        // 清除引导遮罩等异常残留
+        initEventListeners();
+    } catch (err) {
+        console.error('[app.js] 事件监听初始化出错:', err);
+    }
+
+    // 清理旧引导遮罩残留（独立执行，不受其他错误影响）
+    try {
         document.getElementById('onboarding-overlay')?.remove();
         document.getElementById('onboarding-tooltip')?.remove();
         document.getElementById('onboarding-spotlight')?.remove();
+    } catch (e) {}
 
-        // 初始化事件总线
+        // 防御性清理残留的 .modal-backdrop（防止页面刷新后残留遮罩层）
+    try {
+        var _cleanupBackdrops = function() {
+            var bps = document.querySelectorAll('.modal-backdrop');
+            if (bps.length > 0) {
+                bps.forEach(function(bp) { bp.parentNode && bp.parentNode.removeChild(bp); });
+                document.body.classList.remove('modal-open', 'exploration-modal-open');
+                document.body.style.paddingRight = '';
+                document.body.style.overflow = '';
+            }
+        };
+        _cleanupBackdrops();
+        // 监听 Bootstrap modal hidden 事件，防止 backdrop 残留
+        // Bootstrap 5: 打开的模态框有 .show 类，动画结束后移除 .show 并添加 .fade
+        document.addEventListener('hidden.bs.modal', function(e) {
+            setTimeout(function() {
+                // Bootstrap 5: .show 类表示正在显示，无 .show 则表示已关闭
+                var openModals = document.querySelectorAll('.modal.show');
+                if (openModals.length === 0) {
+                    _cleanupBackdrops();
+                }
+            }, 50);
+        });
+        // 安全兜底：每隔 5 秒检查一次，防止任何意外导致的 backdrop 残留
+        var _backdropSentinel = setInterval(function() {
+            var bps = document.querySelectorAll('.modal-backdrop');
+            var shownModals = document.querySelectorAll('.modal.show');
+            // 如果有 backdrop 但没有任何 modal 正在显示，说明是孤儿残留
+            if (bps.length > 0 && shownModals.length === 0) {
+                _cleanupBackdrops();
+            }
+        }, 5000);
+    } catch (e) {}
+
+    // 初始化事件总线
+    try {
         EventBus.emit('app:init:start');
+    } catch (e) {}
 
-        // 初始化音效管理器
+    // 初始化音效管理器
+    try {
         SoundManager.init();
+    } catch (e) {}
 
-        // 初始化核心模块
+    // 初始化核心模块
+    try {
         ExplorationDialogue.init();
+    } catch (e) {}
 
-        // 加载数据（优先StateManager，失败时用本地数据）
+    // 初始化剧情随机事件系统
+    try {
+        if (window.StoryRandomEvent) {
+            StoryRandomEvent.init();
+            // 页面加载后随机触发剧情事件（10%概率）
+            setTimeout(function() {
+                try {
+                    if (window.StoryRandomEvent) {
+                        StoryRandomEvent.triggerRandomEvent();
+                    }
+                } catch (e) {}
+            }, 5000);
+        }
+    } catch (e) {}
+
+    // 加载数据（优先StateManager，失败时用本地数据）
+    try {
         await loadAllData();
-
-        // 初始化UI
-        initUI();
-
-        // 初始化事件监听
-        initEventListeners();
-
-        // 初始化粒子背景
-        initParticles();
-
     } catch (err) {
-        console.error('[app.js] 初始化出错:', err);
+        console.error('[app.js] 数据加载出错:', err);
+    }
+
+    // 初始化UI（独立 try-catch，防止 initUI 失败时跳过事件监听绑定）
+    try {
+        initUI();
+    } catch (err) {
+        console.error('[app.js] UI初始化出错:', err);
+    }
+
+    // 初始化粒子背景
+    try {
+        initParticles();
+    } catch (err) {
+        console.error('[app.js] 粒子初始化出错:', err);
     }
 
     // 注销所有可能存在的旧版 Service Worker（在浏览器空闲时处理，不阻塞主线程）
@@ -164,10 +246,49 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 更新探索统计显示
     updateExplorationStats();
 
-    // 显示首次使用引导
-    if (typeof Onboarding !== 'undefined') {
-        setTimeout(() => Onboarding.start(), 1500);
+    // 显示首次使用引导（3步式新手引导，仅新用户触发一次）
+    // loadAllData() 是异步的，引导需等数据加载完成后再检查并启动
+    function tryStartOnboarding() {
+        if (typeof NewbieGuide !== 'undefined' && NewbieGuide.shouldShow()) {
+            NewbieGuide.start();
+        } else if (typeof Onboarding !== 'undefined' && Onboarding.shouldShow()) {
+            Onboarding.start();
+        }
     }
+    if (typeof NewbieGuide !== 'undefined') {
+        setTimeout(tryStartOnboarding, 5000);
+    } else if (typeof Onboarding !== 'undefined') {
+        setTimeout(tryStartOnboarding, 5000);
+    }
+
+    // 监听 Auth 登录/注册成功事件，在页面运行时（刷新后）触发 onboarding
+    // reload 后注册：auth:login 在 app:init:complete 之前触发 → 等 app:init:complete 后再启动
+    let pendingAuthLogin = false;
+    window.addEventListener('auth:login', () => {
+        pendingAuthLogin = true;
+        // auth:login 可能比 app:init:complete 更早触发（因为 loadAllData 是 async）
+        // 所以也要在这里尝试启动，等 AppState.user 数据加载完成
+        setTimeout(() => {
+            if (typeof NewbieGuide !== 'undefined' && NewbieGuide.shouldShow()) {
+                NewbieGuide.start();
+            } else if (typeof Onboarding !== 'undefined' && Onboarding.shouldShow()) {
+                Onboarding.start();
+            }
+        }, 3000);
+    });
+
+    EventBus.on('app:init:complete', () => {
+        // auth:login 可能比 app:init:complete 更早触发（因为 loadAllData 是 async）
+        // 所以在 app:init:complete 时也要检查是否需要启动 onboarding
+        setTimeout(() => {
+            if (typeof NewbieGuide !== 'undefined' && NewbieGuide.shouldShow()) {
+                NewbieGuide.start();
+            } else if (typeof Onboarding !== 'undefined' && Onboarding.shouldShow()) {
+                Onboarding.start();
+            }
+            pendingAuthLogin = false;
+        }, 3000);
+    });
 
     EventBus.emit('app:init:complete');
 });
@@ -198,31 +319,39 @@ async function loadAllData() {
                     StateManager.set('tasks', AppState.tasks);
                 }
             }
+            // 如果后端任务为空，尝试从 localStorage 恢复
+            if (!AppState.tasks || AppState.tasks.length === 0) {
+                const saved = loadTaskProgress();
+                if (saved?.length) {
+                    AppState.tasks = saved;
+                    if (typeof StateManager !== 'undefined') {
+                        StateManager.set('tasks', AppState.tasks);
+                    }
+                }
+            }
             if (achievementsData) {
                 AppState.achievements = achievementsData;
             }
         } else {
-            // 未登录或无 Auth 模块：从本地 JSON 加载，任一失败不影响其他
-            const [userRes, tasksRes, achievementsRes] = await Promise.all([
-                fetch(DATA_PATH.user).catch(() => null),
-                fetch(DATA_PATH.tasks).catch(() => null),
-                fetch(DATA_PATH.achievements).catch(() => null)
-            ]);
-
-            if (userRes?.ok) {
-                AppState.user = await userRes.json();
-                if (typeof StateManager !== 'undefined') {
-                    StateManager.set('user', AppState.user);
+            // 未登录：从 localStorage 恢复用户隔离的任务进度
+            const savedTasks = loadTaskProgress();
+            if (savedTasks?.length) {
+                AppState.tasks = savedTasks;
+            } else {
+                // 没有本地进度才读共享模板作为兜底
+                const [tasksRes, achievementsRes] = await Promise.all([
+                    fetch(DATA_PATH.tasks).catch(() => null),
+                    fetch(DATA_PATH.achievements).catch(() => null)
+                ]);
+                if (tasksRes?.ok) {
+                    AppState.tasks = (await tasksRes.json()).tasks || [];
+                }
+                if (achievementsRes?.ok) {
+                    AppState.achievements = await achievementsRes.json();
                 }
             }
-            if (tasksRes?.ok) {
-                AppState.tasks = (await tasksRes.json()).tasks || [];
-                if (typeof StateManager !== 'undefined') {
-                    StateManager.set('tasks', AppState.tasks);
-                }
-            }
-            if (achievementsRes?.ok) {
-                AppState.achievements = await achievementsRes.json();
+            if (typeof StateManager !== 'undefined') {
+                StateManager.set('tasks', AppState.tasks);
             }
         }
 
@@ -234,7 +363,12 @@ async function loadAllData() {
             }
         }
         if (!AppState.tasks || AppState.tasks.length === 0) {
-            AppState.tasks = getDefaultTasks();
+            const saved = loadTaskProgress();
+            if (saved?.length) {
+                AppState.tasks = saved;
+            } else {
+                AppState.tasks = getDefaultTasks();
+            }
             if (typeof StateManager !== 'undefined') {
                 StateManager.set('tasks', AppState.tasks);
             }
@@ -294,19 +428,20 @@ function updateUserDisplay() {
     if (!user) return;
     
     // 更新顶部栏
-    document.getElementById('gold-display').textContent = user.role?.gold || 0;
-    document.getElementById('level-display').textContent = user.role?.level || 1;
-    
+    var el;
+    el = document.getElementById('gold-display'); if (el) el.textContent = user.role?.gold || 0;
+    el = document.getElementById('level-display'); if (el) el.textContent = user.role?.level || 1;
+
     // 更新角色卡片
-    document.getElementById('role-name').textContent = user.user?.name || '同学';
-    document.getElementById('role-school').textContent = user.user?.school || '未知学校';
-    
+    el = document.getElementById('role-name'); if (el) el.textContent = user.user?.name || '同学';
+    el = document.getElementById('role-school'); if (el) el.textContent = user.user?.school || '未知学校';
+
     // 更新经验条
     const exp = user.role?.experience || 0;
     const exp_needed = user.role?.experience_needed || 100;
     const exp_percentage = (exp / exp_needed) * 100;
-    document.getElementById('exp-text').textContent = `${exp}/${exp_needed}`;
-    document.getElementById('exp-fill').style.width = `${exp_percentage}%`;
+    el = document.getElementById('exp-text'); if (el) el.textContent = `${exp}/${exp_needed}`;
+    el = document.getElementById('exp-fill'); if (el) el.style.setProperty('width', `${exp_percentage}%`);
     
     // 更新等级徽章
     const levelBadge = document.querySelector('.level-badge');
@@ -333,96 +468,39 @@ function updateStatusDisplay(stat, value) {
 
 function updateStatistics() {
     // 更新成就统计
-    const stats = AppState.achievements.statistics || {};
-    document.getElementById('unlocked-achievements').textContent = stats.unlocked || 0;
-    document.getElementById('total-achievements').textContent = stats.total_achievements || 0;
-    
+    const stats = AppState.achievements?.statistics || {};
+    el = document.getElementById('unlocked-achievements'); if (el) el.textContent = stats.unlocked || 0;
+    el = document.getElementById('total-achievements'); if (el) el.textContent = stats.total_achievements || 0;
+
     // 更新任务统计
-    const tasks = AppState.tasks;
+    const tasks = AppState.tasks || [];
     const completed = tasks.filter(t => t.status === 'completed' || t.progress === 100).length;
     const inProgress = tasks.filter(t => t.status === 'in_progress').length;
-    
-    document.getElementById('total-tasks').textContent = tasks.length;
-    document.getElementById('completed-tasks').textContent = completed;
-    document.getElementById('inprogress-tasks').textContent = inProgress;
+
+    el = document.getElementById('total-tasks'); if (el) el.textContent = tasks.length;
+    el = document.getElementById('completed-tasks'); if (el) el.textContent = completed;
+    el = document.getElementById('inprogress-tasks'); if (el) el.textContent = inProgress;
 }
 
 // ============================================
-// 事件监听初始化
-// ============================================
-function initEventListeners() {
-    // 主功能按钮
-    document.querySelectorAll('.action-btn').forEach(btn => {
-        btn.addEventListener('click', handleMainAction);
-    });
-    
-    // 快速操作按钮
-    document.querySelectorAll('.quick-btn').forEach(btn => {
-        btn.addEventListener('click', handleQuickAction);
-    });
-    
-    // 任务标签切换
-    document.querySelectorAll('.task-tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-            document.querySelectorAll('.task-tab').forEach(t => t.classList.remove('active'));
-            e.target.classList.add('active');
-            AppState.currentTaskCategory = e.target.dataset.category;
-            renderTasks();
-        });
-    });
-    
-    // 成就标签切换
-    document.querySelectorAll('.achievement-tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-            document.querySelectorAll('.achievement-tab').forEach(t => t.classList.remove('active'));
-            e.target.classList.add('active');
-            AppState.currentAchievementCategory = e.target.dataset.category;
-            renderAchievements();
-        });
-    });
-    
-    // 设置开关
-    document.getElementById('sound-toggle')?.addEventListener('change', (e) => {
-        AppState.settings.sound = e.target.checked;
-        if (window.SoundManager) {
-            SoundManager.toggle(e.target.checked);
-        }
-    });
-    
-    document.getElementById('darkmode-toggle')?.addEventListener('change', (e) => {
-        const dark = e.target.checked;
-        AppState.settings.darkMode = dark;
-        document.body.classList.toggle('dark-mode', dark);
-        localStorage.setItem('darkMode', dark ? '1' : '0');
-    });
-    
-    document.getElementById('animation-toggle')?.addEventListener('change', (e) => {
-        AppState.settings.animation = e.target.checked;
-        document.body.classList.toggle('no-animation', !e.target.checked);
-    });
-    
-    // NPC点击
-    document.querySelectorAll('.npc-character').forEach(npc => {
-        npc.addEventListener('click', () => handleNPCInteraction(npc.dataset.npc));
-    });
-}
-
-// ============================================
-// 底部导航
-// — 已改为纯 <a href> 结构，由 CSS :active 和页面激活状态管理
-// ============================================
-
 // 主功能按钮处理
 // ============================================
 function handleMainAction(e) {
     const action = e.currentTarget.dataset.action;
-    
+    console.log('[handleMainAction] called, action:', action);
+
     switch (action) {
         case 'role':
             openRoleModal();
             break;
         case 'tasks':
             openTaskModal();
+            break;
+        case 'main-story':
+            if (window.MainStory) window.MainStory.open();
+            break;
+        case 'social':
+            if (window.SocialUI) window.SocialUI.open();
             break;
         case 'achievements':
             openAchievementModal();
@@ -438,6 +516,7 @@ function handleMainAction(e) {
 // ============================================
 function handleQuickAction(e) {
     const action = e.currentTarget.dataset.action;
+    console.log('[handleQuickAction] called, action:', action);
 
     switch (action) {
         case 'quick-action':
@@ -472,8 +551,83 @@ function handleQuickAction(e) {
 }
 
 // ============================================
-// 番茄钟（已迁移至 js/features/pomodoro-manager.js）
+// 事件监听初始化
 // ============================================
+function initEventListeners() {
+    // 主功能按钮 — 事件委托到父容器，兼容动态添加的按钮
+    document.querySelectorAll('.action-grid').forEach(grid => {
+        grid.addEventListener('click', (e) => {
+            const btn = e.target.closest('.action-btn');
+            if (btn) handleMainAction({ currentTarget: btn });
+        });
+    });
+
+    // 快速操作按钮 — 同样委托到容器
+    document.querySelectorAll('.quick-grid, #quick-actions').forEach(container => {
+        container.addEventListener('click', (e) => {
+            const btn = e.target.closest('.quick-btn');
+            if (btn) handleQuickAction({ currentTarget: btn });
+        });
+    });
+
+    // 任务标签切换
+    document.querySelectorAll('.task-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            document.querySelectorAll('.task-tab').forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            AppState.currentTaskCategory = e.target.dataset.category;
+            renderTasks();
+        });
+    });
+
+    // 成就标签切换
+    document.querySelectorAll('.achievement-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            document.querySelectorAll('.achievement-tab').forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            AppState.currentAchievementCategory = e.target.dataset.category;
+            renderAchievements();
+        });
+    });
+
+    // 设置开关
+    document.getElementById('sound-toggle')?.addEventListener('change', (e) => {
+        AppState.settings.sound = e.target.checked;
+        if (window.SoundManager) {
+            SoundManager.toggle(e.target.checked);
+        }
+    });
+
+    document.getElementById('darkmode-toggle')?.addEventListener('change', (e) => {
+        const dark = e.target.checked;
+        AppState.settings.darkMode = dark;
+        document.body.classList.toggle('dark-mode', dark);
+        localStorage.setItem('darkMode', dark ? '1' : '0');
+    });
+
+    document.getElementById('animation-toggle')?.addEventListener('change', (e) => {
+        AppState.settings.animation = e.target.checked;
+        document.body.classList.toggle('no-animation', !e.target.checked);
+    });
+
+    // NPC点击
+    document.querySelectorAll('.npc-character').forEach(npc => {
+        npc.addEventListener('click', () => handleNPCInteraction(npc.dataset.npc));
+    });
+
+    // 全局兜底：捕获所有 action-btn 和 quick-btn 点击
+    // 确保即使前面的委托绑定失败，所有按钮也能响应
+    document.addEventListener('click', (e) => {
+        const actionBtn = e.target.closest('.action-btn');
+        if (actionBtn) handleMainAction({ currentTarget: actionBtn });
+
+        const quickBtn = e.target.closest('.quick-btn');
+        if (quickBtn) handleQuickAction({ currentTarget: quickBtn });
+    });
+}
+
+// ============================================
+// 底部导航
 
 // ============================================
 // 每日签到
@@ -487,7 +641,41 @@ async function showSigninModal() {
     const result = await API.getSigninStatus();
 
     if (!result) {
-        showNotification('无法获取签到状态，请检查网络', 'error');
+        // 后端未运行或网络错误时，显示本地签到状态（基于 localStorage）
+        const lastSigninDate = localStorage.getItem('campus_rpg_last_signin') || '';
+        const today = new Date().toISOString().slice(0, 10);
+        const todaySigned = lastSigninDate === today;
+
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+        modalHeader.className = 'modal-header';
+        modalTitle.textContent = '📅 每日签到';
+
+        if (todaySigned) {
+            modalHeader.className = 'modal-header done-header';
+            modalTitle.textContent = '✅ 今日已签到';
+            modalBody.innerHTML = `
+                <div class="signin-done-display">
+                    <div class="signin-done-icon">✅</div>
+                    <div class="signin-done-title">明天再来吧！</div>
+                    <div class="signin-done-sub">连续签到不要中断哦~</div>
+                    <p style="text-align:center; color:#6b7280; margin-top:1rem;">(离线模式)</p>
+                </div>
+            `;
+        } else {
+            modalBody.innerHTML = `
+                <div style="text-align:center; padding:2rem;">
+                    <div style="font-size:3rem; margin-bottom:1rem;">📅</div>
+                    <div style="font-size:1.2rem; margin-bottom:0.5rem;">每日签到</div>
+                    <p style="color:#6b7280; margin-bottom:1.5rem;">服务器未连接，签到将在重新连接后同步</p>
+                    <button class="btn btn-primary" onclick="handleLocalSignin(); bootstrap.Modal.getInstance(document.getElementById('signinModal')).hide();">
+                        ✨ 本地签到
+                    </button>
+                </div>
+            `;
+        }
+
+        modal.show();
         return;
     }
 
@@ -701,7 +889,50 @@ async function initSigninStatus() {
     const result = await API.getSigninStatus();
     if (result && result.today_signed) {
         updateSigninButton(true);
+    } else if (!result) {
+        // 后端未运行，检查本地存储的签到状态
+        const lastSigninDate = localStorage.getItem('campus_rpg_last_signin') || '';
+        const today = new Date().toISOString().slice(0, 10);
+        if (lastSigninDate === today) {
+            updateSigninButton(true);
+        }
     }
+}
+
+function handleLocalSignin() {
+    const today = new Date().toISOString().slice(0, 10);
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    const lastSigninDate = localStorage.getItem('campus_rpg_last_signin') || '';
+    const lastStreak = parseInt(localStorage.getItem('campus_rpg_signin_streak') || '0', 10);
+
+    if (lastSigninDate === today) {
+        showNotification('今日已签到', 'info');
+        return;
+    }
+
+    // 计算连签天数
+    let newStreak = 1;
+    if (lastSigninDate === yesterday) {
+        newStreak = lastStreak + 1;
+    }
+
+    // 保存签到状态
+    localStorage.setItem('campus_rpg_last_signin', today);
+    localStorage.setItem('campus_rpg_signin_streak', newStreak.toString());
+
+    // 给予本地奖励
+    const expReward = newStreak <= 1 ? 10 : newStreak <= 3 ? 15 : newStreak <= 7 ? 25 : newStreak <= 14 ? 40 : 60;
+    const goldReward = newStreak <= 1 ? 5 : newStreak <= 3 ? 10 : newStreak <= 7 ? 20 : newStreak <= 14 ? 35 : 50;
+
+    AppState.user.role.experience += expReward;
+    AppState.user.role.gold += goldReward;
+    AppState.user.stats.energy = Math.min(100, (AppState.user.stats.energy || 100) + 10);
+
+    updateUserDisplay();
+    updateSigninButton(true);
+
+    showRewardPopup({ experience: expReward, gold: goldReward }, '签到成功！');
+    showNotification(`签到成功！连签 ${newStreak} 天`, 'success');
 }
 
 function updateExplorationStats() {
@@ -731,6 +962,7 @@ function updateExplorationStats() {
 // 角色面板
 // ============================================
 function openRoleModal() {
+    console.log('[openRoleModal] called');
     const user = AppState.user;
     if (!user) return;
     
@@ -849,7 +1081,7 @@ function openRoleModal() {
     `;
     
     // 打开模态框
-    const modal = new bootstrap.Modal(document.getElementById('roleModal'));
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('roleModal'));
     modal.show();
 }
 
@@ -857,8 +1089,9 @@ function openRoleModal() {
 // 任务面板
 // ============================================
 function openTaskModal() {
+    console.log('[openTaskModal] called');
     renderTasks();
-    const modal = new bootstrap.Modal(document.getElementById('taskModal'));
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('taskModal'));
     modal.show();
 }
 
@@ -941,37 +1174,119 @@ function renderTasks() {
 function toggleSubtask(taskId, subtaskId) {
     const task = AppState.tasks.find(t => t.id === taskId);
     if (!task) return;
-    
+
     const subtask = task.subtasks.find(s => s.id === subtaskId);
     if (!subtask || subtask.status === 'completed') return;
-    
+
     // 标记完成
     subtask.status = 'completed';
     subtask.progress = 100;
-    
+
     // 重新计算任务进度
     const completedCount = task.subtasks.filter(s => s.status === 'completed').length;
     task.progress = Math.round((completedCount / task.subtasks.length) * 100);
-    
+
     if (task.progress === 100) {
         task.status = 'completed';
     }
-    
+
+    // 同步任务完成状态（在线直接发，离线入队等待网络恢复）
+    if (typeof DataSync !== 'undefined') {
+        DataSync.syncTaskComplete(taskId, subtaskId, {
+            subtaskId: subtaskId,
+            status: 'completed',
+            progress: 100
+        }).catch(function() {});
+    }
+
     // 给予奖励
-    const rewards = {
-        experience: subtask.experience
-    };
+    const rewards = { experience: subtask.experience };
     showRewardPopup(rewards);
+
+    // 计算并同步任务完成率到用户画像（用于难度调整）
+    const allTasks = AppState.tasks;
+    const allCompletedCount = allTasks.filter(t => t.status === 'completed' || t.progress === 100).length;
+    const allTotalCount = allTasks.length;
+    const completionRate = allTotalCount > 0 ? Math.round((allCompletedCount / allTotalCount) * 100) : 0;
+    API.syncCompletionRate(completionRate);
+
+    // 埋点：任务完成
+    if (typeof BehaviorTrack !== 'undefined') {
+        BehaviorTrack.trackTaskCompletion(
+            task.id,
+            task.category || 'unknown',
+            subtask.duration_seconds || 0
+        );
+    }
+
+    // 保存到 localStorage（用户隔离）
+    saveTaskProgress();
+
+    // 同步到后端（最多重试2次，失败后确保本地已备份）
+    syncTasksToBackend(AppState.tasks);
 
     // 检查成就进度
     _checkAchievementProgress('学业成就', 'ach_2');
 
     // 重新渲染
     renderTasks();
-    
+
     // 更新主界面
     updateDailyTasks();
     updateStatistics();
+}
+
+/** 同步任务到后端（最多重试2次，失败后确保已保存到localStorage） */
+async function syncTasksToBackend(tasks, retries = 2) {
+    for (let i = 0; i <= retries; i++) {
+        try {
+            const result = await API.updateTasks({ tasks });
+            if (result?.success) return true;
+            console.warn(`[TaskSync] 第 ${i + 1} 次同步返回失败:`, result);
+        } catch (e) {
+            console.warn(`[TaskSync] 第 ${i + 1} 次同步异常:`, e);
+        }
+        if (i < retries) await new Promise(r => setTimeout(r, 500));
+    }
+    // 3次失败后确保 localStorage 有最新数据（理论上 saveTaskProgress 已调用，此处做双重确认）
+    saveTaskProgress();
+    console.info('[TaskSync] 后端同步失败，任务数据已暂存本地，将在下次正常时同步');
+    return false;
+}
+
+/** 保存任务进度到 localStorage（用户隔离） */
+function saveTaskProgress() {
+    const uid = localStorage.getItem('campus_rpg_user') ? JSON.parse(localStorage.getItem('campus_rpg_user')).id : 'guest';
+    const key = `campus_rpg_tasks_${uid}`;
+    try {
+        localStorage.setItem(key, JSON.stringify({ tasks: AppState.tasks, savedAt: Date.now() }));
+    } catch (e) {
+        console.warn('任务进度保存失败:', e);
+    }
+
+    // IndexedDB 加密备份（离线可用，容量更大）
+    if (typeof OfflineStorage !== 'undefined') {
+        OfflineStorage.saveTasks(AppState.tasks || []).catch(() => {});
+    }
+}
+
+/** 从 localStorage 恢复任务进度 */
+function loadTaskProgress() {
+    const uid = localStorage.getItem('campus_rpg_user') ? JSON.parse(localStorage.getItem('campus_rpg_user')).id : 'guest';
+    const key = `campus_rpg_tasks_${uid}`;
+    try {
+        const saved = JSON.parse(localStorage.getItem(key) || 'null');
+        if (saved?.tasks?.length) {
+            return saved.tasks;
+        }
+    } catch {}
+
+    // IndexedDB 兜底恢复
+    if (typeof OfflineStorage !== 'undefined') {
+        return OfflineStorage.loadTasks().catch(() => []) || [];
+    }
+
+    return null;
 }
 
 function updateTaskStats() {
@@ -979,8 +1294,8 @@ function updateTaskStats() {
     const completed = tasks.filter(t => t.status === 'completed' || t.progress === 100).length;
     const inProgress = tasks.filter(t => t.status === 'in_progress').length;
     
-    document.getElementById('completed-tasks').textContent = completed;
-    document.getElementById('inprogress-tasks').textContent = inProgress;
+    el = document.getElementById('completed-tasks'); if (el) el.textContent = completed;
+    el = document.getElementById('inprogress-tasks'); if (el) el.textContent = inProgress;
 }
 
 // ============================================
@@ -1002,15 +1317,16 @@ async function _checkAchievementProgress(category, achievementId) {
 // 成就面板
 // ============================================
 function openAchievementModal() {
+    console.log('[openAchievementModal] called');
     renderAchievements();
-    const modal = new bootstrap.Modal(document.getElementById('achievementModal'));
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('achievementModal'));
     modal.show();
 }
 
 function renderAchievements() {
     const body = document.getElementById('achievement-modal-body');
     const category = AppState.currentAchievementCategory;
-    const allAchievements = AppState.achievements.achievements || {};
+    const allAchievements = AppState.achievements?.achievements || {};
     
     let html = '';
     
@@ -1063,6 +1379,7 @@ function renderAchievements() {
 // 背包面板
 // ============================================
 function openInventoryModal() {
+    console.log('[openInventoryModal] called');
     const body = document.getElementById('inventory-modal-body');
     const inventory = AppState.user?.inventory || [];
     
@@ -1088,7 +1405,7 @@ function openInventoryModal() {
         `;
     }
     
-    const modal = new bootstrap.Modal(document.getElementById('inventoryModal'));
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('inventoryModal'));
     modal.show();
 }
 
@@ -1125,7 +1442,7 @@ function updateDailyTasks() {
     const container = document.getElementById('daily-task-list');
     
     // 获取今日推荐任务
-    const dailyTasks = AppState.tasks
+    const dailyTasks = (AppState.tasks || [])
         .filter(t => t.is_daily || t.priority === 'high')
         .slice(0, 3);
     
@@ -1168,7 +1485,7 @@ function handleNPCInteraction(npcId) {
 // ============================================
 function performQuickAction() {
     // 随机选择一个可完成的任务
-    const availableTasks = AppState.tasks.filter(t => 
+    const availableTasks = (AppState.tasks || []).filter(t =>
         t.status !== 'completed' && t.status !== 'locked'
     );
     
@@ -1235,7 +1552,7 @@ function triggerRandomEvent() {
         }
     }
     
-    const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('eventModal'));
     modal.show();
 }
 
@@ -1247,9 +1564,10 @@ function showDailySummary() {
     const user = AppState.user;
     
     // 计算今日统计
-    const completedTasks = AppState.tasks.filter(t => t.status === 'completed').length;
-    const totalTasks = AppState.tasks.length;
-    const completionRate = Math.round((completedTasks / totalTasks) * 100);
+    const allTasks = AppState.tasks || [];
+    const completedTasks = allTasks.filter(t => t.status === 'completed').length;
+    const totalTasks = allTasks.length;
+    const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
     
     body.innerHTML = `
         <div class="summary-header">
@@ -1285,7 +1603,7 @@ function showDailySummary() {
         </div>
     `;
     
-    const modal = new bootstrap.Modal(document.getElementById('summaryModal'));
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('summaryModal'));
     modal.show();
 
     // 绘制图表（确保 Chart.js 加载后再渲染，非阻塞）
@@ -1343,15 +1661,19 @@ function showRewardPopup(rewards, title = '获得奖励！') {
     let html = '<div class="reward-items">';
     
     if (rewards.experience) {
-        AppState.user.role.experience += rewards.experience;
+        if (AppState.user?.role) {
+            AppState.user.role.experience += rewards.experience;
+        }
         html += `<div class="reward-item exp">⭐ 经验 +${rewards.experience}</div>`;
-        
+
         // 检查是否升级
         checkLevelUp();
     }
-    
+
     if (rewards.gold) {
-        AppState.user.role.gold += rewards.gold;
+        if (AppState.user?.role) {
+            AppState.user.role.gold += rewards.gold;
+        }
         html += `<div class="reward-item gold">💰 金币 +${rewards.gold}</div>`;
     }
     
@@ -1362,7 +1684,7 @@ function showRewardPopup(rewards, title = '获得奖励！') {
     updateUserDisplay();
     
     // 显示弹窗
-    const modal = new bootstrap.Modal(document.getElementById('rewardModal'));
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('rewardModal'));
     modal.show();
 
     // 播放音效
@@ -1373,7 +1695,8 @@ function showRewardPopup(rewards, title = '获得奖励！') {
 }
 
 function checkLevelUp() {
-    const role = AppState.user.role;
+    const role = AppState.user?.role;
+    if (!role) return;
 
     if (role.experience >= role.experience_needed) {
         // 升级
@@ -1613,3 +1936,4 @@ window.openAchievementModal = openAchievementModal;
 window.openRoleModal = openRoleModal;
 window.refreshDailyTasks = refreshDailyTasks;
 window.resetData = resetData;
+window.handleLocalSignin = handleLocalSignin;

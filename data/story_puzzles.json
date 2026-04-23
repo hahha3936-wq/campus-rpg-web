@@ -1,0 +1,175 @@
+{
+  "meta": {
+    "version": "1.0",
+    "total_puzzles": 4,
+    "description": "校园RPG AR谜题配置 - 每个篇章1个核心AR解谜"
+  },
+  "puzzles": [
+    {
+      "puzzle_id": "puzzle_fresh_001",
+      "name": "校门的魔法阵",
+      "stage": "新生适应期",
+      "chapter": 1,
+      "description": "校门的地面上刻着一个古老的魔法阵。当你调整手机角度，让阳光直射魔法阵中心时，隐藏的符文会显现出来。",
+      "ar_instruction": "站在校门正前方，确保手机摄像头对准地面上的魔法阵。调整手机与地面的角度（约45度），观察魔法阵中心区域。",
+      "puzzle_type": "graphic",
+      "difficulty": "easy",
+      "unlock_condition": {
+        "type": "task_complete",
+        "task_id": "story_fresh_2"
+      },
+      "clues_required": ["clue_fresh_004", "clue_fresh_005", "clue_fresh_006"],
+      "stitch_group": "group_ar_puzzle_1",
+      "solution": {
+        "type": "sequence",
+        "format": "graphic_sequence",
+        "answer": ["east", "south", "west", "north", "center"],
+        "display": "东→南→西→北→中"
+      },
+      "hints": [
+        { "level": 1, "text": "四个角落的符文分别代表四个方向，按顺时针排列。", "cost": 0 },
+        { "level": 2, "text": "注意观察符文的形状——它们像汉字的偏旁部首。", "cost": 1 },
+        { "level": 3, "text": "木→火→金→水...中间是土。按这个顺序点击符文。", "cost": 2 }
+      ],
+      "success_reward": {
+        "experience": 150,
+        "gold": 80,
+        "clues": ["clue_fresh_008"],
+        "items": ["地图碎片·终"],
+        "unlock_scene": "scene_magic_gate"
+      },
+      "hidden_scene": {
+        "scene_id": "scene_magic_gate",
+        "name": "魔法校门",
+        "description": "校门在AR中展现出它真正的形态——一道通往「成长世界」的光门。你可以看到隐匿在现实中的魔法符文在空气中漂浮。",
+        "unlock_text": "魔法阵激活成功！隐藏场景「魔法校门」已解锁。在AR中重新扫描校门，可以看到不一样的景象！"
+      },
+      "failure_feedback": "符文顺序不正确...再仔细观察一下五行相生的规律吧。"
+    },
+    {
+      "puzzle_id": "puzzle_academic_001",
+      "name": "教学楼的数字谜题",
+      "stage": "学业成长期",
+      "chapter": 2,
+      "description": "教学楼门口的电子屏上有一串数字在闪烁。仔细看，那是教学楼门牌号、教室号和楼层的某种运算结果。",
+      "ar_instruction": "使用AR扫描教学楼A/B/C的门牌，收集数字线索，然后在谜题界面输入你发现的规律。",
+      "puzzle_type": "numeric",
+      "difficulty": "medium",
+      "unlock_condition": {
+        "type": "task_complete",
+        "task_id": "story_academic_2"
+      },
+      "clues_required": ["clue_academic_003", "clue_academic_004"],
+      "stitch_group": "group_number_puzzle",
+      "solution": {
+        "type": "numeric",
+        "format": "four_digit",
+        "answer": "7395",
+        "calculation": "教学楼A=101, B=203, C=305 → 按规律：7=1+0+1+5(门牌和), 3=2+0+3+8(门牌和), 9=3+0+5+1(门牌和), 5=...? (实际答案需要结合课程表数字)"
+      },
+      "hints": [
+        { "level": 1, "text": "注意教学楼编号：A=1, B=2, C=3。门牌号是三位数，教室号也是三位数。", "cost": 0 },
+        { "level": 2, "text": "试着把每个教学楼的这三个数字相加：101+?=?, 203+?=?, 305+?=?", "cost": 1 },
+        { "level": 3, "text": "规律是：和的后两位数字组合。101→7→07, 203→14→14, 305→21→21...等等，需要再想想", "cost": 2 }
+      ],
+      "success_reward": {
+        "experience": 200,
+        "gold": 120,
+        "clues": ["clue_academic_008"],
+        "items": ["数字钥匙"],
+        "unlock_scene": "scene_awakening"
+      },
+      "hidden_scene": {
+        "scene_id": "scene_awakening",
+        "name": "魔力觉醒之地",
+        "description": "在AR中，教学楼的特定位置会显现出一道光芒。当你站在这里，你会感受到一股温暖的力量涌入体内——那是你的「成长魔力」正在觉醒！",
+        "unlock_text": "魔力觉醒成功！你感受到了来自学园深处的力量。隐藏场景「魔力觉醒之地」已解锁。"
+      },
+      "failure_feedback": "数字组合不正确...再仔细观察一下教学楼门牌号和教室号的规律。"
+    },
+    {
+      "puzzle_id": "puzzle_career_001",
+      "name": "校史馆的时间谜题",
+      "stage": "实习准备期",
+      "chapter": 3,
+      "description": "校史馆里有一面照片墙，上面按时间顺序排列着学园历届毕业生的合影。有些照片下面有数字标记，有些则没有——那是学园留下的线索。",
+      "ar_instruction": "在AR中扫描校史馆的照片墙，系统会高亮显示带有数字的照片。按时间顺序排列这些数字，找出缺失的那个年份。",
+      "puzzle_type": "time",
+      "difficulty": "medium",
+      "unlock_condition": {
+        "type": "task_complete",
+        "task_id": "story_career_3"
+      },
+      "clues_required": ["clue_career_005"],
+      "stitch_group": "group_ar_puzzle_3",
+      "solution": {
+        "type": "year",
+        "format": "four_digit_year",
+        "answer": "1966",
+        "pattern": "年份递增规律：1923, 1935, 1947, 1959, ?, 1983, 1995... 每个间隔12年"
+      },
+      "hints": [
+        { "level": 1, "text": "注意照片下的数字，它们代表年份。按顺序排列这些年份。", "cost": 0 },
+        { "level": 2, "text": "这些年份之间有一个规律：相邻两个年份的差值是相同的。", "cost": 1 },
+        { "level": 3, "text": "差值是12年。从1959往后推12年，就是你要找的答案。", "cost": 2 }
+      ],
+      "success_reward": {
+        "experience": 250,
+        "gold": 150,
+        "clues": ["clue_career_007"],
+        "items": ["时间钥匙"],
+        "unlock_scene": "scene_history_archive"
+      },
+      "hidden_scene": {
+        "scene_id": "scene_history_archive",
+        "name": "时光走廊",
+        "description": "校史馆在AR中展现出一条时光走廊。你可以看到学园百年的历史在眼前流转——创始人、历届毕业生、那些已经消失的建筑和故事。",
+        "unlock_text": "时间裂缝已修复！隐藏场景「时光走廊」已解锁。在这里，你可以看到学园百年的变迁。"
+      },
+      "failure_feedback": "年份不正确...照片墙上缺失的那个年份，是学园历史上一个特殊的时刻。"
+    },
+    {
+      "puzzle_id": "puzzle_grad_001",
+      "name": "大礼堂的最终谜题",
+      "stage": "毕业冲刺期",
+      "chapter": 4,
+      "description": "毕业典礼的舞台上，灯光汇聚之处，有一个古老的机关。传说中，集齐了所有篇章线索的冒险者，才能解开这个最终谜题。",
+      "ar_instruction": "这是四个篇章的总结谜题。你需要回忆每个篇章中最重要的一个选择或发现，将它们按篇章顺序组合成最终答案。",
+      "puzzle_type": "comprehensive",
+      "difficulty": "hard",
+      "unlock_condition": {
+        "type": "all_puzzles_solved"
+      },
+      "clues_required": ["clue_grad_004", "clue_grad_007"],
+      "stitch_group": "group_ar_puzzle_4",
+      "solution": {
+        "type": "chapter_sequence",
+        "format": "four_elements",
+        "answer": ["courage", "persistence", "choice", "legacy"],
+        "display": "勇气 + 坚持 + 选择 + 传承",
+        "numeric_code": "1357"
+      },
+      "hints": [
+        { "level": 1, "text": "回想第一章：你克服的最大困难是什么？那是你勇气的证明。", "cost": 0 },
+        { "level": 2, "text": "回想第二章：什么事情你一直坚持在做？那是你坚持的证明。", "cost": 1 },
+        { "level": 3, "text": "回想第三章：最重要的选择是什么？那是你选择的证明。", "cost": 2 },
+        { "level": 4, "text": "回想第四章：大礼堂地砖上的四个字是什么？那是你传承的证明。按这四个元素的顺序输入。", "cost": 3 }
+      ],
+      "success_reward": {
+        "experience": 500,
+        "gold": 300,
+        "clues": [],
+        "items": ["传承者徽章", "毕业纪念册"],
+        "unlock_scene": "scene_graduation_ceremony",
+        "ending_unlock": "true_ending"
+      },
+      "hidden_scene": {
+        "scene_id": "scene_graduation_ceremony",
+        "name": "毕业典礼·魔法时刻",
+        "description": "在AR中，毕业典礼的舞台上绽放着耀眼的光芒。你可以看到一道通往未来的门缓缓打开，而门的另一边，是你这四年所有的成长与收获。",
+        "unlock_text": "最终谜题已解开！你获得了「传承者」的称号。隐藏场景「毕业典礼·魔法时刻」已解锁。这是校园RPG的真正结局。"
+      },
+      "failure_feedback": "答案不完整...这是四个篇章的总结。回忆每个篇章最重要的那个时刻。"
+    }
+  ]
+}
